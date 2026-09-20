@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>🚁 Тренажёр ТРИК Студио — Геоскан Пионер</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: #2c3e50;
+    overflow: hidden;
+    height: 100vh;
+  }
+  
+  .screen { display: none; height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; }
+  
+  #welcomeScreen {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 50%, #ffa07a 100%);
+    color: white;
+    text-align: center;
+    padding: 40px;
+  }
+  
+  .welcome-content {
+    max-width: 700px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 50px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .welcome-content .logo {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  
+  .welcome-content h1 { font-size: 42px; margin-bottom: 15px; font-weight: 800; }
+  .welcome-content h2 { font-size: 22px; margin-bottom: 30px; font-weight: 400; opacity: 0.95; }
+  
+  .welcome-tasks {
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .welcome-tasks h3 { font-size: 16px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  
+  .welcome-tasks .task-item {
+    padding: 8px 0;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .welcome-tasks .task-num {
+    background: white;
+    color: #ff6b35;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  .btn-start {
+    background: white;
+    color: #ff6b35;
+    border: none;
+    padding: 16px 50px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(0,0,0,0.3); }
+  
+  #trainerScreen {
+    display: none;
+    grid-template-columns: 280px 1fr 1fr;
+    grid-template-rows: 60px 1fr 140px;
+    height: 100vh;
+    gap: 8px;
+    padding: 8px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  }
+  
+  #trainerScreen.active { display: grid; }
+  
+  .header {
+    grid-column: 1 / 4;
+    background: linear-gradient(90deg, #ff6b35 0%, #ff8c5a 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    color: white;
+  }
+  
+  .header .logo-text { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  
+  .task-indicator {
+    background: rgba(255,255,255,0.25);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .task-progress { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  
+  .progress-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  
+  .progress-dot.active {
+    background: white;
+    color: #ff6b35;
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+  }
+  
+  .progress-dot.done { background: #27ae60; color: white; }
+  
+  .attempts-counter {
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .palette {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  
+  .palette-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ff6b35;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ff6b35;
+  }
+  
+  .palette h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    margin: 12px 0 6px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  
+  .palette-block {
+    padding: 9px 12px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.15s;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .palette-block:hover { transform: translateX(4px); filter: brightness(1.1); }
+  .palette-block:active { transform: scale(0.97); }
+  
+  .palette-block .add-icon {
+    background: rgba(255,255,255,0.3);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .block-move { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .block-height { background: linear-gradient(135deg, #27ae60, #229954); }
+  .block-turn { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .block-loop { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+  .block-wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+  
+  .workspace {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .workspace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ecf0f1;
+  }
+  
+  .workspace-header h2 {
+    font-size: 14px;
+    color: #ff6b35;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  
+  .task-description {
+    background: linear-gradient(135deg, #fff3e6, #ffe8d6);
+    border-left: 4px solid #ff6b35;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #5a4a3a;
+  }
+  
+  .task-description b { color: #ff6b35; }
+  
+  .params-panel {
+    background: linear-gradient(135deg, #e8f4fd, #d6eaf8);
+    border-left: 4px solid #3498db;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 13px;
+  }
+  
+  .params-panel label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .params-panel input {
+    width: 70px;
+    padding: 5px 8px;
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    background: white;
+  }
+  
+  .params-panel input:focus {
+    outline: none;
+    border-color: #2980b9;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  }
+  
+  .program-list {
+    flex: 1;
+    min-height: 200px;
+    padding: 10px;
+    background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+    border-radius: 10px;
+    border: 2px dashed #bdc3c7;
+  }
+  
+  .empty-hint {
+    color: #95a5a6;
+    text-align: center;
+    padding: 30px 20px;
+    font-style: italic;
+    line-height: 1.6;
+    font-size: 13px;
+  }
+  
+  .empty-hint .emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+  
+  .program-block {
+    padding: 10px 12px;
+    margin-bottom: 3px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    font-size: 13px;
+  }
+  
+  .program-block.executing {
+    outline: 3px solid #ff6b35;
+    outline-offset: 2px;
+    animation: execPulse 1s infinite;
+  }
+  
+  @keyframes execPulse {
+    0%, 100% { outline-color: #ff6b35; }
+    50% { outline-color: #ffd700; }
+  }
+  
+  .program-block .block-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+  
+  .program-block input {
+    width: 55px;
+    padding: 3px 6px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.25);
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    font-size: 12px;
+  }
+  
+  .program-block input:focus {
+    outline: none;
+    border-color: #fff;
+    background: rgba(255,255,255,0.4);
+  }
+  
+  .block-controls { display: flex; gap: 3px; flex-shrink: 0; }
+  
+  .ctrl-btn {
+    background: rgba(255,255,255,0.25);
+    border: none;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ctrl-btn:hover { background: rgba(255,255,255,0.4); }
+  .ctrl-btn.delete:hover { background: rgba(231, 76, 60, 0.8); }
+  
+  .loop-container {
+    margin: 3px 0 3px 20px;
+    padding: 8px;
+    background: rgba(155, 89, 182, 0.1);
+    border-radius: 7px;
+    border-left: 3px solid #9b59b6;
+    min-height: 45px;
+  }
+  
+  .add-block-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+    margin: 3px 0;
+    background: rgba(255, 107, 53, 0.1);
+    border: 2px dashed #ff6b35;
+    border-radius: 7px;
+    color: #ff6b35;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .add-block-btn:hover { background: rgba(255, 107, 53, 0.2); }
+  
+  .block-menu {
+    position: fixed;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    padding: 10px;
+    z-index: 1000;
+    min-width: 220px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .block-menu h4 {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    margin: 6px 0 4px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  
+  .block-menu-item {
+    padding: 7px 10px;
+    margin-bottom: 3px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .block-menu-item:hover { filter: brightness(1.15); transform: translateX(3px); }
+  
+  .action-buttons { display: flex; gap: 8px; margin-top: 10px; }
+  
+  .btn-action {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .btn-check { background: #3498db; color: white; }
+  .btn-check:hover { background: #2980b9; }
+  .btn-clear { background: #95a5a6; color: white; }
+  .btn-clear:hover { background: #7f8c8d; }
+  
+  .scene-container {
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #98D982 100%);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+  
+  #scene3d {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 12px;
+  }
+  
+  .scene-overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255,255,255,0.95);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 11px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    min-width: 150px;
+  }
+  
+  .scene-overlay-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  
+  .scene-overlay .stat {
+    margin: 2px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .scene-overlay .stat-label { color: #7f8c8d; font-weight: 500; }
+  .scene-overlay .stat-value {
+    color: #2c3e50;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .status-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .status-idle { background: #95a5a6; color: white; }
+  .status-running { background: #ff6b35; color: white; animation: statusPulse 1.5s infinite; }
+  .status-done { background: #27ae60; color: white; }
+  
+  @keyframes statusPulse {
+    0%, 100% { box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4); }
+    50% { box-shadow: 0 4px 20px rgba(255, 107, 53, 0.8); }
+  }
+  
+  .scene-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.9);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 10px;
+    color: #7f8c8d;
+    pointer-events: none;
+  }
+  
+  .log-panel {
+    grid-column: 1 / 4;
+    background: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  
+  .log-panel h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #ff6b35;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  
+  .log-entry {
+    padding: 3px 8px;
+    color: #5a6b7f;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+  }
+  
+  .log-entry.info { color: #3498db; background: rgba(52, 152, 219, 0.05); }
+  .log-entry.success { color: #27ae60; background: rgba(39, 174, 96, 0.05); }
+  .log-entry.error { color: #e74c3c; background: rgba(231, 76, 60, 0.05); }
+  .log-entry .time { color: #95a5a6; margin-right: 6px; }
+  
+  .message-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+  }
+  
+  .message-overlay.show { display: flex; }
+  
+  .message-box {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popIn 0.4s;
+  }
+  
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  .message-box .icon { font-size: 80px; margin-bottom: 15px; }
+  .message-box h2 { font-size: 26px; margin-bottom: 12px; color: #2c3e50; }
+  .message-box p { font-size: 15px; color: #5a6b7f; line-height: 1.6; margin-bottom: 20px; }
+  .message-box.success { border-top: 6px solid #27ae60; }
+  .message-box.error { border-top: 6px solid #e74c3c; }
+  .message-box.warning { border-top: 6px solid #f39c12; }
+  
+  .btn-primary {
+    background: #ff6b35;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 5px;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover { background: #e55a2b; transform: translateY(-2px); }
+  
+  #rateScreen {
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+  }
+  
+  .rate-content {
+    max-width: 800px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 50px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .rate-content h1 { font-size: 36px; margin-bottom: 15px; }
+  .rate-content p { font-size: 17px; margin-bottom: 30px; opacity: 0.95; }
+  
+  .rate-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+  }
+  
+  .rate-option {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+    padding: 25px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+  }
+  
+  .rate-option:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-4px);
+    border-color: white;
+  }
+  
+  .rate-option .emoji { font-size: 50px; display: block; margin-bottom: 10px; }
+  .rate-option .label { font-size: 17px; font-weight: 700; }
+  
+  #resultScreen {
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  
+  .result-content {
+    max-width: 700px;
+    background: white;
+    border-radius: 24px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  
+  .result-content.easy { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+  .result-content.retry { background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
+  
+  .result-content .icon { font-size: 100px; margin-bottom: 20px; }
+  .result-content h1 { font-size: 36px; margin-bottom: 15px; }
+  .result-content p { font-size: 17px; line-height: 1.7; margin-bottom: 25px; }
+  
+  .result-content .btn-white {
+    background: white;
+    color: #2c3e50;
+    border: none;
+    padding: 14px 35px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  
+  .result-content .btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  }
+  
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #f5f7fa; }
+  ::-webkit-scrollbar-thumb { background: #bdc3c7; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="welcomeScreen">
+  <div class="welcome-content">
+    <div class="logo">🚁</div>
+    <h1>Тренажёр ТРИК Студио</h1>
+    <h2>Программирование квадрокоптера Геоскан Пионер</h2>
+    
+    <div class="welcome-tasks">
+      <h3>📋 Тебя ждут 3 задания:</h3>
+      <div class="task-item">
+        <div class="task-num">1</div>
+        <span>Линейный алгоритм: взлёт, полёт по квадрату, посадка</span>
+      </div>
+      <div class="task-item">
+        <div class="task-num">2</div>
+        <span>Полёт по прямоугольнику с использованием цикла</span>
+      </div>
+      <div class="task-item">
+        <div class="task-num">3</div>
+        <span>Полёт по звезде (параметры задаёшь ты)</span>
+      </div>
+    </div>
+    
+    <p style="font-size: 14px; opacity: 0.9; margin-top: 15px;">
+      💡 Составь программу из блоков и нажми «Проверить». Если программа верна — увидишь полёт квадрокоптера!
+    </p>
+    
+    <button class="btn-start" onclick="startTrainer()">🚀 Начать</button>
+  </div>
+</div>
+
+<div class="screen" id="trainerScreen">
+  <div class="header">
+    <div class="logo-text">🚁 ТРИК Студио</div>
+    <div class="task-indicator" id="taskIndicator">Задание 1 из 3</div>
+    <div class="task-progress">
+      <div class="progress-dot active" id="dot1">1</div>
+      <div class="progress-dot" id="dot2">2</div>
+      <div class="progress-dot" id="dot3">3</div>
+    </div>
+    <div class="attempts-counter" id="attemptsCounter">Попыток: 0/3</div>
+  </div>
+  
+  <div class="palette">
+    <div class="palette-title">🎨 Блоки команд</div>
+    
+    <h3>🟢 Высота</h3>
+    <div class="palette-block block-height" data-type="takeoff">
+      <span>🛫 Взлёт [см]</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-height" data-type="land">
+      <span>🛬 Посадка</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-height" data-type="up">
+      <span>↑ Подняться [см]</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-height" data-type="down">
+      <span>↓ Опуститься [см]</span><span class="add-icon">+</span>
+    </div>
+    
+    <h3>🔵 Движение</h3>
+    <div class="palette-block block-move" data-type="forward">
+      <span>→ Вперёд [см]</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-move" data-type="backward">
+      <span>← Назад [см]</span><span class="add-icon">+</span>
+    </div>
+    
+    <h3>🟠 Повороты</h3>
+    <div class="palette-block block-turn" data-type="turnRight">
+      <span>↻ Направо [°]</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-turn" data-type="turnLeft">
+      <span>↺ Налево [°]</span><span class="add-icon">+</span>
+    </div>
+    
+    <h3>🟣 Управление</h3>
+    <div class="palette-block block-loop" data-type="loop">
+      <span>🔁 Повторить N раз</span><span class="add-icon">+</span>
+    </div>
+    <div class="palette-block block-wait" data-type="wait">
+      <span>⏱ Ожидание [с]</span><span class="add-icon">+</span>
+    </div>
+  </div>
+  
+  <div class="workspace">
+    <div class="workspace-header">
+      <h2>📝 Программа</h2>
+      <button class="btn-action btn-clear" onclick="clearProgram()" style="flex: 0; padding: 6px 12px; font-size: 12px;">🗑 Очистить</button>
+    </div>
+    
+    <div class="task-description" id="taskDescription"></div>
+    <div class="params-panel" id="paramsPanel" style="display: none;"></div>
+    
+    <div class="program-list" id="programList">
+      <div class="empty-hint">
+        <span class="emoji">🚀</span>
+        Кликайте по блокам в палитре,<br>чтобы составить программу
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn-action btn-check" onclick="checkProgram()">✓ Проверить</button>
+    </div>
+  </div>
+  
+  <div class="scene-container">
+    <canvas id="scene3d"></canvas>
+    <div class="scene-overlay">
+      <div class="scene-overlay-title">📍 Телеметрия</div>
+      <div class="stat"><span class="stat-label">X:</span><span class="stat-value" id="posX">0 см</span></div>
+      <div class="stat"><span class="stat-label">Y:</span><span class="stat-value" id="posY">0 см</span></div>
+      <div class="stat"><span class="stat-label">Z:</span><span class="stat-value" id="posZ">0 см</span></div>
+      <div class="stat"><span class="stat-label">Курс:</span><span class="stat-value" id="heading">0°</span></div>
+    </div>
+    <div class="status-indicator status-idle" id="statusIndicator">⏸ Ожидание</div>
+    <div class="scene-hint">🖱️ Перетаскивайте для вращения камеры • Колёсико для зума</div>
+  </div>
+  
+  <div class="log-panel">
+    <h3>📟 Консоль</h3>
+    <div id="logContent"></div>
+  </div>
+</div>
+
+<div class="screen" id="rateScreen">
+  <div class="rate-content">
+    <h1>🎉 Тренажёр пройден!</h1>
+    <p>Ты успешно справился со всеми тремя заданиями.<br>Как тебе было?</p>
+    
+    <div class="rate-options">
+      <div class="rate-option" onclick="submitRate('easy')">
+        <span class="emoji">😎</span>
+        <span class="label">Легко!</span>
+      </div>
+      <div class="rate-option" onclick="submitRate('ok')">
+        <span class="emoji">🙂</span>
+        <span class="label">Можно разобраться</span>
+      </div>
+      <div class="rate-option" onclick="submitRate('hard')">
+        <span class="emoji">😓</span>
+        <span class="label">Трудно</span>
+      </div>
+      <div class="rate-option" onclick="submitRate('confused')">
+        <span class="emoji">😵</span>
+        <span class="label">Ничего не понял</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="resultScreen">
+  <div class="result-content" id="resultContent"></div>
+</div>
+
+<div class="message-overlay" id="messageOverlay">
+  <div class="message-box" id="messageBox">
+    <div class="icon" id="msgIcon"></div>
+    <h2 id="msgTitle"></h2>
+    <p id="msgText"></p>
+    <div id="msgButtons"></div>
+  </div>
+</div>
+
+<script>
+// ==================== ДАННЫЕ ЗАДАНИЙ ====================
+const tasks = [
+  {
+    id: 1,
+    title: 'Задание 1: Квадрат (линейный алгоритм)',
+    description: 'Составь <b>линейный алгоритм</b> (без использования циклов): <b>взлёт на 1 метр (100 см)</b>, затем <b>полёт по квадрату</b> со стороной <b>150 см</b> (все команды записываются последовательно), и <b>посадка</b>.<br><small>💡 Линейный алгоритм — это алгоритм, в котором команды выполняются одна за другой, без повторений и условий. Тебе нужно 4 раза подряд записать пару команд: «Вперёд» и «Направо».</small>',
+    hasParams: false,
+    check: (program) => {
+      if (program.length !== 10) return false;
+      if (program[0].type !== 'takeoff' || program[0].params.height !== 100) return false;
+      if (program[9].type !== 'land') return false;
+      for (let i = 0; i < 4; i++) {
+        const forwardIdx = 1 + i * 2;
+        const turnIdx = 2 + i * 2;
+        if (program[forwardIdx].type !== 'forward' || program[forwardIdx].params.distance !== 150) return false;
+        if (program[turnIdx].type !== 'turnRight' || program[turnIdx].params.angle !== 90) return false;
+      }
+      for (const block of program) {
+        if (block.type === 'loop') return false;
+      }
+      return true;
+    },
+    solution: [
+      { type: 'takeoff', params: { height: 100 } },
+      { type: 'forward', params: { distance: 150 } },
+      { type: 'turnRight', params: { angle: 90 } },
+      { type: 'forward', params: { distance: 150 } },
+      { type: 'turnRight', params: { angle: 90 } },
+      { type: 'forward', params: { distance: 150 } },
+      { type: 'turnRight', params: { angle: 90 } },
+      { type: 'forward', params: { distance: 150 } },
+      { type: 'turnRight', params: { angle: 90 } },
+      { type: 'land', params: {} }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Задание 2: Прямоугольник',
+    description: 'Задай <b>высоту полёта</b>, <b>длину</b> и <b>ширину</b> прямоугольника. Составь программу: взлёт, <b>полёт по прямоугольнику</b> с использованием <b>цикла</b>, посадка.<br><small>💡 Используй блок «Повторить N раз» для организации цикла. Внутри цикла — команды для обхода прямоугольника: «Вперёд» на длину, поворот на 90°, «Вперёд» на ширину, поворот на 90°. Количество повторений цикла — 2.</small>',
+    hasParams: true,
+    params: [
+      { name: 'height', label: 'Высота (см):', default: 80, min: 20, max: 300 },
+      { name: 'length', label: 'Длина (см):', default: 200, min: 50, max: 400 },
+      { name: 'width', label: 'Ширина (см):', default: 120, min: 50, max: 400 }
+    ],
+    check: (program, params) => {
+      if (program.length !== 3) return false;
+      if (program[0].type !== 'takeoff' || program[0].params.height !== params.height) return false;
+      if (program[1].type !== 'loop' || program[1].params.count !== 2) return false;
+      if (program[2].type !== 'land') return false;
+      const body = program[1].body;
+      if (body.length !== 4) return false;
+      if (body[0].type !== 'forward' || body[0].params.distance !== params.length) return false;
+      if (body[1].type !== 'turnRight' || body[1].params.angle !== 90) return false;
+      if (body[2].type !== 'forward' || body[2].params.distance !== params.width) return false;
+      if (body[3].type !== 'turnRight' || body[3].params.angle !== 90) return false;
+      return true;
+    },
+    getSolution: (params) => [
+      { type: 'takeoff', params: { height: params.height } },
+      { type: 'loop', params: { count: 2 }, body: [
+        { type: 'forward', params: { distance: params.length } },
+        { type: 'turnRight', params: { angle: 90 } },
+        { type: 'forward', params: { distance: params.width } },
+        { type: 'turnRight', params: { angle: 90 } }
+      ]},
+      { type: 'land', params: {} }
+    ]
+  },
+  {
+    id: 3,
+    title: 'Задание 3: Звезда',
+    description: 'Задай <b>высоту полёта</b> и <b>длину луча</b> звезды. Составь программу: взлёт, полёт по пятиконечной звезде, посадка.<br><small>💡 Подсказка: звезда рисуется 5 отрезками с поворотом на <b>144°</b> после каждого.</small>',
+    hasParams: true,
+    params: [
+      { name: 'height', label: 'Высота (см):', default: 100, min: 20, max: 300 },
+      { name: 'ray', label: 'Длина луча (см):', default: 150, min: 50, max: 400 }
+    ],
+    check: (program, params) => {
+      if (program.length !== 3) return false;
+      if (program[0].type !== 'takeoff' || program[0].params.height !== params.height) return false;
+      if (program[1].type !== 'loop' || program[1].params.count !== 5) return false;
+      if (program[2].type !== 'land') return false;
+      const body = program[1].body;
+      if (body.length !== 2) return false;
+      if (body[0].type !== 'forward' || body[0].params.distance !== params.ray) return false;
+      if (body[1].type !== 'turnRight' || body[1].params.angle !== 144) return false;
+      return true;
+    },
+    getSolution: (params) => [
+      { type: 'takeoff', params: { height: params.height } },
+      { type: 'loop', params: { count: 5 }, body: [
+        { type: 'forward', params: { distance: params.ray } },
+        { type: 'turnRight', params: { angle: 144 } }
+      ]},
+      { type: 'land', params: {} }
+    ]
+  }
+];
+
+// ==================== СОСТОЯНИЕ ====================
+let currentTaskIndex = 0;
+let attempts = 0;
+let program = [];
+let taskParams = {};
+let currentMenu = null;
+let programRunning = false;
+let programStopped = false;
+let executionSpeed = 1;
+let userRating = null;
+
+// ==================== БЛОКИ ====================
+const blockTypes = {
+  forward:   { name: 'Вперёд',    category: 'move',   params: [{ name: 'distance', default: 100, unit: 'см' }] },
+  backward:  { name: 'Назад',     category: 'move',   params: [{ name: 'distance', default: 100, unit: 'см' }] },
+  takeoff:   { name: 'Взлёт',     category: 'height', params: [{ name: 'height', default: 100, unit: 'см' }] },
+  land:      { name: 'Посадка',   category: 'height', params: [] },
+  up:        { name: 'Подняться', category: 'height', params: [{ name: 'distance', default: 50, unit: 'см' }] },
+  down:      { name: 'Опуститься',category: 'height', params: [{ name: 'distance', default: 50, unit: 'см' }] },
+  turnRight: { name: 'Направо',   category: 'turn',   params: [{ name: 'angle', default: 90, unit: '°' }] },
+  turnLeft:  { name: 'Налево',    category: 'turn',   params: [{ name: 'angle', default: 90, unit: '°' }] },
+  loop:      { name: 'Повторить', category: 'loop',   params: [{ name: 'count', default: 4, unit: 'раз' }], hasBody: true },
+  wait:      { name: 'Ожидание',  category: 'wait',   params: [{ name: 'time', default: 1, unit: 'с' }] }
+};
+
+function getIcon(type) {
+  const icons = {
+    forward: '→', backward: '←',
+    takeoff: '🛫', land: '🛬', up: '↑', down: '↓',
+    turnRight: '↻', turnLeft: '↺', loop: '🔁', wait: '⏱'
+  };
+  return icons[type] || '';
+}
+
+function createNewBlock(type) {
+  const def = blockTypes[type];
+  if (!def) return null;
+  const block = {
+    id: 'b_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    type: type,
+    params: {}
+  };
+  def.params.forEach(p => { block.params[p.name] = p.default; });
+  if (def.hasBody) block.body = [];
+  return block;
+}
+
+function addBlock(type, targetArray, index) {
+  const block = createNewBlock(type);
+  if (!block) return;
+  if (index === undefined || index > targetArray.length) targetArray.push(block);
+  else targetArray.splice(index, 0, block);
+  renderProgram();
+  log(`➕ Добавлен блок: ${blockTypes[type].name}`, 'info');
+}
+
+function deleteBlock(id) {
+  if (removeBlockById(program, id)) {
+    renderProgram();
+    log('🗑 Блок удалён', 'info');
+  }
+}
+
+function removeBlockById(blocks, id) {
+  for (let i = 0; i < blocks.length; i++) {
+    if (blocks[i].id === id) { blocks.splice(i, 1); return true; }
+    if (blocks[i].body && removeBlockById(blocks[i].body, id)) return true;
+  }
+  return false;
+}
+
+function moveBlockUp(id) { if (moveBlockInArray(program, id, -1)) renderProgram(); }
+function moveBlockDown(id) { if (moveBlockInArray(program, id, 1)) renderProgram(); }
+
+function moveBlockInArray(blocks, id, direction) {
+  for (let i = 0; i < blocks.length; i++) {
+    if (blocks[i].id === id) {
+      const newIdx = i + direction;
+      if (newIdx < 0 || newIdx >= blocks.length) return false;
+      [blocks[i], blocks[newIdx]] = [blocks[newIdx], blocks[i]];
+      return true;
+    }
+    if (blocks[i].body && moveBlockInArray(blocks[i].body, id, direction)) return true;
+  }
+  return false;
+}
+
+function findBlockById(blocks, id) {
+  for (const b of blocks) {
+    if (b.id === id) return b;
+    if (b.body) { const f = findBlockById(b.body, id); if (f) return f; }
+  }
+  return null;
+}
+
+// ==================== МЕНЮ БЛОКОВ ====================
+function closeCurrentMenu() {
+  if (currentMenu) { currentMenu.remove(); currentMenu = null; }
+}
+
+function showBlockMenu(anchor, targetArray, insertIndex) {
+  closeCurrentMenu();
+  const menu = document.createElement('div');
+  menu.className = 'block-menu';
+  
+  const categories = {
+    'height': { title: '🟢 Высота', types: ['takeoff', 'land', 'up', 'down'] },
+    'move': { title: '🔵 Движение', types: ['forward', 'backward'] },
+    'turn': { title: '🟠 Повороты', types: ['turnRight', 'turnLeft'] },
+    'loop': { title: '🟣 Управление', types: ['loop', 'wait'] }
+  };
+  
+  Object.keys(categories).forEach(cat => {
+    const h = document.createElement('h4');
+    h.textContent = categories[cat].title;
+    menu.appendChild(h);
+    categories[cat].types.forEach(type => {
+      const def = blockTypes[type];
+      const item = document.createElement('div');
+      item.className = `block-menu-item block-${def.category}`;
+      item.textContent = `${getIcon(type)} ${def.name}`;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addBlock(type, targetArray, insertIndex);
+        closeCurrentMenu();
+      });
+      menu.appendChild(item);
+    });
+  });
+  
+  document.body.appendChild(menu);
+  currentMenu = menu;
+  
+  const rect = anchor.getBoundingClientRect();
+  let left = rect.left;
+  let top = rect.bottom + 5;
+  if (left + 220 > window.innerWidth) left = window.innerWidth - 230;
+  if (top + 400 > window.innerHeight) top = rect.top - 405;
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+  
+  setTimeout(() => {
+    const closeHandler = (e) => {
+      if (!menu.contains(e.target) && !anchor.contains(e.target)) {
+        closeCurrentMenu();
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    document.addEventListener('click', closeHandler);
+  }, 0);
+}
+
+// ==================== РЕНДЕРИНГ ПРОГРАММЫ ====================
+function renderProgram() {
+  const programList = document.getElementById('programList');
+  programList.innerHTML = '';
+  
+  if (program.length === 0) {
+    const hint = document.createElement('div');
+    hint.className = 'empty-hint';
+    hint.innerHTML = '<span class="emoji">🚀</span>Кликайте по блокам в палитре,<br>чтобы составить программу';
+    programList.appendChild(hint);
+  } else {
+    renderBlocks(program, programList, program);
+  }
+  
+  const addBtn = document.createElement('div');
+  addBtn.className = 'add-block-btn';
+  addBtn.innerHTML = '<span class="plus">+</span> Добавить блок в конец';
+  addBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showBlockMenu(addBtn, program, program.length);
+  });
+  programList.appendChild(addBtn);
+}
+
+function renderBlocks(blocks, container, parentArray) {
+  blocks.forEach((block, idx) => {
+    const insertBefore = document.createElement('div');
+    insertBefore.className = 'add-block-btn';
+    insertBefore.style.padding = '3px';
+    insertBefore.style.fontSize = '10px';
+    insertBefore.innerHTML = '<span class="plus">+</span> Вставить сюда';
+    insertBefore.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showBlockMenu(insertBefore, parentArray, idx);
+    });
+    container.appendChild(insertBefore);
+    container.appendChild(createBlockElement(block, parentArray));
+  });
+}
+
+function createBlockElement(block, parentArray) {
+  const def = blockTypes[block.type];
+  const wrapper = document.createElement('div');
+  wrapper.dataset.blockId = block.id;
+  
+  const div = document.createElement('div');
+  div.className = `program-block block-${def.category}`;
+  
+  let content = `<div class="block-content"><span>${getIcon(block.type)} ${def.name}</span>`;
+  def.params.forEach(p => {
+    content += `<input type="number" value="${block.params[p.name]}" 
+                 data-param="${p.name}" data-block-id="${block.id}"
+                 min="0" step="1"> <span>${p.unit}</span>`;
+  });
+  content += `</div>`;
+  content += `<div class="block-controls">
+    <button class="ctrl-btn" title="Вверх" data-action="up">⬆</button>
+    <button class="ctrl-btn" title="Вниз" data-action="down">⬇</button>
+    <button class="ctrl-btn delete" title="Удалить" data-action="delete">✕</button>
+  </div>`;
+  
+  div.innerHTML = content;
+  
+  div.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const b = findBlockById(program, e.target.dataset.blockId);
+      if (b) b.params[e.target.dataset.param] = parseFloat(e.target.value) || 0;
+    });
+    input.addEventListener('click', (e) => e.stopPropagation());
+  });
+  
+  div.querySelectorAll('.ctrl-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      if (action === 'delete') deleteBlock(block.id);
+      else if (action === 'up') moveBlockUp(block.id);
+      else if (action === 'down') moveBlockDown(block.id);
+    });
+  });
+  
+  wrapper.appendChild(div);
+  
+  if (def.hasBody) {
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'loop-container';
+    
+    if (block.body.length === 0) {
+      const hint = document.createElement('div');
+      hint.className = 'empty-hint';
+      hint.style.padding = '10px';
+      hint.style.fontSize = '11px';
+      hint.textContent = '🔁 Добавь блоки внутрь цикла';
+      bodyDiv.appendChild(hint);
+    } else {
+      renderBlocks(block.body, bodyDiv, block.body);
+    }
+    
+    const addBtn = document.createElement('div');
+    addBtn.className = 'add-block-btn';
+    addBtn.innerHTML = '<span class="plus">+</span> Добавить в цикл';
+    addBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showBlockMenu(addBtn, block.body, block.body.length);
+    });
+    bodyDiv.appendChild(addBtn);
+    
+    wrapper.appendChild(bodyDiv);
+  }
+  
+  return wrapper;
+}
+
+function clearProgram() {
+  if (program.length === 0) return;
+  if (confirm('Очистить программу?')) {
+    program = [];
+    renderProgram();
+    log('🗑 Программа очищена', 'info');
+  }
+}
+
+// ==================== УПРАВЛЕНИЕ ТРЕНАЖЁРОМ ====================
+function startTrainer() {
+  document.getElementById('welcomeScreen').classList.remove('active');
+  document.getElementById('trainerScreen').classList.add('active');
+  currentTaskIndex = 0;
+  loadTask();
+  setTimeout(() => {
+    initScene();
+  }, 100);
+}
+
+function loadTask() {
+  const task = tasks[currentTaskIndex];
+  program = [];
+  attempts = 0;
+  taskParams = {};
+  
+  document.getElementById('taskIndicator').textContent = `Задание ${task.id} из 3`;
+  document.getElementById('attemptsCounter').textContent = `Попыток: 0/3`;
+  
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.classList.remove('active', 'done');
+    if (i - 1 < currentTaskIndex) dot.classList.add('done');
+    else if (i - 1 === currentTaskIndex) dot.classList.add('active');
+  }
+  
+  document.getElementById('taskDescription').innerHTML = task.description;
+  
+  const paramsPanel = document.getElementById('paramsPanel');
+  if (task.hasParams) {
+    paramsPanel.style.display = 'flex';
+    paramsPanel.innerHTML = '<b>⚙️ Параметры:</b>';
+    task.params.forEach(p => {
+      taskParams[p.name] = p.default;
+      const label = document.createElement('label');
+      label.innerHTML = `${p.label} <input type="number" value="${p.default}" min="${p.min}" max="${p.max}" data-param="${p.name}">`;
+      label.querySelector('input').addEventListener('input', (e) => {
+        taskParams[p.name] = parseFloat(e.target.value) || p.default;
+      });
+      paramsPanel.appendChild(label);
+    });
+  } else {
+    paramsPanel.style.display = 'none';
+  }
+  
+  renderProgram();
+  log(`📋 ${task.title}`, 'success');
+}
+
+function checkProgram() {
+  const task = tasks[currentTaskIndex];
+  attempts++;
+  document.getElementById('attemptsCounter').textContent = `Попыток: ${attempts}/3`;
+  
+  const isCorrect = task.check(program, taskParams);
+  
+  if (isCorrect) {
+    log('✅ Программа верна! Запуск полёта...', 'success');
+    showMessage('success', '🎉 Отлично!', 'Программа составлена правильно! Сейчас увидишь полёт квадрокоптера.', [
+      { text: '▶ Запустить полёт', class: 'btn-primary', action: () => {
+        hideMessage();
+        runProgram();
+      }}
+    ]);
+  } else {
+    log(`❌ Попытка ${attempts}/3: программа неверна`, 'error');
+    
+    if (attempts >= 3) {
+      showMessage('warning', '🤔 Попробуй посмотреть решение', 
+        'Три попытки использованы. Не переживай, сейчас покажем правильное решение и запустим полёт!', [
+        { text: '💡 Показать решение', class: 'btn-primary', action: () => {
+          hideMessage();
+          showSolution();
+        }}
+      ]);
+    } else {
+      let hint = `В программе есть ошибки. Подумай и попробуй снова. Осталось попыток: ${3 - attempts}`;
+      if (currentTaskIndex === 0) {
+        hint += '<br><br>💡 <b>Подсказка:</b> В этом задании нужен <b>линейный алгоритм</b> — все команды должны идти последовательно, без использования блока «Повторить». Тебе нужно записать 4 пары команд «Вперёд + Направо» одну за другой.';
+      } else if (currentTaskIndex === 1) {
+        hint += '<br><br>💡 <b>Подсказка:</b> В этом задании нужно использовать блок «Повторить» (цикл). Внутри цикла — 4 команды: длина, поворот, ширина, поворот.';
+      }
+      showMessage('error', '🤔 Попробуй ещё раз', hint, [
+        { text: 'Продолжить', class: 'btn-primary', action: hideMessage }
+      ]);
+    }
+  }
+}
+
+function showSolution() {
+  const task = tasks[currentTaskIndex];
+  let solution;
+  if (task.hasParams) {
+    solution = task.getSolution(taskParams);
+  } else {
+    solution = task.solution;
+  }
+  
+  program = [];
+  solution.forEach(b => {
+    const newBlock = createNewBlock(b.type);
+    Object.assign(newBlock.params, b.params);
+    if (b.body) {
+      newBlock.body = b.body.map(child => {
+        const nb = createNewBlock(child.type);
+        Object.assign(nb.params, child.params);
+        return nb;
+      });
+    }
+    program.push(newBlock);
+  });
+  
+  renderProgram();
+  log('💡 Показано правильное решение', 'info');
+  
+  setTimeout(() => {
+    runProgram();
+  }, 500);
+}
+
+function nextTask() {
+  currentTaskIndex++;
+  if (currentTaskIndex >= tasks.length) {
+    document.getElementById('trainerScreen').classList.remove('active');
+    document.getElementById('rateScreen').classList.add('active');
+  } else {
+    loadTask();
+  }
+}
+
+// ==================== СООБЩЕНИЯ ====================
+function showMessage(type, title, text, buttons) {
+  const overlay = document.getElementById('messageOverlay');
+  const box = document.getElementById('messageBox');
+  box.className = 'message-box ' + type;
+  
+  const icons = { success: '✅', error: '❌', warning: '⚠️' };
+  document.getElementById('msgIcon').textContent = icons[type] || '💬';
+  document.getElementById('msgTitle').textContent = title;
+  document.getElementById('msgText').innerHTML = text;
+  
+  const btnsContainer = document.getElementById('msgButtons');
+  btnsContainer.innerHTML = '';
+  buttons.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = b.class;
+    btn.textContent = b.text;
+    btn.onclick = b.action;
+    btnsContainer.appendChild(btn);
+  });
+  
+  overlay.classList.add('show');
+}
+
+function hideMessage() {
+  document.getElementById('messageOverlay').classList.remove('show');
+}
+
+// ==================== ОЦЕНКА ====================
+function submitRate(rating) {
+  userRating = rating;
+  document.getElementById('rateScreen').classList.remove('active');
+  document.getElementById('resultScreen').classList.add('active');
+  
+  const content = document.getElementById('resultContent');
+  
+  if (rating === 'easy') {
+    content.className = 'result-content easy';
+    content.innerHTML = `
+      <div class="icon">🏆</div>
+      <h1>Поздравляем!</h1>
+      <p>Ты отлично справился со всеми заданиями!<br>
+      Теперь ты готов писать программы для <b>настоящего квадрокоптера</b> в среде ТРИК Студио.</p>
+      <p style="font-size: 15px;">🚁 Запусти ТРИК Студио на компьютере, подключи Геоскан Пионер через USB и создай свою первую реальную программу полёта!</p>
+      <button class="btn-white" onclick="location.reload()">🔄 Пройти ещё раз</button>
+    `;
+  } else {
+    const messages = {
+      ok: { emoji: '🙂', text: 'У тебя всё получится! Немного практики — и ты будешь уверенно программировать квадрокоптер.' },
+      hard: { emoji: '💪', text: 'Не сдавайся! Повтори теорию и попробуй ещё раз — с каждым разом будет легче.' },
+      confused: { emoji: '📚', text: 'Рекомендуем вернуться к изучению теории и разобрать примеры. Ты обязательно разберёшься!' }
+    };
+    const m = messages[rating];
+    content.className = 'result-content retry';
+    content.innerHTML = `
+      <div class="icon">${m.emoji}</div>
+      <h1>Давай попробуем ещё раз!</h1>
+      <p>${m.text}</p>
+      <p style="font-size: 15px;">Пройти тренажёр заново — отличная возможность закрепить знания.</p>
+      <button class="btn-white" onclick="restartTrainer()">🔄 Пройти тренажёр заново</button>
+      <button class="btn-white" onclick="location.reload()">🏠 В начало</button>
+    `;
+  }
+}
+
+function restartTrainer() {
+  document.getElementById('resultScreen').classList.remove('active');
+  document.getElementById('welcomeScreen').classList.add('active');
+}
+
+// ==================== ЛОГИРОВАНИЕ ====================
+function log(message, type = 'info') {
+  const logContent = document.getElementById('logContent');
+  const now = new Date();
+  const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.innerHTML = `<span class="time">[${time}]</span>${message}`;
+  logContent.appendChild(entry);
+  logContent.parentElement.scrollTop = logContent.parentElement.scrollHeight;
+}
+
+// ==================== КЛИКИ ПО ПАЛИТРЕ ====================
+document.querySelectorAll('.palette-block').forEach(block => {
+  block.addEventListener('click', () => {
+    addBlock(block.dataset.type, program, program.length);
+  });
+});
+
+// ==================== 3D СЦЕНА ====================
+let scene, camera, renderer, drone, propellers = [];
+let droneState = { x: 0, y: 0, z: 0, targetX: 0, targetY: 0, targetZ: 0, heading: 0, targetHeading: 0, flying: false };
+let trailPoints = [];
+let trailGeo, trail;
+let cameraAngle = Math.PI / 4, cameraHeight = 120, cameraDistance = 250;
+let isDragging = false, lastMouseX = 0, lastMouseY = 0;
+let sceneInitialized = false;
+let animationStarted = false;
+
+function initScene() {
+  const canvas = document.getElementById('scene3d');
+  const container = canvas.parentElement;
+  
+  const rect = container.getBoundingClientRect();
+  const width = rect.width || 400;
+  const height = rect.height || 400;
+  
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87CEEB);
+  scene.fog = new THREE.Fog(0x87CEEB, 300, 1500);
+  
+  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 5000);
+  camera.position.set(150, 120, 200);
+  camera.lookAt(0, 30, 0);
+  
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  dirLight.position.set(100, 200, 100);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 2048;
+  dirLight.shadow.mapSize.height = 2048;
+  dirLight.shadow.camera.left = -300;
+  dirLight.shadow.camera.right = 300;
+  dirLight.shadow.camera.top = 300;
+  dirLight.shadow.camera.bottom = -300;
+  scene.add(dirLight);
+  
+  scene.add(new THREE.HemisphereLight(0x87CEEB, 0x98D982, 0.5));
+  
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(2000, 2000),
+    new THREE.MeshStandardMaterial({ color: 0x7CB342, roughness: 0.9 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+  
+  const gridHelper = new THREE.GridHelper(600, 30, 0x558B2F, 0x689F38);
+  gridHelper.position.y = 0.1;
+  scene.add(gridHelper);
+  
+  const pad = new THREE.Mesh(
+    new THREE.CylinderGeometry(25, 25, 1, 32),
+    new THREE.MeshStandardMaterial({ color: 0xff6b35, emissive: 0x331508 })
+  );
+  pad.position.y = 0.5;
+  pad.receiveShadow = true;
+  scene.add(pad);
+  
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(22, 25, 32),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide })
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 1.1;
+  scene.add(ring);
+  
+  const hCanvas = document.createElement('canvas');
+  hCanvas.width = 128; hCanvas.height = 128;
+  const hCtx = hCanvas.getContext('2d');
+  hCtx.fillStyle = '#ffffff';
+  hCtx.font = 'bold 100px Arial';
+  hCtx.textAlign = 'center';
+  hCtx.textBaseline = 'middle';
+  hCtx.fillText('H', 64, 64);
+  const hTexture = new THREE.CanvasTexture(hCanvas);
+  const hSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: hTexture }));
+  hSprite.position.set(0, 1.2, 0);
+  hSprite.scale.set(20, 20, 1);
+  scene.add(hSprite);
+  
+  drone = new THREE.Group();
+  
+  const body = new THREE.Mesh(
+    new THREE.BoxGeometry(14, 4, 14),
+    new THREE.MeshStandardMaterial({ color: 0xff6b35, roughness: 0.3 })
+  );
+  body.castShadow = true;
+  drone.add(body);
+  
+  const top = new THREE.Mesh(
+    new THREE.BoxGeometry(10, 2, 10),
+    new THREE.MeshStandardMaterial({ color: 0x2c3e50 })
+  );
+  top.position.y = 3;
+  top.castShadow = true;
+  drone.add(top);
+  
+  const armPositions = [
+    { x: 20, z: 20 }, { x: -20, z: 20 },
+    { x: 20, z: -20 }, { x: -20, z: -20 }
+  ];
+  
+  propellers = [];
+  
+  armPositions.forEach((pos, idx) => {
+    const arm = new THREE.Mesh(
+      new THREE.BoxGeometry(Math.abs(pos.x) * 2, 1.5, 3),
+      new THREE.MeshStandardMaterial({ color: 0x34495e })
+    );
+    arm.position.set(pos.x / 2, 0, pos.z / 2);
+    arm.lookAt(new THREE.Vector3(pos.x, 0, pos.z));
+    arm.castShadow = true;
+    drone.add(arm);
+    
+    const guard = new THREE.Mesh(
+      new THREE.TorusGeometry(13, 0.8, 8, 24),
+      new THREE.MeshStandardMaterial({ color: 0xff6b35 })
+    );
+    guard.position.set(pos.x, 0, pos.z);
+    guard.rotation.x = Math.PI / 2;
+    drone.add(guard);
+    
+    const motor = new THREE.Mesh(
+      new THREE.CylinderGeometry(3, 3, 4, 16),
+      new THREE.MeshStandardMaterial({ color: 0x1a1a1a })
+    );
+    motor.position.set(pos.x, 3, pos.z);
+    motor.castShadow = true;
+    drone.add(motor);
+    
+    const propGroup = new THREE.Group();
+    const bladeMat = new THREE.MeshStandardMaterial({ 
+      color: 0x333333, transparent: true, opacity: 0.85 
+    });
+    const b1 = new THREE.Mesh(new THREE.BoxGeometry(22, 0.4, 1.5), bladeMat);
+    const b2 = new THREE.Mesh(new THREE.BoxGeometry(22, 0.4, 1.5), bladeMat);
+    b2.rotation.y = Math.PI / 2;
+    propGroup.add(b1);
+    propGroup.add(b2);
+    propGroup.position.set(pos.x, 5.5, pos.z);
+    drone.add(propGroup);
+    propellers.push(propGroup);
+  });
+  
+  const ledFrontMat = new THREE.MeshBasicMaterial({ color: 0x00ff88 });
+  const ledBackMat = new THREE.MeshBasicMaterial({ color: 0xff4444 });
+  
+  const ledF1 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 8, 8), ledFrontMat);
+  ledF1.position.set(20, 0, 20);
+  drone.add(ledF1);
+  
+  const ledF2 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 8, 8), ledFrontMat.clone());
+  ledF2.position.set(-20, 0, 20);
+  drone.add(ledF2);
+  
+  const ledB1 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 8, 8), ledBackMat);
+  ledB1.position.set(20, 0, -20);
+  drone.add(ledB1);
+  
+  const ledB2 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 8, 8), ledBackMat.clone());
+  ledB2.position.set(-20, 0, -20);
+  drone.add(ledB2);
+  
+  const cam = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 3, 3),
+    new THREE.MeshStandardMaterial({ color: 0x000000 })
+  );
+  cam.position.set(0, -3, 8);
+  drone.add(cam);
+  
+  const lens = new THREE.Mesh(
+    new THREE.CylinderGeometry(1, 1, 0.8, 16),
+    new THREE.MeshBasicMaterial({ color: 0x00d4ff })
+  );
+  lens.rotation.x = Math.PI / 2;
+  lens.position.set(0, -3, 10);
+  drone.add(lens);
+  
+  drone.position.set(0, 5, 0);
+  scene.add(drone);
+  
+  trailPoints = [];
+  trailGeo = new THREE.BufferGeometry();
+  trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ 
+    color: 0xff6b35, transparent: true, opacity: 0.8
+  }));
+  scene.add(trail);
+  
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+  });
+  canvas.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    cameraAngle -= (e.clientX - lastMouseX) * 0.01;
+    cameraHeight = Math.max(30, Math.min(300, cameraHeight - (e.clientY - lastMouseY)));
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+  });
+  canvas.addEventListener('mouseup', () => isDragging = false);
+  canvas.addEventListener('mouseleave', () => isDragging = false);
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    cameraDistance = Math.max(80, Math.min(600, cameraDistance + e.deltaY * 0.5));
+  }, { passive: false });
+  
+  window.addEventListener('resize', () => {
+    if (!renderer || !camera) return;
+    const rect = container.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      renderer.setSize(rect.width, rect.height);
+      camera.aspect = rect.width / rect.height;
+      camera.updateProjectionMatrix();
+    }
+  });
+  
+  sceneInitialized = true;
+  
+  if (!animationStarted) {
+    animationStarted = true;
+    requestAnimationFrame(animateScene);
+  }
+  
+  log('🎬 3D сцена готова', 'success');
+}
+
+let lastTime = 0;
+function animateScene(time) {
+  requestAnimationFrame(animateScene);
+  
+  if (!sceneInitialized || !renderer || !scene || !camera || !drone) return;
+  
+  const dt = Math.min(0.05, (time - lastTime) / 1000 || 0.016);
+  lastTime = time;
+  
+  const lerpSpeed = 4;
+  droneState.x += (droneState.targetX - droneState.x) * lerpSpeed * dt;
+  droneState.y += (droneState.targetY - droneState.y) * lerpSpeed * dt;
+  droneState.z += (droneState.targetZ - droneState.z) * lerpSpeed * dt;
+  
+  let dh = droneState.targetHeading - droneState.heading;
+  while (dh > Math.PI) dh -= Math.PI * 2;
+  while (dh < -Math.PI) dh += Math.PI * 2;
+  droneState.heading += dh * lerpSpeed * dt;
+  
+  drone.position.set(droneState.x, droneState.y + 5, droneState.z);
+  drone.rotation.y = droneState.heading;
+  
+  if (droneState.flying) {
+    drone.rotation.x = Math.sin(time * 0.005) * 0.03;
+    drone.rotation.z = Math.cos(time * 0.005) * 0.03;
+  } else {
+    drone.rotation.x = 0;
+    drone.rotation.z = 0;
+  }
+  
+  const propSpeed = droneState.flying ? 1.0 : 0.15;
+  propellers.forEach((p, i) => {
+    p.rotation.y += propSpeed * (i % 2 === 0 ? 1 : -1);
+  });
+  
+  if (droneState.flying && programRunning) {
+    trailPoints.push(new THREE.Vector3(droneState.x, droneState.y + 5, droneState.z));
+    if (trailPoints.length > 400) trailPoints.shift();
+    trailGeo.setFromPoints(trailPoints);
+  }
+  
+  const target = new THREE.Vector3(droneState.x, droneState.y + 5, droneState.z);
+  const camX = target.x + Math.cos(cameraAngle) * cameraDistance;
+  const camZ = target.z + Math.sin(cameraAngle) * cameraDistance;
+  camera.position.lerp(new THREE.Vector3(camX, cameraHeight, camZ), 0.1);
+  camera.lookAt(target);
+  
+  document.getElementById('posX').textContent = Math.round(droneState.x) + ' см';
+  document.getElementById('posY').textContent = Math.round(droneState.y) + ' см';
+  document.getElementById('posZ').textContent = Math.round(droneState.z) + ' см';
+  const deg = Math.round(((droneState.heading * 180 / Math.PI) % 360 + 360) % 360);
+  document.getElementById('heading').textContent = deg + '°';
+  
+  renderer.render(scene, camera);
+}
+
+// ==================== ВЫПОЛНЕНИЕ ПРОГРАММЫ ====================
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms / executionSpeed));
+}
+
+async function runProgram() {
+  programRunning = true;
+  programStopped = false;
+  document.getElementById('statusIndicator').className = 'status-indicator status-running';
+  document.getElementById('statusIndicator').textContent = '▶ Полёт';
+  
+  droneState.targetX = 0;
+  droneState.targetY = 0;
+  droneState.targetZ = 0;
+  droneState.targetHeading = 0;
+  droneState.x = 0;
+  droneState.y = 0;
+  droneState.z = 0;
+  droneState.heading = 0;
+  droneState.flying = false;
+  trailPoints = [];
+  if (trailGeo) trailGeo.setFromPoints([]);
+  
+  log('▶ Запуск программы', 'success');
+  
+  try {
+    await executeBlocks(program);
+    if (!programStopped) {
+      log('✓ Программа выполнена', 'success');
+      document.getElementById('statusIndicator').className = 'status-indicator status-done';
+      document.getElementById('statusIndicator').textContent = '✓ Готово';
+      
+      setTimeout(() => {
+        showMessage('success', '🎉 Задание выполнено!', 
+          currentTaskIndex < tasks.length - 1 
+            ? 'Отлично! Переходим к следующему заданию.' 
+            : 'Все задания выполнены! Переходим к оценке.', [
+          { text: 'Далее →', class: 'btn-primary', action: () => {
+            hideMessage();
+            nextTask();
+          }}
+        ]);
+      }, 1000);
+    }
+  } catch (e) {
+    log('✗ Ошибка: ' + e.message, 'error');
+  }
+  
+  programRunning = false;
+  setTimeout(() => {
+    if (!programRunning) {
+      document.getElementById('statusIndicator').className = 'status-indicator status-idle';
+      document.getElementById('statusIndicator').textContent = '⏸ Ожидание';
+    }
+  }, 2000);
+}
+
+async function executeBlocks(blocks) {
+  for (let i = 0; i < blocks.length; i++) {
+    if (programStopped) return;
+    const block = blocks[i];
+    
+    document.querySelectorAll('.program-block').forEach(el => el.classList.remove('executing'));
+    const wrapper = document.querySelector(`[data-block-id="${block.id}"]`);
+    if (wrapper) {
+      const blockEl = wrapper.querySelector('.program-block');
+      if (blockEl) blockEl.classList.add('executing');
+    }
+    
+    await executeBlock(block);
+  }
+  document.querySelectorAll('.program-block').forEach(el => el.classList.remove('executing'));
+}
+
+async function executeBlock(block) {
+  const p = block.params;
+  
+  switch (block.type) {
+    case 'takeoff':
+      log(`🛫 Взлёт на высоту ${p.height} см`);
+      droneState.flying = true;
+      droneState.targetY = p.height;
+      await waitForPosition();
+      break;
+    case 'land':
+      log('🛬 Посадка');
+      droneState.targetY = 0;
+      await waitForPosition();
+      droneState.flying = false;
+      await sleep(500);
+      break;
+    case 'forward':
+      log(`→ Вперёд ${p.distance} см`);
+      moveRelative(p.distance, 0);
+      await waitForPosition();
+      break;
+    case 'backward':
+      log(`← Назад ${p.distance} см`);
+      moveRelative(-p.distance, 0);
+      await waitForPosition();
+      break;
+    case 'up':
+      log(`↑ Подняться на ${p.distance} см`);
+      droneState.targetY += p.distance;
+      await waitForPosition();
+      break;
+    case 'down':
+      log(`↓ Опуститься на ${p.distance} см`);
+      droneState.targetY = Math.max(0, droneState.targetY - p.distance);
+      await waitForPosition();
+      break;
+    case 'turnRight':
+      log(`↻ Поворот направо на ${p.angle}°`);
+      droneState.targetHeading -= p.angle * Math.PI / 180;
+      await waitForHeading();
+      break;
+    case 'turnLeft':
+      log(`↺ Поворот налево на ${p.angle}°`);
+      droneState.targetHeading += p.angle * Math.PI / 180;
+      await waitForHeading();
+      break;
+    case 'wait':
+      log(`⏱ Ожидание ${p.time} с`);
+      await sleep(p.time * 1000);
+      break;
+    case 'loop':
+      log(`🔁 Цикл: повторить ${p.count} раз`);
+      for (let i = 0; i < p.count; i++) {
+        if (programStopped) return;
+        log(`  ↳ Итерация ${i + 1}/${p.count}`);
+        await executeBlocks(block.body || []);
+      }
+      break;
+  }
+}
+
+function moveRelative(forward, right) {
+  const h = droneState.targetHeading;
+  droneState.targetX += Math.sin(h) * forward + Math.cos(h) * right;
+  droneState.targetZ += Math.cos(h) * forward - Math.sin(h) * right;
+}
+
+function waitForPosition() {
+  return new Promise(resolve => {
+    const check = () => {
+      if (programStopped) { resolve(); return; }
+      const dx = Math.abs(droneState.x - droneState.targetX);
+      const dy = Math.abs(droneState.y - droneState.targetY);
+      const dz = Math.abs(droneState.z - droneState.targetZ);
+      if (dx < 1 && dy < 1 && dz < 1) resolve();
+      else setTimeout(check, 50);
+    };
+    check();
+  });
+}
+
+function waitForHeading() {
+  return new Promise(resolve => {
+    const check = () => {
+      if (programStopped) { resolve(); return; }
+      let dh = droneState.targetHeading - droneState.heading;
+      while (dh > Math.PI) dh -= Math.PI * 2;
+      while (dh < -Math.PI) dh += Math.PI * 2;
+      if (Math.abs(dh) < 0.05) resolve();
+      else setTimeout(check, 50);
+    };
+    check();
+  });
+}
+</script>
+</body>
+</html>

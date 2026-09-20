@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚁 Эко-дрон — Сайт занятия для ученика</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f5f7fa;
+    color: #2c3e50;
+    line-height: 1.6;
+  }
+  
+  /* ===== Шапка ===== */
+  .hero {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 50%, #ffa07a 100%);
+    color: white;
+    padding: 55px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before {
+    content: '🚁';
+    position: absolute;
+    font-size: 200px;
+    opacity: 0.1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-20px); }
+  }
+  
+  .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+  
+  .hero h1 {
+    font-size: 44px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .hero .subtitle { font-size: 20px; margin-bottom: 20px; opacity: 0.95; }
+  
+  .hero-badges {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  .badge {
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    padding: 9px 18px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .hero-cta {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .hero-btn {
+    background: white;
+    color: #ff6b35;
+    padding: 13px 32px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  
+  .hero-btn.outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: none;
+  }
+  
+  .hero-btn.outline:hover { background: rgba(255,255,255,0.15); }
+  
+  /* ===== Навигация ===== */
+  .nav {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0 20px;
+  }
+  
+  .nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .nav-content::-webkit-scrollbar { display: none; }
+  
+  .nav-link {
+    padding: 15px 14px;
+    color: #7f8c8d;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .nav-link:hover, .nav-link.active {
+    color: #ff6b35;
+    border-bottom-color: #ff6b35;
+  }
+  
+  /* ===== Контейнер ===== */
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+  
+  section { margin-bottom: 60px; }
+  
+  .section-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .section-title .emoji { font-size: 38px; }
+  
+  .section-subtitle { color: #7f8c8d; font-size: 15px; margin-bottom: 28px; }
+  
+  /* ===== Обзор ===== */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 25px;
+  }
+  
+  .overview-card {
+    color: white;
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+  }
+  
+  .overview-card .icon { font-size: 44px; margin-bottom: 10px; }
+  .overview-card h4 { font-size: 17px; margin-bottom: 8px; }
+  .overview-card p { font-size: 13px; opacity: 0.92; }
+  
+  .goals-box {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .goals-box h3 { color: #ff6b35; margin-bottom: 14px; font-size: 20px; }
+  .goals-box ul { margin-left: 22px; font-size: 15px; }
+  .goals-box li { margin-bottom: 8px; }
+  
+  /* ===== Проблема ===== */
+  .problem-hero {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    border-radius: 24px;
+    padding: 35px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .problem-hero::before {
+    content: '🌍';
+    position: absolute;
+    font-size: 220px;
+    opacity: 0.08;
+    right: -40px;
+    top: -40px;
+  }
+  
+  .problem-hero h3 { font-size: 24px; margin-bottom: 14px; position: relative; z-index: 1; }
+  .problem-hero p { font-size: 15px; line-height: 1.75; position: relative; z-index: 1; max-width: 820px; opacity: 0.95; }
+  
+  .problem-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    margin-top: 22px;
+  }
+  
+  .problem-stat {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border-top: 5px solid #27ae60;
+  }
+  
+  .problem-stat .stat-icon { font-size: 40px; margin-bottom: 8px; }
+  .problem-stat .stat-value { font-size: 28px; font-weight: 800; color: #27ae60; margin-bottom: 4px; }
+  .problem-stat .stat-label { font-size: 12px; color: #7f8c8d; line-height: 1.4; }
+  
+  /* ===== Области применения ===== */
+  .applications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 18px;
+    margin: 25px 0;
+  }
+  
+  .application-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+  }
+  
+  .application-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+  
+  .application-header {
+    background: var(--app-gradient);
+    color: white;
+    padding: 18px;
+    text-align: center;
+  }
+  
+  .application-icon { font-size: 48px; margin-bottom: 6px; }
+  .application-header h4 { font-size: 16px; font-weight: 700; }
+  
+  .application-body { padding: 18px; }
+  .application-body p { font-size: 13px; color: #555; margin-bottom: 12px; line-height: 1.6; }
+  
+  .application-examples {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+  }
+  
+  .application-examples b {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .application-examples ul { margin-left: 16px; color: #555; }
+  .application-examples li { margin-bottom: 3px; }
+  
+  /* ===== Области знаний ===== */
+  .knowledge-map {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin: 25px 0;
+  }
+  
+  .knowledge-center { text-align: center; margin-bottom: 28px; }
+  
+  .knowledge-center-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    margin-bottom: 10px;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+  }
+  
+  .knowledge-center h3 { color: #ff6b35; font-size: 20px; }
+  .knowledge-center p { color: #7f8c8d; font-size: 13px; margin-top: 4px; }
+  
+  .knowledge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  
+  .knowledge-card {
+    background: linear-gradient(135deg, var(--kn-color1), var(--kn-color2));
+    color: white;
+    border-radius: 14px;
+    padding: 18px;
+    transition: all 0.3s;
+  }
+  
+  .knowledge-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  
+  .knowledge-card .kn-icon { font-size: 32px; margin-bottom: 6px; }
+  .knowledge-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .knowledge-card p { font-size: 12px; opacity: 0.9; line-height: 1.5; margin-bottom: 10px; }
+  
+  .knowledge-card .kn-skills {
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  
+  .knowledge-card .kn-skills b {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  /* ===== Игра-симулятор ===== */
+  .game-hero {
+    background: linear-gradient(135deg, #0a1929 0%, #1a3a5c 60%, #16a085 130%);
+    border-radius: 24px;
+    padding: 40px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .game-hero::before {
+    content: '🗑️';
+    position: absolute;
+    font-size: 30px;
+    opacity: 0.25;
+    top: 30px;
+    right: 60px;
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  .game-hero::after {
+    content: '🌲';
+    position: absolute;
+    font-size: 40px;
+    opacity: 0.2;
+    bottom: 20px;
+    left: 40px;
+  }
+  
+  .game-hero-content { position: relative; z-index: 1; }
+  
+  .game-hero h3 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .game-hero > .game-hero-content > p {
+    font-size: 15px;
+    opacity: 0.9;
+    max-width: 700px;
+    margin-bottom: 20px;
+  }
+  
+  .game-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+  }
+  
+  .game-feature {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .game-feature .gf-icon { font-size: 30px; margin-bottom: 6px; }
+  .game-feature h5 { font-size: 14px; margin-bottom: 4px; color: #00d4ff; }
+  .game-feature p { font-size: 12px; opacity: 0.85; line-height: 1.5; }
+  
+  .game-controls {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  
+  .game-controls .ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .key {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.25);
+    border: 1px solid #00d4ff;
+    border-radius: 5px;
+    padding: 3px 9px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    color: #00d4ff;
+  }
+  
+  .game-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(90deg, #00d4ff, #00ff88);
+    color: #0a1929;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 17px;
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+    transition: all 0.25s;
+    margin-top: 8px;
+  }
+  
+  .game-cta:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 35px rgba(0, 212, 255, 0.6);
+  }
+  
+  .game-tips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+  }
+  
+  .game-tip {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid #16a085;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+  }
+  
+  .game-tip b { color: #16a085; display: block; margin-bottom: 4px; font-size: 14px; }
+  .game-tip p { font-size: 13px; color: #555; }
+  
+  /* ===== Занятия ===== */
+  .lesson-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+  }
+  
+  .lesson-header {
+    background: linear-gradient(90deg, #ff6b35, #ff8c5a);
+    color: white;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  
+  .lesson-num {
+    background: white;
+    color: #ff6b35;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  
+  .lesson-header h3 { font-size: 22px; font-weight: 700; }
+  
+  .lesson-header .time {
+    margin-left: auto;
+    background: rgba(255,255,255,0.25);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .lesson-body { padding: 25px; }
+  
+  .stage {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border-left: 4px solid #ff6b35;
+  }
+  
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .stage-num {
+    background: #ff6b35;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  
+  .stage-header h4 { font-size: 16px; font-weight: 700; }
+  
+  .stage-time {
+    margin-left: auto;
+    background: #fff3e6;
+    color: #ff6b35;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .stage-content { font-size: 14px; color: #555; }
+  .stage-content ul { margin-left: 20px; margin-top: 6px; }
+  .stage-content li { margin-bottom: 4px; }
+  
+  .stage-materials {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #d5dbe0;
+  }
+  
+  .stage-materials .mat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #7f8c8d;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .mat-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .mat-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 2px solid #ff6b35;
+    color: #ff6b35;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  
+  .mat-link:hover {
+    background: #ff6b35;
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .mat-link.blue { border-color: #3498db; color: #3498db; }
+  .mat-link.blue:hover { background: #3498db; color: white; }
+  
+  .mat-link.green { border-color: #27ae60; color: #27ae60; }
+  .mat-link.green:hover { background: #27ae60; color: white; }
+  
+  .stage-artifact {
+    background: linear-gradient(135deg, #fff3e6, #ffe8d6);
+    border-left: 4px solid #ff6b35;
+    padding: 9px 13px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .stage-artifact b { color: #ff6b35; }
+  
+  /* ===== Роли ===== */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin: 25px 0;
+  }
+  
+  .role-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    border-top: 5px solid var(--role-color);
+  }
+  
+  .role-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+  
+  .role-icon { font-size: 44px; margin-bottom: 10px; }
+  .role-name { font-size: 17px; font-weight: 700; color: var(--role-color); margin-bottom: 6px; }
+  .role-desc { font-size: 13px; color: #7f8c8d; margin-bottom: 10px; }
+  
+  .role-tasks {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 11px;
+    font-size: 12px;
+  }
+  
+  .role-tasks b {
+    display: block;
+    color: var(--role-color);
+    margin-bottom: 5px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .role-tasks ul { margin-left: 15px; color: #555; }
+  .role-tasks li { margin-bottom: 3px; }
+  
+  /* ===== Материалы ===== */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  
+  .filter-btn {
+    padding: 8px 18px;
+    border: 2px solid #ecf0f1;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #7f8c8d;
+    transition: all 0.2s;
+  }
+  
+  .filter-btn:hover { border-color: #ff6b35; color: #ff6b35; }
+  
+  .filter-btn.active {
+    background: #ff6b35;
+    border-color: #ff6b35;
+    color: white;
+  }
+  
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+  }
+  
+  .material-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.25s;
+    border-top: 5px solid var(--mat-color, #ff6b35);
+    position: relative;
+  }
+  
+  .material-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+  }
+  
+  .material-card.hidden { display: none; }
+  
+  .mat-top { display: flex; gap: 14px; align-items: flex-start; }
+  
+  .material-icon {
+    font-size: 38px;
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background: #fff3e6;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mat-type {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    background: var(--mat-color, #ff6b35);
+    color: white;
+  }
+  
+  .material-card h4 { font-size: 15px; color: #2c3e50; line-height: 1.4; }
+  .material-card .mat-desc { font-size: 13px; color: #7f8c8d; flex: 1; }
+  
+  .mat-stage-tag {
+    font-size: 11px;
+    color: #7f8c8d;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 4px 10px;
+    display: inline-block;
+    align-self: flex-start;
+  }
+  
+  .mat-open {
+    background: var(--mat-color, #ff6b35);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  
+  .mat-open:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  
+  .mat-open.disabled {
+    background: #ecf0f1;
+    color: #95a5a6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  /* ===== Модалка ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+  }
+  
+  .modal-overlay.show { display: flex; }
+  
+  .modal-box {
+    background: white;
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 440px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popIn 0.35s;
+  }
+  
+  @keyframes popIn {
+    from { transform: scale(0.75); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  .modal-box .m-icon { font-size: 64px; margin-bottom: 12px; }
+  .modal-box h3 { font-size: 21px; margin-bottom: 10px; color: #2c3e50; }
+  .modal-box p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; line-height: 1.6; }
+  
+  .modal-btn {
+    background: #ff6b35;
+    color: white;
+    border: none;
+    padding: 11px 30px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .modal-btn:hover { background: #e55a2b; }
+  
+  /* ===== Футер ===== */
+  .footer {
+    background: #2c3e50;
+    color: white;
+    padding: 36px 20px;
+    text-align: center;
+  }
+  
+  .footer h3 { font-size: 19px; margin-bottom: 8px; }
+  .footer p { font-size: 13px; opacity: 0.8; margin-bottom: 16px; }
+  
+  .footer-links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .footer-links a {
+    color: #ff6b35;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .footer-links a:hover { text-decoration: underline; }
+  
+  .progress-bar-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b35, #ffd700);
+    z-index: 1000;
+    transition: width 0.1s;
+  }
+  
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 30px; }
+    .hero .subtitle { font-size: 15px; }
+    .section-title { font-size: 23px; }
+    .lesson-header .time { margin-left: 0; }
+    .container { padding: 25px 15px; }
+    .game-hero { padding: 25px; }
+    .game-hero h3 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar-top" id="progressBar"></div>
+
+<!-- ===== ШАПКА ===== -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>🚁 Эко-дрон</h1>
+    <p class="subtitle">Программирование квадрокоптера Геоскан Пионер в среде ТРИК Студио</p>
+    <div class="hero-badges">
+      <span class="badge">📚 2 занятия по 40 минут</span>
+      <span class="badge">👥 Командная работа</span>
+      <span class="badge">🌱 Экология Тамбовского края</span>
+      <span class="badge">💻 Визуальное программирование</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#lesson1" class="hero-btn">📘 Начать занятие 1</a>
+      <a href="#game" class="hero-btn outline">🎮 Играть в ЭкоДрон</a>
+      <a href="#materials" class="hero-btn outline">📦 Все материалы</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== НАВИГАЦИЯ ===== -->
+<nav class="nav">
+  <div class="nav-content">
+    <a href="#overview" class="nav-link active">📋 Обзор</a>
+    <a href="#problem" class="nav-link">🌍 Проблема</a>
+    <a href="#applications" class="nav-link">🚀 Применение</a>
+    <a href="#knowledge" class="nav-link">📚 Знания</a>
+    <a href="#game" class="nav-link">🎮 Игра</a>
+    <a href="#lesson1" class="nav-link">📘 Занятие 1</a>
+    <a href="#roles" class="nav-link">🎭 Роли</a>
+    <a href="#lesson2" class="nav-link">📗 Занятие 2</a>
+    <a href="#materials" class="nav-link">📦 Материалы</a>
+  </div>
+</nav>
+
+<div class="container">
+  
+  <!-- ===== ОБЗОР ===== -->
+  <section id="overview">
+    <h2 class="section-title"><span class="emoji">📋</span> Обзор занятия</h2>
+    <p class="section-subtitle">Что тебя ждёт на занятиях</p>
+    
+    <div class="goals-box">
+      <h3>🎯 Чему ты научишься</h3>
+      <ul>
+        <li>Программировать квадрокоптер в визуальной среде <b>ТРИК Студио</b></li>
+        <li>Составлять <b>линейные алгоритмы</b> и алгоритмы <b>с циклами</b></li>
+        <li>Рисовать <b>блок-схемы</b> и переводить их в работающий код</li>
+        <li>Создавать собственный <b>Эко-маршрут</b> для решения экологической задачи</li>
+        <li>Работать в команде и <b>защищать свой проект</b> перед «заказчиком»</li>
+      </ul>
+    </div>
+    
+    <div class="overview-grid">
+      <div class="overview-card" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+        <div class="icon">⏱️</div>
+        <h4>Длительность</h4>
+        <p>2 занятия по 40 минут<br>Всего: 80 минут</p>
+      </div>
+      <div class="overview-card" style="background: linear-gradient(135deg, #27ae60, #229954);">
+        <div class="icon">👥</div>
+        <h4>Формат</h4>
+        <p>Команды по 4–6 человек<br>Проектная работа</p>
+      </div>
+      <div class="overview-card" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+        <div class="icon">🏆</div>
+        <h4>Результат</h4>
+        <p>Авторский Эко-маршрут<br>Защита проекта</p>
+      </div>
+      <div class="overview-card" style="background: linear-gradient(135deg, #ff6b35, #ff8c5a);">
+        <div class="icon">🚁</div>
+        <h4>Инструмент</h4>
+        <p>Геоскан Пионер Базовый<br>ТРИК Студио + симулятор</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ===== ПРОБЛЕМА ===== -->
+  <section id="problem">
+    <h2 class="section-title"><span class="emoji">🌍</span> Проблема</h2>
+    <p class="section-subtitle">Зачем мы это делаем</p>
+    
+    <div class="problem-hero">
+      <h3>🌱 Природе Тамбовского края нужна помощь</h3>
+      <p>
+        Леса, водоёмы и парки страдают от мусора и загрязнений. Обследовать огромные территории 
+        пешком — долго и трудно. <b>Квадрокоптеры</b> решают эту проблему: они быстро облетают 
+        местность, находят свалки с воздуха и доставляют датчики в труднодоступные места. 
+        Но дрон полетит туда, куда ему <b>скажет программа</b>. Твоя задача — научиться составлять 
+        такие программы и создать собственный <b>Эко-маршрут</b> для охраны природы родного края!
+      </p>
+    </div>
+    
+    <div class="problem-stats">
+      <div class="problem-stat">
+        <div class="stat-icon">🏭</div>
+        <div class="stat-value">80%</div>
+        <div class="stat-label">загрязнений выявляется быстрее при аэросъёмке</div>
+      </div>
+      <div class="problem-stat">
+        <div class="stat-icon">🌲</div>
+        <div class="stat-value">×10</div>
+        <div class="stat-label">дрон обследует территорию быстрее человека</div>
+      </div>
+      <div class="problem-stat">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">−70%</div>
+        <div class="stat-label">стоимость мониторинга по сравнению с вертолётом</div>
+      </div>
+      <div class="problem-stat">
+        <div class="stat-icon">🎓</div>
+        <div class="stat-value">STEM</div>
+        <div class="stat-label">знакомство с профессиями будущего</div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 22px; background: linear-gradient(135deg, #d4edda, #c3e6cb); border-radius: 16px; padding: 22px;">
+      <h4 style="color: #155724; font-size: 17px; margin-bottom: 10px;">🧪 Проверь себя перед стартом!</h4>
+      <p style="font-size: 14px; color: #155724; margin-bottom: 12px;">
+        Пройди эко-тест «Хранители природы Тамбовского края» и узнай, насколько хорошо ты знаешь природу родного края.
+      </p>
+      <a class="mat-link green" target="_blank" href="eco-test.html">🌱 Пройти эко-тест</a>
+    </div>
+  </section>
+  
+  <!-- ===== ОБЛАСТИ ПРИМЕНЕНИЯ ===== -->
+  <section id="applications">
+    <h2 class="section-title"><span class="emoji">🚀</span> Области применения</h2>
+    <p class="section-subtitle">Где используются квадрокоптеры и навыки их программирования</p>
+    
+    <div class="applications-grid">
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #27ae60, #229954);">
+        <div class="application-header">
+          <div class="application-icon">🌱</div>
+          <h4>Экология и охрана природы</h4>
+        </div>
+        <div class="application-body">
+          <p>Мониторинг состояния лесов, водоёмов, выявление незаконных свалок и загрязнений.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Облёт территории парка для поиска мусора</li>
+              <li>Контроль состояния береговой линии</li>
+              <li>Мониторинг лесных пожаров</li>
+              <li>Подсчёт животных в заповедниках</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #f39c12, #e67e22);">
+        <div class="application-header">
+          <div class="application-icon">🌾</div>
+          <h4>Сельское хозяйство</h4>
+        </div>
+        <div class="application-body">
+          <p>Точное земледелие: контроль состояния посевов, опрыскивание, анализ почвы.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Облёт полей по «змейке» для съёмки</li>
+              <li>Выявление больных участков посевов</li>
+              <li>Точечное опрыскивание растений</li>
+              <li>Картографирование участков</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #e74c3c, #c0392b);">
+        <div class="application-header">
+          <div class="application-icon">🚨</div>
+          <h4>Спасательные операции</h4>
+        </div>
+        <div class="application-body">
+          <p>Поиск людей в труднодоступных местах, доставка медикаментов и средств спасения.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Поиск пропавших людей в лесу</li>
+              <li>Обследование зоны бедствия</li>
+              <li>Доставка аптечки с промежуточной посадкой</li>
+              <li>Трансляция с места событий</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #3498db, #2980b9);">
+        <div class="application-header">
+          <div class="application-icon">📦</div>
+          <h4>Доставка грузов</h4>
+        </div>
+        <div class="application-body">
+          <p>Быстрая доставка небольших посылок, лекарств, товаров в удалённые районы.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Доставка по маршруту с несколькими точками</li>
+              <li>Промежуточные посадки для загрузки</li>
+              <li>Оптимизация маршрута доставки</li>
+              <li>Доставка в труднодоступные районы</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #9b59b6, #8e44ad);">
+        <div class="application-header">
+          <div class="application-icon">🎬</div>
+          <h4>Съёмка и медиа</h4>
+        </div>
+        <div class="application-body">
+          <p>Кино, реклама, спорт, недвижимость — аэросъёмка с запрограммированных маршрутов.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Съёмка по заданной траектории</li>
+              <li>Повторяемые дубли для монтажа</li>
+              <li>Облёт объекта по кругу</li>
+              <li>Панорамная съёмка местности</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #16a085, #1abc9c);">
+        <div class="application-header">
+          <div class="application-icon">🏗️</div>
+          <h4>Строительство и геодезия</h4>
+        </div>
+        <div class="application-body">
+          <p>Контроль стройплощадок, создание 3D-моделей, топографическая съёмка.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Регулярный облёт стройплощадки</li>
+              <li>Съёмка для 3D-моделирования</li>
+              <li>Контроль соблюдения проекта</li>
+              <li>Измерение объёмов работ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #34495e, #2c3e50);">
+        <div class="application-header">
+          <div class="application-icon">🔌</div>
+          <h4>Энергетика и инфраструктура</h4>
+        </div>
+        <div class="application-body">
+          <p>Обслуживание линий электропередач, трубопроводов, мостов и вышек.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Облёт ЛЭП для поиска повреждений</li>
+              <li>Контроль состояния труб</li>
+              <li>Осмотр мостов и конструкций</li>
+              <li>Тепловизионное обследование</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="application-card" style="--app-gradient: linear-gradient(135deg, #ff6b35, #ff8c5a);">
+        <div class="application-header">
+          <div class="application-icon">🎓</div>
+          <h4>Образование и наука</h4>
+        </div>
+        <div class="application-body">
+          <p>Обучение программированию, исследовательские проекты, соревнования по робототехнике.</p>
+          <div class="application-examples">
+            <b>Примеры задач:</b>
+            <ul>
+              <li>Изучение алгоритмов на практике</li>
+              <li>Школьные исследовательские проекты</li>
+              <li>Соревнования по дрон-рейсингу</li>
+              <li>Подготовка к инженерным профессиям</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ===== ОБЛАСТИ ЗНАНИЙ ===== -->
+  <section id="knowledge">
+    <h2 class="section-title"><span class="emoji">📚</span> Области знаний</h2>
+    <p class="section-subtitle">Межпредметные связи: какие дисциплины объединяет занятие</p>
+    
+    <div class="knowledge-map">
+      <div class="knowledge-center">
+        <div class="knowledge-center-icon">🚁</div>
+        <h3>Программирование квадрокоптера</h3>
+        <p>Интеграция знаний из 8 предметных областей</p>
+      </div>
+      
+      <div class="knowledge-grid">
+        <div class="knowledge-card" style="--kn-color1: #3498db; --kn-color2: #2980b9;">
+          <div class="kn-icon">💻</div>
+          <h4>Информатика</h4>
+          <p>Алгоритмы, программирование, логика, отладка кода</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Алгоритмическое мышление · Визуальное программирование · Циклы и ветвления · Отладка
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #27ae60; --kn-color2: #229954;">
+          <div class="kn-icon">📐</div>
+          <h4>Математика</h4>
+          <p>Геометрия фигур, углы, координаты, измерения</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Углы и повороты · Система координат · Измерение расстояний · Геометрические фигуры
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #e67e22; --kn-color2: #d35400;">
+          <div class="kn-icon">⚙️</div>
+          <h4>Физика</h4>
+          <p>Аэродинамика, движение, силы, энергия</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Сила тяги · Равновесие · Инерция · Расход энергии · Высота и давление
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #16a085; --kn-color2: #1abc9c;">
+          <div class="kn-icon">🌱</div>
+          <h4>Экология</h4>
+          <p>Охрана природы, мониторинг, экологические задачи</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Экомониторинг · Анализ проблем · Проектная деятельность · Экологическая ответственность
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #9b59b6; --kn-color2: #8e44ad;">
+          <div class="kn-icon">🗺️</div>
+          <h4>География</h4>
+          <p>Ориентирование, карты, рельеф, маршруты</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Чтение карт · Планирование маршрутов · Ориентирование · Масштаб
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #e74c3c; --kn-color2: #c0392b;">
+          <div class="kn-icon">🔧</div>
+          <h4>Технология</h4>
+          <p>Инженерное мышление, конструирование, проектная работа</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Инженерный подход · Прототипирование · Тестирование · Командная работа
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #f39c12; --kn-color2: #f1c40f;">
+          <div class="kn-icon">🎨</div>
+          <h4>Творчество и дизайн</h4>
+          <p>Проектирование маршрутов, презентация, визуализация</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Дизайн-мышление · Блок-схемы · Презентация · Креативность
+          </div>
+        </div>
+        
+        <div class="knowledge-card" style="--kn-color1: #34495e; --kn-color2: #2c3e50;">
+          <div class="kn-icon">🗣️</div>
+          <h4>Коммуникации</h4>
+          <p>Работа в команде, публичные выступления, защита проекта</p>
+          <div class="kn-skills">
+            <b>Навыки:</b>
+            Командная работа · Публичное выступление · Аргументация · Ответы на вопросы
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ===== ИГРА-СИМУЛЯТОР ===== -->
+  <section id="game">
+    <h2 class="section-title"><span class="emoji">🎮</span> Игра-симулятор «ЭкоДрон»</h2>
+    <p class="section-subtitle">Попробуй себя в роли пилота эко-дрона прямо сейчас!</p>
+    
+    <div class="game-hero">
+      <div class="game-hero-content">
+        <h3>🗑️ Найди и собери весь мусор!</h3>
+        <p>
+          Управляй квадрокоптером, летай над территорией и сканируй мусор на низкой высоте. 
+          Следи за зарядом батареи и возвращайся на базу для подзарядки. Собери весь мусор 
+          быстрее, чем разрядится аккумулятор!
+        </p>
+        
+        <div class="game-features">
+          <div class="game-feature">
+            <div class="gf-icon">🗺️</div>
+            <h5>Большая карта</h5>
+            <p>Открытый мир с лесами, прудом, дорогами и зданиями. Мусор спрятан по всей территории!</p>
+          </div>
+          <div class="game-feature">
+            <div class="gf-icon">🔋</div>
+            <h5>Батарея</h5>
+            <p>Заряд расходуется на полёт и высоту. Возвращайся на базу (кнопка R) для подзарядки.</p>
+          </div>
+          <div class="game-feature">
+            <div class="gf-icon">📡</div>
+            <h5>Сканер</h5>
+            <p>Опускайся ниже — и сканируй мусор. На большой высоте видно дальше, но собрать нельзя!</p>
+          </div>
+          <div class="game-feature">
+            <div class="gf-icon">🧭</div>
+            <h5>Мини-карта</h5>
+            <p>Радар покажет найденный мусор и направление на базу. Компас укажет путь домой.</p>
+          </div>
+        </div>
+        
+        <div class="game-controls">
+          <div class="ctrl"><span class="key">W A S D</span> движение</div>
+          <div class="ctrl"><span class="key">Q</span> подняться</div>
+          <div class="ctrl"><span class="key">E</span> опуститься</div>
+          <div class="ctrl"><span class="key">R</span> возврат на базу</div>
+        </div>
+        
+        <a class="game-cta" target="_blank" href="ecodrone.html">🎮 Начать игру «ЭкоДрон»</a>
+      </div>
+    </div>
+    
+    <div class="game-tips">
+      <div class="game-tip">
+        <b>💡 Совет 1</b>
+        <p>Разные типы мусора дают разное количество очков: ботинок — 25, коробка — 20, огрызок — всего 5. Собирай самое ценное!</p>
+      </div>
+      <div class="game-tip">
+        <b>💡 Совет 2</b>
+        <p>Летай на низкой высоте, чтобы сканировать мусор. Но помни: чем ниже летишь — тем быстрее расходуется батарея.</p>
+      </div>
+      <div class="game-tip">
+        <b>💡 Совет 3</b>
+        <p>Не улетай далеко от базы! Если батарея на исходе — жми R для автоматического возврата и подзарядки.</p>
+      </div>
+    </div>
+    
+    <div style="margin-top: 22px; background: #e7f3ff; border-left: 4px solid #3498db; border-radius: 10px; padding: 18px;">
+      <h4 style="color: #2980b9; font-size: 15px; margin-bottom: 8px;">🤔 Как игра связана с занятием?</h4>
+      <p style="font-size: 14px; color: #555;">
+        В игре ты управляешь дроном <b>вручную</b>. А на занятии научишься делать то же самое, 
+        но с помощью <b>программы</b> — дрон будет летать по маршруту автономно, как настоящий Эко-патруль!
+      </p>
+    </div>
+  </section>
+  
+  <!-- ===== ЗАНЯТИЕ 1 ===== -->
+  <section id="lesson1">
+    <h2 class="section-title"><span class="emoji">📘</span> Занятие 1: Основы программирования</h2>
+    <p class="section-subtitle">Знакомство с ТРИК Студио и базовыми командами квадрокоптера</p>
+    
+    <div class="lesson-card">
+      <div class="lesson-header">
+        <div class="lesson-num">1</div>
+        <h3>Первые шаги в программировании дрона</h3>
+        <div class="time">⏱️ 40 минут</div>
+      </div>
+      
+      <div class="lesson-body">
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">1</div>
+            <h4>Организационный момент. Команда и роли</h4>
+            <div class="stage-time">5 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Знакомство с темой занятия и экологической проблемой</li>
+              <li>Формирование команд по 4–6 человек</li>
+              <li>Распределение ролей: Пилот-программист, Штурман-эколог, Тестировщик, Спикер</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link" target="_blank" href="roles.html">👥 Распределение ролей</a>
+                <a class="mat-link green" target="_blank" href="eco-test.html">🌱 Эко-тест</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Сформированная команда с распределёнными ролями</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">2</div>
+            <h4>Теория: квадрокоптер и ТРИК Студио</h4>
+            <div class="stage-time">10 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Устройство квадрокоптера Геоскан Пионер: рама, моторы, контроллер, датчики</li>
+              <li>Подключение дрона к компьютеру</li>
+              <li>Интерфейс ТРИК Студио и палитра блоков команд</li>
+              <li>Система координат (X, Y, Z) и телеметрия</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link blue" target="_blank" href="device.html">🚁 Устройство квадрокоптера</a>
+                <a class="mat-link blue" target="_blank" href="connect.html">🔌 Подключение к ПК</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Понимание устройства дрона и интерфейса среды</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">3</div>
+            <h4>Практика: простые траектории</h4>
+            <div class="stage-time">15 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li><b>Задание 1:</b> Взлёт и посадка (линейный алгоритм)</li>
+              <li><b>Задание 2:</b> Полёт по квадрату — линейный алгоритм (10 блоков)</li>
+              <li><b>Задание 3:</b> Полёт по квадрату с использованием цикла</li>
+              <li>Работа в симуляторе: запуск программ и наблюдение траектории</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link" target="_blank" href="sandbox.html">🎨 Песочница ТРИК Студио</a>
+                <a class="mat-link blue" target="_blank" href="ecodrone.html">🗑️ Симулятор «ЭкоДрон»</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Три работающие программы в симуляторе</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">4</div>
+            <h4>Рефлексия и домашнее задание</h4>
+            <div class="stage-time">10 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Демонстрация программ каждой команды</li>
+              <li>Проверка знаний: тест «Алгоритмы, блок-схемы и ТРИК Студио»</li>
+              <li>Домашнее задание: придумать идею Эко-маршрута</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link green" target="_blank" href="algo-test.html">📝 Тест: Алгоритмы и блок-схемы</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Идея Эко-маршрута для следующего занятия</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <!-- ===== РОЛИ ===== -->
+  <section id="roles">
+    <h2 class="section-title"><span class="emoji">🎭</span> Роли в команде</h2>
+    <p class="section-subtitle">Каждый участник выполняет свою важную роль</p>
+    
+    <div class="roles-grid">
+      <div class="role-card" style="--role-color: #3498db;">
+        <div class="role-icon">🎮</div>
+        <div class="role-name">Пилот-программист</div>
+        <div class="role-desc">Главный «инженер» команды</div>
+        <div class="role-tasks">
+          <b>Обязанности:</b>
+          <ul>
+            <li>Собирает программу из блоков</li>
+            <li>Настраивает значения параметров</li>
+            <li>Отлаживает и исправляет ошибки</li>
+            <li>Следит за соответствием кода и схемы</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="role-card" style="--role-color: #27ae60;">
+        <div class="role-icon">🗺️</div>
+        <div class="role-name">Штурман-эколог</div>
+        <div class="role-desc">«Мозг» маршрута</div>
+        <div class="role-tasks">
+          <b>Обязанности:</b>
+          <ul>
+            <li>Придумывает идею Эко-маршрута</li>
+            <li>Рисует блок-схему алгоритма</li>
+            <li>Выбирает форму траектории</li>
+            <li>Объясняет экологическую пользу</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="role-card" style="--role-color: #e67e22;">
+        <div class="role-icon">🔍</div>
+        <div class="role-name">Тестировщик</div>
+        <div class="role-desc">«Детектив» команды</div>
+        <div class="role-tasks">
+          <b>Обязанности:</b>
+          <ul>
+            <li>Запускает программу в симуляторе</li>
+            <li>Сравнивает траекторию с блок-схемой</li>
+            <li>Ищет ошибки в значениях</li>
+            <li>Проводит краш-тесты</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="role-card" style="--role-color: #9b59b6;">
+        <div class="role-icon">🎤</div>
+        <div class="role-name">Спикер</div>
+        <div class="role-desc">«Голос» команды</div>
+        <div class="role-tasks">
+          <b>Обязанности:</b>
+          <ul>
+            <li>Готовит презентацию маршрута</li>
+            <li>Выступает перед «заказчиком»</li>
+            <li>Отвечает на вопросы</li>
+            <li>Объясняет экологическую пользу</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a class="hero-btn" style="background: #ff6b35; color: white;" target="_blank" href="roles.html">🎲 Распределить роли в команде</a>
+    </div>
+  </section>
+  
+  <!-- ===== ЗАНЯТИЕ 2 ===== -->
+  <section id="lesson2">
+    <h2 class="section-title"><span class="emoji">📗</span> Занятие 2: Эко-маршруты</h2>
+    <p class="section-subtitle">Создание и защита авторского проекта экологического маршрута</p>
+    
+    <div class="lesson-card">
+      <div class="lesson-header">
+        <div class="lesson-num">2</div>
+        <h3>Сложные траектории и защита проекта</h3>
+        <div class="time">⏱️ 40 минут</div>
+      </div>
+      
+      <div class="lesson-body">
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">5</div>
+            <h4>Сложные траектории</h4>
+            <div class="stage-time">15 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li><b>Задание 5.1:</b> Редактирование кода для траектории «буква Г»</li>
+              <li><b>Задание 5.2:</b> Программа с промежуточным приземлением (2 взлёта и 2 посадки)</li>
+              <li>Обсуждение: где в реальной жизни нужна промежуточная посадка</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link" target="_blank" href="worksheet2.html">📝 Рабочий лист: Сложные траектории</a>
+                <a class="mat-link" target="_blank" href="sandbox.html">🎨 Песочница</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Две работающие программы в симуляторе</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">6</div>
+            <h4>Свой Эко-маршрут</h4>
+            <div class="stage-time">15 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Придумывание идеи: цель маршрута, траектория, особенности</li>
+              <li>Рисование блок-схемы алгоритма</li>
+              <li>Написание авторской программы в ТРИК Студио</li>
+              <li>Тестирование в симуляторе</li>
+            </ul>
+            <div class="stage-materials">
+              <div class="mat-label">📎 Материалы этапа:</div>
+              <div class="mat-links">
+                <a class="mat-link" target="_blank" href="worksheet2.html">📝 Рабочий лист: Эко-маршрут</a>
+                <a class="mat-link" target="_blank" href="sandbox.html">🎨 Песочница</a>
+                <a class="mat-link blue" target="_blank" href="ecodrone.html">🗑️ Симулятор «ЭкоДрон»</a>
+              </div>
+            </div>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Блок-схема и авторский код полёта</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">7</div>
+            <h4>Защита маршрутов</h4>
+            <div class="stage-time">10 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Каждая команда демонстрирует свой Эко-маршрут (2 мин + 1 мин вопросы)</li>
+              <li>Спикер объясняет логику программы и экологическую пользу</li>
+              <li>Команды отвечают на вопросы «заказчика» и друг друга</li>
+            </ul>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Презентация продукта</div>
+          </div>
+        </div>
+        
+        <div class="stage">
+          <div class="stage-header">
+            <div class="stage-num">8</div>
+            <h4>Подведение итогов</h4>
+            <div class="stage-time">5 мин</div>
+          </div>
+          <div class="stage-content">
+            <ul>
+              <li>Самооценка: «Легко» / «Можно разобраться» / «Трудно» / «Ничего не понял»</li>
+              <li>Обсуждение: что понравилось, что было сложно</li>
+              <li>Перспективы: программирование реального квадрокоптера</li>
+            </ul>
+            <div class="stage-artifact"><b>🎯 Артефакт:</b> Заполненный лист самооценки</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <!-- ===== МАТЕРИАЛЫ ===== -->
+  <section id="materials">
+    <h2 class="section-title"><span class="emoji">📦</span> Материалы занятия</h2>
+    <p class="section-subtitle">Все интерактивные материалы доступны тебе по клику</p>
+    
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterMaterials('all', this)">Все</button>
+      <button class="filter-btn" onclick="filterMaterials('lesson1', this)">📘 Занятие 1</button>
+      <button class="filter-btn" onclick="filterMaterials('lesson2', this)">📗 Занятие 2</button>
+      <button class="filter-btn" onclick="filterMaterials('test', this)">📝 Тесты</button>
+      <button class="filter-btn" onclick="filterMaterials('sim', this)">🎮 Симуляторы</button>
+      <button class="filter-btn" onclick="filterMaterials('sheet', this)">📄 Рабочие листы</button>
+    </div>
+    
+    <div class="materials-grid" id="materialsGrid">
+      
+      <div class="material-card" data-cat="test" data-stage="lesson1" style="--mat-color: #27ae60;">
+        <div class="mat-top">
+          <div class="material-icon">🌱</div>
+          <div>
+            <span class="mat-type">Тест</span>
+            <h4>Эко-тест «Хранители природы Тамбовского края»</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Проверь, насколько хорошо ты знаешь природу родного края. Отличная разминка перед стартом занятия!</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 1</span>
+        <a class="mat-open" target="_blank" href="eco-test.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sim" data-stage="lesson1" style="--mat-color: #3498db;">
+        <div class="mat-top">
+          <div class="material-icon">🚁</div>
+          <div>
+            <span class="mat-type">Тренажёр</span>
+            <h4>Устройство квадрокоптера</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Изучи компоненты Геоскан Пионер: раму, моторы, полётный контроллер, датчики. Режим изучения + тест.</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 2</span>
+        <a class="mat-open" target="_blank" href="device.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sim" data-stage="lesson1" style="--mat-color: #3498db;">
+        <div class="mat-top">
+          <div class="material-icon">🔌</div>
+          <div>
+            <span class="mat-type">Тренажёр</span>
+            <h4>Подключение квадрокоптера к ПК</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Пошаговая инструкция подключения дрона к ТРИК Студио: теория, интерактивная схема, практика и тест.</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 2</span>
+        <a class="mat-open" target="_blank" href="connect.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sheet" data-stage="lesson1" style="--mat-color: #f39c12;">
+        <div class="mat-top">
+          <div class="material-icon">📄</div>
+          <div>
+            <span class="mat-type">Рабочий лист</span>
+            <h4>Интерактивный рабочий лист «Знакомство с ТРИК Студио»</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Задания на знакомство со средой: интерфейс, блоки, режимы программирования, симуляция.</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 2–3</span>
+        <a class="mat-open target="_blank" href="worksheet1-student.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sim" data-stage="lesson1 lesson2" style="--mat-color: #ff6b35;">
+        <div class="mat-top">
+          <div class="material-icon">🎨</div>
+          <div>
+            <span class="mat-type">Симулятор</span>
+            <h4>Песочница ТРИК Студио</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Главный инструмент занятия! Составляй программы из блоков и смотри 3D-полёт квадрокоптера. Есть готовые шаблоны.</p>
+        <span class="mat-stage-tag">📘📗 Оба занятия</span>
+        <a class="mat-open" target="_blank" href="sandbox.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sim" data-stage="lesson1 lesson2" style="--mat-color: #16a085;">
+        <div class="mat-top">
+          <div class="material-icon">🗑️</div>
+          <div>
+            <span class="mat-type">Игра-симулятор</span>
+            <h4>Симулятор поиска мусора «ЭкоДрон»</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Управляй эко-дроном, ищи и собирай мусор на территории! Следи за батареей и высотой полёта.</p>
+        <span class="mat-stage-tag">📘📗 Оба занятия</span>
+        <a class="mat-open" target="_blank" href="ecodrone.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="test" data-stage="lesson1" style="--mat-color: #27ae60;">
+        <div class="mat-top">
+          <div class="material-icon">📝</div>
+          <div>
+            <span class="mat-type">Тест</span>
+            <h4>Тест «Алгоритмы, блок-схемы и ТРИК Студио»</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Проверь, как ты усвоил теорию первого занятия: алгоритмы, блок-схемы, циклы, команды среды.</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 4</span>
+        <a class="mat-open" target="_blank" href="algo-test.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sheet" data-stage="lesson2" style="--mat-color: #f39c12;">
+        <div class="mat-top">
+          <div class="material-icon">📝</div>
+          <div>
+            <span class="mat-type">Рабочий лист</span>
+            <h4>«Сложные траектории и авторский Эко-маршрут»</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Главный рабочий лист второго занятия: буква «Г», промежуточная посадка, блок-схема и авторский код Эко-маршрута.</p>
+        <span class="mat-stage-tag">📗 Занятие 2 · Этап 5–6</span>
+        <a class="mat-open" target="_blank" href="worksheet2.html">Открыть →</a>
+      </div>
+      
+      <div class="material-card" data-cat="sim" data-stage="lesson1" style="--mat-color: #9b59b6;">
+        <div class="mat-top">
+          <div class="material-icon">👥</div>
+          <div>
+            <span class="mat-type">Интерактив</span>
+            <h4>Распределение ролей в команде</h4>
+          </div>
+        </div>
+        <p class="mat-desc">Мастер распределения ролей: Пилот-программист, Штурман-эколог, Тестировщик, Спикер. Есть жеребьёвка!</p>
+        <span class="mat-stage-tag">📘 Занятие 1 · Этап 1</span>
+        <a class="mat-open" target="_blank" href="roles.html">Открыть →</a>
+      </div>
+      
+    </div>
+  </section>
+  
+</div>
+
+<!-- ===== МОДАЛКА ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target === this) hideModal()">
+  <div class="modal-box">
+    <div class="m-icon" id="modalIcon">🔒</div>
+    <h3 id="modalTitle">Заголовок</h3>
+    <p id="modalText">Текст</p>
+    <button class="modal-btn" onclick="hideModal()">Понятно</button>
+  </div>
+</div>
+
+<!-- ===== ФУТЕР ===== -->
+<div class="footer">
+  <h3>🚁 Эко-дрон: Программирование квадрокоптера</h3>
+  <p>Занятие для учеников · Геоскан Пионер Базовый · ТРИК Студио</p>
+  <div class="footer-links">
+    <a href="#overview">Обзор</a>
+    <a href="#problem">Проблема</a>
+    <a href="#applications">Применение</a>
+    <a href="#knowledge">Знания</a>
+    <a href="#game">Игра</a>
+    <a href="#lesson1">Занятие 1</a>
+    <a href="#roles">Роли</a>
+    <a href="#lesson2">Занятие 2</a>
+    <a href="#materials">Материалы</a>
+  </div>
+  <p style="margin-top: 18px; font-size: 11px; opacity: 0.6;">© 2026 · Образовательное занятие по робототехнике</p>
+</div>
+
+<script>
+// ===== Фильтр материалов =====
+function filterMaterials(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  document.querySelectorAll('.material-card').forEach(card => {
+    const cardCat = card.dataset.cat;
+    const cardStage = card.dataset.stage || '';
+    
+    let show = false;
+    if (cat === 'all') show = true;
+    else if (cat === 'lesson1' || cat === 'lesson2') show = cardStage.includes(cat);
+    else show = cardCat === cat;
+    
+    card.classList.toggle('hidden', !show);
+  });
+}
+
+// ===== Модалка =====
+function showModal(icon, title, text) {
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function hideModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ===== Прогресс-бар чтения =====
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+// ===== Активная навигация =====
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    if (scrollY >= section.offsetTop - 120) {
+      current = section.getAttribute('id');
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Плавная прокрутка
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href.length > 1) {
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

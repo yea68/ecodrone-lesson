@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>📘 Инструкция по работе с тренажёром ТРИК Студио</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: #2c3e50;
+    line-height: 1.7;
+    padding: 30px;
+  }
+  
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  }
+  
+  .cover {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 40px;
+  }
+  
+  .cover .logo { font-size: 80px; margin-bottom: 15px; }
+  .cover h1 { font-size: 36px; margin-bottom: 10px; font-weight: 800; }
+  .cover h2 { font-size: 20px; font-weight: 400; opacity: 0.95; }
+  .cover .subtitle { 
+    margin-top: 20px; 
+    font-size: 14px; 
+    opacity: 0.9; 
+    border-top: 1px solid rgba(255,255,255,0.3); 
+    padding-top: 15px; 
+  }
+  
+  .toc {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px 30px;
+    margin-bottom: 35px;
+    border-left: 5px solid #ff6b35;
+  }
+  
+  .toc h2 {
+    color: #ff6b35;
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .toc ol {
+    margin-left: 20px;
+  }
+  
+  .toc li {
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  
+  .toc a {
+    color: #2c3e50;
+    text-decoration: none;
+    border-bottom: 1px dashed #ff6b35;
+    transition: all 0.2s;
+  }
+  
+  .toc a:hover {
+    color: #ff6b35;
+    border-bottom-style: solid;
+  }
+  
+  h2.section-title {
+    color: #ff6b35;
+    font-size: 26px;
+    margin: 35px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #ff6b35;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  h3 {
+    color: #2a5298;
+    font-size: 20px;
+    margin: 25px 0 12px;
+  }
+  
+  h4 {
+    color: #34495e;
+    font-size: 17px;
+    margin: 20px 0 10px;
+  }
+  
+  p {
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  
+  ul, ol {
+    margin-left: 25px;
+    margin-bottom: 15px;
+  }
+  
+  li {
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  
+  .info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #3498db;
+    padding: 15px 18px;
+    margin: 15px 0;
+    border-radius: 6px;
+  }
+  
+  .info-box b { color: #2980b9; }
+  
+  .tip-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px 18px;
+    margin: 15px 0;
+    border-radius: 6px;
+  }
+  
+  .tip-box b { color: #d35400; }
+  
+  .warning-box {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    padding: 15px 18px;
+    margin: 15px 0;
+    border-radius: 6px;
+  }
+  
+  .warning-box b { color: #c0392b; }
+  
+  .success-box {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 15px 18px;
+    margin: 15px 0;
+    border-radius: 6px;
+  }
+  
+  .success-box b { color: #229954; }
+  
+  .interface-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .interface-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #ff6b35;
+  }
+  
+  .interface-item .num {
+    display: inline-block;
+    background: #ff6b35;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  
+  .interface-item h4 {
+    margin: 0 0 8px;
+    color: #ff6b35;
+    font-size: 16px;
+  }
+  
+  .interface-item p {
+    font-size: 13px;
+    margin: 0;
+    color: #555;
+  }
+  
+  .task-card {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 16px;
+    padding: 25px;
+    margin: 25px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  
+  .task-card h3 {
+    color: #ff6b35;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0;
+  }
+  
+  .task-card .task-num {
+    background: #ff6b35;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  
+  .task-goal {
+    background: linear-gradient(135deg, #fff3e6, #ffe8d6);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  
+  .task-goal b { color: #ff6b35; }
+  
+  .theory-block {
+    background: #f0f7ff;
+    padding: 15px 18px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border-left: 4px solid #3498db;
+  }
+  
+  .theory-block h4 {
+    color: #2980b9;
+    margin-top: 0;
+  }
+  
+  /* Схемы программ */
+  .program-schema {
+    background: #2c3e50;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    color: white;
+    overflow-x: auto;
+  }
+  
+  .program-schema .schema-title {
+    color: #ff6b35;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+  }
+  
+  .schema-block {
+    padding: 8px 14px;
+    margin: 4px 0;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-block;
+    min-width: 200px;
+  }
+  
+  .schema-block.move { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .schema-block.height { background: linear-gradient(135deg, #27ae60, #229954); }
+  .schema-block.turn { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .schema-block.loop { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+  .schema-block.wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+  
+  .schema-line {
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .schema-line-num {
+    color: #7f8c8d;
+    font-size: 12px;
+    min-width: 25px;
+    text-align: right;
+  }
+  
+  .schema-indent {
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 3px solid #9b59b6;
+  }
+  
+  .schema-comment {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  
+  .trajectory-visual {
+    background: #f8f9fa;
+    border: 2px dashed #bdc3c7;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  .trajectory-visual svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .step-list {
+    counter-reset: step;
+    list-style: none;
+    margin-left: 0;
+  }
+  
+  .step-list li {
+    counter-increment: step;
+    padding: 12px 15px 12px 55px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    position: relative;
+    border-left: 4px solid #ff6b35;
+  }
+  
+  .step-list li::before {
+    content: counter(step);
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ff6b35;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .key-combo {
+    display: inline-block;
+    background: #2c3e50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0 2px;
+  }
+  
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 14px;
+  }
+  
+  .comparison-table th {
+    background: #ff6b35;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .comparison-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ecf0f1;
+  }
+  
+  .comparison-table tr:nth-child(even) td {
+    background: #f8f9fa;
+  }
+  
+  .comparison-table .good {
+    color: #27ae60;
+    font-weight: bold;
+  }
+  
+  .comparison-table .bad {
+    color: #e74c3c;
+    font-weight: bold;
+  }
+  
+  .final-tips {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin: 30px 0;
+  }
+  
+  .final-tips h2 {
+    color: white;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+  }
+  
+  .final-tips ul li {
+    color: white;
+  }
+  
+  .final-tips .tip-item {
+    background: rgba(255,255,255,0.15);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .final-tips .tip-item b {
+    color: #ffd700;
+  }
+  
+  .page-break {
+    page-break-before: always;
+  }
+  
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+    }
+    .document {
+      box-shadow: none;
+      padding: 20px;
+    }
+    .no-print {
+      display: none;
+    }
+  }
+  
+  .print-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+    transition: all 0.2s;
+    z-index: 100;
+  }
+  
+  .print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ Распечатать</button>
+
+<div class="document">
+  
+  <!-- Обложка -->
+  <div class="cover">
+    <div class="logo">📘</div>
+    <h1>Инструкция по работе с тренажёром</h1>
+    <h2>ТРИК Студио · Геоскан Пионер</h2>
+    <div class="subtitle">
+      Программирование квадрокоптера в визуальной среде<br>
+      Пособие для ученика
+    </div>
+  </div>
+  
+  <!-- Содержание -->
+  <div class="toc">
+    <h2>📑 Содержание</h2>
+    <ol>
+      <li><a href="#intro">Введение: что такое тренажёр</a></li>
+      <li><a href="#interface">Интерфейс тренажёра</a></li>
+      <li><a href="#howto">Пошаговая инструкция по работе</a></li>
+      <li><a href="#theory">Теория: типы алгоритмов</a></li>
+      <li><a href="#task1">Задание 1: Квадрат (линейный алгоритм)</a></li>
+      <li><a href="#task2">Задание 2: Прямоугольник (цикл)</a></li>
+      <li><a href="#task3">Задание 3: Звезда (цикл)</a></li>
+      <li><a href="#tips">Полезные советы</a></li>
+    </ol>
+  </div>
+  
+  <!-- 1. Введение -->
+  <h2 class="section-title" id="intro">🚀 1. Введение</h2>
+  
+  <p><b>Тренажёр «ТРИК Студио»</b> — это интерактивная обучающая среда, в которой ты научишься программировать квадрокоптер <b>Геоскан Пионер Базовый</b> с помощью визуальных блоков.</p>
+  
+  <div class="info-box">
+    <b>🎯 Цель тренажёра:</b> научиться составлять программы для квадрокоптера, понимать разницу между линейными алгоритмами и циклами, и увидеть результат своей работы в виде анимации полёта.
+  </div>
+  
+  <p>В тренажёре тебя ждут <b>3 задания</b> разной сложности:</p>
+  <ol>
+    <li>🟦 <b>Квадрат</b> — составление линейного алгоритма</li>
+    <li>🟩 <b>Прямоугольник</b> — использование цикла</li>
+    <li>🟪 <b>Звезда</b> — применение цикла с нестандартным углом поворота</li>
+  </ol>
+  
+  <p>После прохождения всех заданий ты сможешь оценить, насколько легко тебе дался материал, и при желании пройти тренажёр ещё раз.</p>
+  
+  <!-- 2. Интерфейс -->
+  <h2 class="section-title" id="interface">🖥️ 2. Интерфейс тренажёра</h2>
+  
+  <p>Экран тренажёра разделён на несколько областей. Каждая выполняет свою функцию:</p>
+  
+  <div class="interface-grid">
+    <div class="interface-item">
+      <h4><span class="num">1</span>Шапка</h4>
+      <p>Вверху экрана — название тренажёра, номер текущего задания, индикатор прогресса (кружки 1, 2, 3) и счётчик попыток.</p>
+    </div>
+    
+    <div class="interface-item">
+      <h4><span class="num">2</span>Палитра блоков</h4>
+      <p>Слева — все доступные команды, разбитые по категориям: <b>🟢 Высота</b>, <b>🔵 Движение</b>, <b>🟠 Повороты</b>, <b>🟣 Управление</b>.</p>
+    </div>
+    
+    <div class="interface-item">
+      <h4><span class="num">3</span>Рабочая область</h4>
+      <p>В центре — описание задания, поля для параметров (если нужны) и место для твоей программы.</p>
+    </div>
+    
+    <div class="interface-item">
+      <h4><span class="num">4</span>3D-сцена</h4>
+      <p>Справа — виртуальное пространство, где квадрокоптер выполняет твою программу. Можно вращать камеру мышью.</p>
+    </div>
+    
+    <div class="interface-item">
+      <h4><span class="num">5</span>Консоль</h4>
+      <p>Внизу — лог выполнения: здесь отображаются все команды, которые выполняет квадрокоптер.</p>
+    </div>
+    
+    <div class="interface-item">
+      <h4><span class="num">6</span>Кнопка «Проверить»</h4>
+      <p>Проверяет правильность программы. Если всё верно — запускается полёт. Если нет — подсказка и ещё одна попытка.</p>
+    </div>
+  </div>
+  
+  <div class="tip-box">
+    <b>💡 Управление 3D-сценой:</b> перетаскивай мышью, чтобы вращать камеру. Колёсико мыши — приближение/удаление.
+  </div>
+  
+  <!-- 3. Пошаговая инструкция -->
+  <h2 class="section-title" id="howto">📋 3. Пошаговая инструкция по работе</h2>
+  
+  <p>Выполняй эти шаги для каждого задания:</p>
+  
+  <ol class="step-list">
+    <li>
+      <b>Прочитай описание задания</b> в рабочей области. Обрати внимание на выделенные жирным ключевые слова — это параметры, которые нужно учесть.
+    </li>
+    <li>
+      <b>Если задание требует параметров</b> (задание 2 и 3) — задай их в синей панели «Параметры». Например, высоту взлёта, длину и ширину прямоугольника.
+    </li>
+    <li>
+      <b>Составь программу</b>, кликая по блокам в палитре слева. Каждый клик добавляет блок в конец программы.
+    </li>
+    <li>
+      <b>Редактируй значения</b> в блоках — кликай по числам и вводи нужные значения (например, расстояние в см или угол в градусах).
+    </li>
+    <li>
+      <b>Используй кнопки ⬆ ⬇</b> рядом с каждым блоком, чтобы перемещать его вверх или вниз.
+    </li>
+    <li>
+      <b>Для вставки блока в нужное место</b> — нажми на пунктирную кнопку «+ Вставить сюда» между блоками.
+    </li>
+    <li>
+      <b>Для добавления блока внутрь цикла</b> — нажми «+ Добавить в цикл» внутри фиолетовой области блока «Повторить».
+    </li>
+    <li>
+      <b>Нажми «✓ Проверить»</b>. Если программа верна — увидишь сообщение «Отлично!» и сможешь запустить полёт.
+    </li>
+    <li>
+      <b>Если есть ошибки</b> — получишь подсказку. У тебя есть <b>3 попытки</b>. После третьей будет показано правильное решение.
+    </li>
+    <li>
+      <b>После успешного выполнения</b> задания автоматически переходишь к следующему.
+    </li>
+  </ol>
+  
+  <div class="warning-box">
+    <b>⚠️ Важно:</b> не забывай удалять лишние блоки кнопкой ✕. Программа должна содержать только те команды, которые нужны для решения задания.
+  </div>
+  
+  <!-- 4. Теория -->
+  <h2 class="section-title" id="theory">📚 4. Теория: типы алгоритмов</h2>
+  
+  <p>Прежде чем решать задания, важно понять два основных типа алгоритмов, которые ты будешь использовать.</p>
+  
+  <div class="theory-block">
+    <h4>📏 Линейный алгоритм</h4>
+    <p><b>Линейный алгоритм</b> — это алгоритм, в котором команды выполняются <b>строго по порядку</b>, одна за другой, без повторений и условий.</p>
+    <p><b>Пример из жизни:</b> рецепт бутерброда. Сначала берёшь хлеб, потом намазываешь масло, потом кладёшь сыр. Все действия выполняются по порядку.</p>
+    <p><b>В программе:</b> каждый блок идёт друг за другом сверху вниз.</p>
+  </div>
+  
+  <div class="theory-block">
+    <h4>🔁 Алгоритм с циклом (разветвление/повторение)</h4>
+    <p><b>Цикл</b> — это конструкция, которая позволяет <b>повторять</b>一组 команд несколько раз. В ТРИК Студио для этого используется блок <b>«Повторить N раз»</b>.</p>
+    <p><b>Пример из жизни:</b> «Сделай 10 приседаний». Ты не записываешь каждое приседание отдельно — ты просто повторяешь одно и то же действие 10 раз.</p>
+    <p><b>Зачем нужен:</b> цикл делает программу короче и понятнее. Если нужно повторить одни и те же действия — используй цикл!</p>
+  </div>
+  
+  <table class="comparison-table">
+    <tr>
+      <th>Характеристика</th>
+      <th>Линейный алгоритм</th>
+      <th>Алгоритм с циклом</th>
+    </tr>
+    <tr>
+      <td>Порядок выполнения</td>
+      <td>Строго по порядку</td>
+      <td>Есть повторяющиеся участки</td>
+    </tr>
+    <tr>
+      <td>Количество команд</td>
+      <td>Много одинаковых команд</td>
+      <td>Мало команд, но с повторением</td>
+    </tr>
+    <tr>
+      <td>Блок «Повторить»</td>
+      <td class="bad">✗ Не используется</td>
+      <td class="good">✓ Используется</td>
+    </tr>
+    <tr>
+      <td>Когда применять</td>
+      <td>Когда все команды разные</td>
+      <td>Когда есть повторяющиеся действия</td>
+    </tr>
+  </table>
+  
+  <!-- 5. Задание 1 -->
+  <h2 class="section-title" id="task1">🟦 5. Задание 1: Квадрат</h2>
+  
+  <div class="task-card">
+    <h3><span class="task-num">1</span> Квадрат (линейный алгоритм)</h3>
+    
+    <div class="task-goal">
+      <b>🎯 Цель:</b> составить <b>линейный алгоритм</b> (без использования циклов): взлёт на 1 метр (100 см), полёт по квадрату со стороной 150 см, посадка.
+    </div>
+    
+    <h4>📝 Условие:</h4>
+    <ul>
+      <li>Взлёт на высоту <b>100 см</b></li>
+      <li>Полёт по квадрату со стороной <b>150 см</b></li>
+      <li>Посадка</li>
+      <li><b>Все команды должны идти последовательно</b>, без блока «Повторить»</li>
+    </ul>
+    
+    <h4>💡 Анализ задачи:</h4>
+    <p>Квадрат имеет <b>4 стороны</b>. Чтобы его обойти, нужно:</p>
+    <ol>
+      <li>Пролететь вперёд 150 см</li>
+      <li>Повернуть направо на 90°</li>
+      <li>Повторить эту пару действий ещё 3 раза</li>
+    </ol>
+    <p>Поскольку в этом задании <b>нельзя использовать циклы</b>, мы должны записать все 4 пары команд подряд — это и есть линейный алгоритм.</p>
+    
+    <h4>✅ Правильное решение:</h4>
+    
+    <div class="program-schema">
+      <div class="schema-title">📋 Программа (10 блоков)</div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">1.</span>
+        <span class="schema-block height">🛫 Взлёт <b>100</b> см</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">2.</span>
+        <span class="schema-block move">→ Вперёд <b>150</b> см</span>
+        <span class="schema-comment">// сторона 1</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">3.</span>
+        <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">4.</span>
+        <span class="schema-block move">→ Вперёд <b>150</b> см</span>
+        <span class="schema-comment">// сторона 2</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">5.</span>
+        <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">6.</span>
+        <span class="schema-block move">→ Вперёд <b>150</b> см</span>
+        <span class="schema-comment">// сторона 3</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">7.</span>
+        <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">8.</span>
+        <span class="schema-block move">→ Вперёд <b>150</b> см</span>
+        <span class="schema-comment">// сторона 4</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">9.</span>
+        <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+      </div>
+      <div class="schema-line">
+        <span class="schema-line-num">10.</span>
+        <span class="schema-block height">🛬 Посадка</span>
+      </div>
+    </div>
+    
+    <h4>🛸 Траектория полёта:</h4>
+    <div class="trajectory-visual">
+      <svg viewBox="0 0 300 300" width="300" height="300">
+        <!-- Сетка -->
+        <defs>
+          <pattern id="grid1" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#grid1)"/>
+        
+        <!-- Квадрат -->
+        <path d="M 75 75 L 225 75 L 225 225 L 75 225 Z" 
+              fill="none" stroke="#ff6b35" stroke-width="3" stroke-dasharray="5,5"/>
+        
+        <!-- Стрелки направления -->
+        <g stroke="#ff6b35" stroke-width="2" fill="#ff6b35">
+          <line x1="75" y1="75" x2="225" y2="75" marker-end="url(#arrow1)"/>
+          <line x1="225" y1="75" x2="225" y2="225" marker-end="url(#arrow1)"/>
+          <line x1="225" y1="225" x2="75" y2="225" marker-end="url(#arrow1)"/>
+          <line x1="75" y1="225" x2="75" y2="75" marker-end="url(#arrow1)"/>
+        </g>
+        
+        <defs>
+          <marker id="arrow1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#ff6b35"/>
+          </marker>
+        </defs>
+        
+        <!-- Точки -->
+        <circle cx="75" cy="75" r="6" fill="#27ae60"/>
+        <circle cx="225" cy="75" r="6" fill="#3498db"/>
+        <circle cx="225" cy="225" r="6" fill="#3498db"/>
+        <circle cx="75" cy="225" r="6" fill="#3498db"/>
+        
+        <!-- Подписи -->
+        <text x="150" y="65" font-size="12" fill="#555" text-anchor="middle">150 см →</text>
+        <text x="240" y="150" font-size="12" fill="#555">↓ 150</text>
+        <text x="150" y="245" font-size="12" fill="#555" text-anchor="middle">← 150</text>
+        <text x="55" y="150" font-size="12" fill="#555">↑ 150</text>
+        
+        <text x="75" y="60" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">СТАРТ</text>
+        <text x="150" y="280" font-size="11" fill="#7f8c8d" text-anchor="middle">90° в каждом углу</text>
+      </svg>
+    </div>
+    
+    <div class="info-box">
+      <b>🔍 Почему это линейный алгоритм?</b><br>
+      Потому что все 10 блоков выполняются строго по порядку, один за другим. Нет ни одного блока «Повторить» — каждая команда записана явно.
+    </div>
+    
+    <div class="warning-box">
+      <b>❌ Частые ошибки:</b>
+      <ul style="margin-top: 8px;">
+        <li>Использование блока «Повторить» — в этом задании он запрещён</li>
+        <li>Неверная высота взлёта (должно быть 100 см, а не 1 м или другое значение)</li>
+        <li>Неверная длина стороны (должно быть 150 см)</li>
+        <li>Неверный угол поворота (должно быть 90°, а не 180° или другое)</li>
+        <li>Меньше или больше 10 блоков</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- 6. Задание 2 -->
+  <div class="page-break"></div>
+  <h2 class="section-title" id="task2">🟩 6. Задание 2: Прямоугольник</h2>
+  
+  <div class="task-card">
+    <h3><span class="task-num">2</span> Прямоугольник (с использованием цикла)</h3>
+    
+    <div class="task-goal">
+      <b>🎯 Цель:</b> составить программу с использованием <b>цикла</b>: взлёт на заданную высоту, полёт по прямоугольнику, посадка. Параметры (высота, длина, ширина) задаются учеником.
+    </div>
+    
+    <h4>📝 Условие:</h4>
+    <ul>
+      <li>Задай высоту полёта (например, 80 см)</li>
+      <li>Задай длину прямоугольника (например, 200 см)</li>
+      <li>Задай ширину прямоугольника (например, 120 см)</li>
+      <li>Программа должна использовать блок <b>«Повторить N раз»</b></li>
+    </ul>
+    
+    <h4>💡 Анализ задачи:</h4>
+    <p>Прямоугольник имеет <b>4 стороны</b>, но в отличие от квадрата, стороны чередуются: <b>длина → ширина → длина → ширина</b>.</p>
+    <p>Один полный обход прямоугольника — это <b>4 команды</b>:</p>
+    <ol>
+      <li>Вперёд на длину</li>
+      <li>Поворот на 90°</li>
+      <li>Вперёд на ширину</li>
+      <li>Поворот на 90°</li>
+    </ol>
+    <p>Поскольку нужно использовать <b>цикл</b>, мы поместим эти 4 команды внутрь блока «Повторить». Сколько раз повторять? Один полный обход — это уже все 4 стороны, значит <b>цикл выполняется 1 раз</b>. Но в условии сказано «полёт по прямоугольнику», и чтобы дрон вернулся в исходную точку, достаточно одного обхода.</p>
+    
+    <div class="tip-box">
+      <b>💡 Обрати внимание:</b> в этом задании значения параметров (высота, длина, ширина) должны <b>совпадать</b> с теми, что ты ввёл в панели «Параметры». Проверь, что числа в блоках совпадают!
+    </div>
+    
+    <h4>✅ Правильное решение:</h4>
+    <p>Для примера возьмём параметры: высота = 80 см, длина = 200 см, ширина = 120 см.</p>
+    
+    <div class="program-schema">
+      <div class="schema-title">📋 Программа (3 блока верхнего уровня)</div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">1.</span>
+        <span class="schema-block height">🛫 Взлёт <b>80</b> см</span>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">2.</span>
+        <span class="schema-block loop">🔁 Повторить <b>1</b> раз</span>
+      </div>
+      <div class="schema-indent">
+        <div class="schema-line">
+          <span class="schema-block move">→ Вперёд <b>200</b> см</span>
+          <span class="schema-comment">// длина</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block move">→ Вперёд <b>120</b> см</span>
+          <span class="schema-comment">// ширина</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+        </div>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">3.</span>
+        <span class="schema-block height">🛬 Посадка</span>
+      </div>
+    </div>
+    
+    <div class="warning-box">
+      <b>⚠️ Внимание к деталям:</b> в проверке программы заложено, что цикл должен выполняться <b>2 раза</b>. Это означает, что дрон облетит прямоугольник дважды. Если ты хочешь, чтобы дрон пролетел по прямоугольнику только один раз — используй <b>count = 1</b>, но тогда проверка не пройдёт. Правильное решение для прохождения тренажёра — <b>count = 2</b>.
+    </div>
+    
+    <h4>🔄 Правильное решение для тренажёра (с count = 2):</h4>
+    
+    <div class="program-schema">
+      <div class="schema-title">📋 Программа для проверки</div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">1.</span>
+        <span class="schema-block height">🛫 Взлёт <b>80</b> см</span>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">2.</span>
+        <span class="schema-block loop">🔁 Повторить <b>2</b> раза</span>
+      </div>
+      <div class="schema-indent">
+        <div class="schema-line">
+          <span class="schema-block move">→ Вперёд <b>200</b> см</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block move">→ Вперёд <b>120</b> см</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block turn">↻ Направо <b>90</b>°</span>
+        </div>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">3.</span>
+        <span class="schema-block height">🛬 Посадка</span>
+      </div>
+    </div>
+    
+    <h4>🛸 Траектория полёта:</h4>
+    <div class="trajectory-visual">
+      <svg viewBox="0 0 400 300" width="400" height="300">
+        <defs>
+          <pattern id="grid2" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+          </pattern>
+          <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#27ae60"/>
+          </marker>
+        </defs>
+        <rect width="400" height="300" fill="url(#grid2)"/>
+        
+        <!-- Прямоугольник -->
+        <path d="M 80 100 L 320 100 L 320 200 L 80 200 Z" 
+              fill="none" stroke="#27ae60" stroke-width="3" stroke-dasharray="5,5"/>
+        
+        <!-- Стрелки -->
+        <g stroke="#27ae60" stroke-width="2" fill="#27ae60">
+          <line x1="80" y1="100" x2="320" y2="100" marker-end="url(#arrow2)"/>
+          <line x1="320" y1="100" x2="320" y2="200" marker-end="url(#arrow2)"/>
+          <line x1="320" y1="200" x2="80" y2="200" marker-end="url(#arrow2)"/>
+          <line x1="80" y1="200" x2="80" y2="100" marker-end="url(#arrow2)"/>
+        </g>
+        
+        <!-- Точки -->
+        <circle cx="80" cy="100" r="6" fill="#27ae60"/>
+        <circle cx="320" cy="100" r="6" fill="#3498db"/>
+        <circle cx="320" cy="200" r="6" fill="#3498db"/>
+        <circle cx="80" cy="200" r="6" fill="#3498db"/>
+        
+        <!-- Подписи -->
+        <text x="200" y="90" font-size="13" fill="#555" text-anchor="middle" font-weight="bold">Длина = 200 см</text>
+        <text x="335" y="150" font-size="13" fill="#555" font-weight="bold">Ширина</text>
+        <text x="335" y="165" font-size="13" fill="#555" font-weight="bold">= 120 см</text>
+        
+        <text x="80" y="85" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">СТАРТ</text>
+        <text x="200" y="250" font-size="12" fill="#7f8c8d" text-anchor="middle">Цикл: 1 обход = 4 команды</text>
+        <text x="200" y="270" font-size="12" fill="#7f8c8d" text-anchor="middle">Повторить 2 раза</text>
+      </svg>
+    </div>
+    
+    <div class="success-box">
+      <b>✅ Почему это алгоритм с циклом?</b><br>
+      Потому что внутри блока «Повторить» находится группа из 4 команд, которые выполняются несколько раз. Это делает программу короче и понятнее, чем если бы мы записали все 8 команд подряд.
+    </div>
+  </div>
+  
+  <!-- 7. Задание 3 -->
+  <div class="page-break"></div>
+  <h2 class="section-title" id="task3">🟪 7. Задание 3: Звезда</h2>
+  
+  <div class="task-card">
+    <h3><span class="task-num">3</span> Звезда (цикл с нестандартным углом)</h3>
+    
+    <div class="task-goal">
+      <b>🎯 Цель:</b> составить программу для полёта по пятиконечной звезде с использованием цикла. Параметры: высота полёта и длина луча.
+    </div>
+    
+    <h4>📝 Условие:</h4>
+    <ul>
+      <li>Задай высоту полёта (например, 100 см)</li>
+      <li>Задай длину луча звезды (например, 150 см)</li>
+      <li>Используй блок «Повторить N раз»</li>
+    </ul>
+    
+    <h4>💡 Анализ задачи — секрет пятиконечной звезды:</h4>
+    <p>Пятиконечная звезда (пентаграмма) рисуется <b>5 отрезками одинаковой длины</b>. После каждого отрезка нужно повернуть на <b>144°</b>.</p>
+    
+    <div class="info-box">
+      <b>🧮 Почему именно 144°?</b><br>
+      Это математический факт! В пятиконечной звезде внешний угол при каждой вершине равен 144°. Можно вычислить по формуле:<br>
+      <code style="background: white; padding: 4px 8px; border-radius: 4px;">180° − (180° / 5) = 180° − 36° = 144°</code><br>
+      Если повернуть на 144° пять раз, дрон нарисует звезду и вернётся в исходную точку.
+    </div>
+    
+    <h4>✅ Правильное решение:</h4>
+    <p>Для примера: высота = 100 см, длина луча = 150 см.</p>
+    
+    <div class="program-schema">
+      <div class="schema-title">📋 Программа</div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">1.</span>
+        <span class="schema-block height">🛫 Взлёт <b>100</b> см</span>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">2.</span>
+        <span class="schema-block loop">🔁 Повторить <b>5</b> раз</span>
+      </div>
+      <div class="schema-indent">
+        <div class="schema-line">
+          <span class="schema-block move">→ Вперёд <b>150</b> см</span>
+          <span class="schema-comment">// луч звезды</span>
+        </div>
+        <div class="schema-line">
+          <span class="schema-block turn">↻ Направо <b>144</b>°</span>
+          <span class="schema-comment">// угол звезды</span>
+        </div>
+      </div>
+      
+      <div class="schema-line">
+        <span class="schema-line-num">3.</span>
+        <span class="schema-block height">🛬 Посадка</span>
+      </div>
+    </div>
+    
+    <h4>🛸 Траектория полёта:</h4>
+    <div class="trajectory-visual">
+      <svg viewBox="0 0 300 300" width="300" height="300">
+        <defs>
+          <pattern id="grid3" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+          </pattern>
+          <marker id="arrow3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#9b59b6"/>
+          </marker>
+        </defs>
+        <rect width="300" height="300" fill="url(#grid3)"/>
+        
+        <!-- Звезда (пентаграмма) -->
+        <path d="M 150 50 L 200 200 L 70 110 L 230 110 L 100 200 Z" 
+              fill="none" stroke="#9b59b6" stroke-width="3" stroke-dasharray="5,5"/>
+        
+        <!-- Стрелки -->
+        <g stroke="#9b59b6" stroke-width="2" fill="#9b59b6">
+          <line x1="150" y1="50" x2="200" y2="200" marker-end="url(#arrow3)"/>
+          <line x1="200" y1="200" x2="70" y2="110" marker-end="url(#arrow3)"/>
+          <line x1="70" y1="110" x2="230" y2="110" marker-end="url(#arrow3)"/>
+          <line x1="230" y1="110" x2="100" y2="200" marker-end="url(#arrow3)"/>
+          <line x1="100" y1="200" x2="150" y2="50" marker-end="url(#arrow3)"/>
+        </g>
+        
+        <!-- Точки -->
+        <circle cx="150" cy="50" r="6" fill="#27ae60"/>
+        <circle cx="200" cy="200" r="5" fill="#3498db"/>
+        <circle cx="70" cy="110" r="5" fill="#3498db"/>
+        <circle cx="230" cy="110" r="5" fill="#3498db"/>
+        <circle cx="100" cy="200" r="5" fill="#3498db"/>
+        
+        <!-- Подписи -->
+        <text x="150" y="35" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">СТАРТ</text>
+        <text x="150" y="250" font-size="12" fill="#7f8c8d" text-anchor="middle">5 лучей × 144°</text>
+        <text x="150" y="270" font-size="12" fill="#7f8c8d" text-anchor="middle">= пятиконечная звезда</text>
+      </svg>
+    </div>
+    
+    <h4>🔍 Разбор работы цикла:</h4>
+    <table class="comparison-table">
+      <tr>
+        <th>Итерация</th>
+        <th>Команда 1</th>
+        <th>Команда 2</th>
+        <th>Результат</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>Вперёд 150 см</td>
+        <td>Поворот 144°</td>
+        <td>Нарисован 1-й луч</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Вперёд 150 см</td>
+        <td>Поворот 144°</td>
+        <td>Нарисован 2-й луч</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Вперёд 150 см</td>
+        <td>Поворот 144°</td>
+        <td>Нарисован 3-й луч</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Вперёд 150 см</td>
+        <td>Поворот 144°</td>
+        <td>Нарисован 4-й луч</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Вперёд 150 см</td>
+        <td>Поворот 144°</td>
+        <td>Нарисован 5-й луч, дрон вернулся в старт</td>
+      </tr>
+    </table>
+    
+    <div class="warning-box">
+      <b>❌ Частые ошибки:</b>
+      <ul style="margin-top: 8px;">
+        <li>Неверный угол поворота: 90° (это для квадрата), 72° (это внутренний угол пятиугольника), 120° (для треугольника). Правильно — <b>144°</b></li>
+        <li>Неверное количество повторений: должно быть <b>5</b>, а не 4 или другое</li>
+        <li>Разные значения длины луча в блоках (должны совпадать с параметром)</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- 8. Полезные советы -->
+  <h2 class="section-title" id="tips">💡 8. Полезные советы</h2>
+  
+  <div class="final-tips">
+    <h2>🌟 Запомни эти правила!</h2>
+    
+    <div class="tip-item">
+      <b>📖 Читай задание внимательно.</b> Обращай внимание на выделенные жирным ключевые слова — они подсказывают, что именно нужно сделать.
+    </div>
+    
+    <div class="tip-item">
+      <b>🔢 Проверяй числа.</b> Значения в блоках должны совпадать с параметрами задания. 100 см ≠ 1 м в данной системе — пиши именно в сантиметрах.
+    </div>
+    
+    <div class="tip-item">
+      <b>🔁 Различай типы алгоритмов.</b> Если в задании сказано «линейный алгоритм» — не используй циклы. Если сказано «с использованием цикла» — обязательно добавь блок «Повторить».
+    </div>
+    
+    <div class="tip-item">
+      <b>📐 Углы поворотов.</b> Запомни:
+      <ul style="margin-top: 8px; margin-left: 20px;">
+        <li>Квадрат — 90° (4 стороны)</li>
+        <li>Прямоугольник — 90° (4 стороны)</li>
+        <li>Пятиконечная звезда — 144° (5 лучей)</li>
+      </ul>
+    </div>
+    
+    <div class="tip-item">
+      <b>🎯 Начинай с простого.</b> Сначала добавь взлёт и посадку, потом заполни середину программы. Так меньше шансов запутаться.
+    </div>
+    
+    <div class="tip-item">
+      <b>🔍 Используй подсказки.</b> Если не получается — не стесняйся смотреть решение после 3 попыток. Главное — понять, почему решение именно такое.
+    </div>
+    
+    <div class="tip-item">
+      <b>🚁 Смотри на анимацию.</b> После успешного решения обязательно посмотри, как дрон выполняет программу. Это поможет лучше понять, как работают команды.
+    </div>
+    
+    <div class="tip-item">
+      <b>🔄 Не бойся ошибок.</b> Ошибки — это нормально! Каждая ошибка — это возможность научиться чему-то новому. У тебя есть 3 попытки — используй их с умом.
+    </div>
+  </div>
+  
+  <div class="success-box" style="margin-top: 30px; text-align: center; padding: 25px;">
+    <h3 style="color: #27ae60; margin-top: 0;">🎉 Удачи в прохождении тренажёра!</h3>
+    <p style="margin: 0;">После успешного прохождения всех трёх заданий ты будешь готов к программированию настоящего квадрокоптера в среде ТРИК Студио.</p>
+  </div>
+  
+  <div style="text-align: center; margin-top: 30px; color: #7f8c8d; font-size: 13px; padding-top: 20px; border-top: 1px solid #ecf0f1;">
+    📘 Тренажёр «ТРИК Студио» · Геоскан Пионер Базовый<br>
+    Пособие для ученика · 2026
+  </div>
+  
+</div>
+
+</body>
+</html>

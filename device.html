@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геоскан Пионер Базовый - Интерактивный тренажер</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mode-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .mode-btn.active {
+            background: #00d4ff;
+            color: #1e3c72;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .drone-view {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            min-height: 600px;
+        }
+        
+        .drone-svg-container {
+            position: relative;
+            width: 100%;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .drone-svg {
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+        }
+        
+        .component-hotspot {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.3);
+            border: 3px solid #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+        
+        .component-hotspot::after {
+            content: '?';
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .component-hotspot:hover {
+            background: rgba(0, 212, 255, 0.6);
+            transform: scale(1.2);
+        }
+        
+        .component-hotspot.selected {
+            background: #00d4ff;
+            animation: none;
+        }
+        
+        .component-hotspot.selected::after {
+            content: '✓';
+        }
+        
+        .component-hotspot.correct {
+            background: #00ff88;
+            border-color: #00ff88;
+            animation: none;
+        }
+        
+        .component-hotspot.correct::after {
+            content: '✓';
+        }
+        
+        .component-hotspot.incorrect {
+            background: #ff4444;
+            border-color: #ff4444;
+            animation: shake 0.5s;
+        }
+        
+        .component-hotspot.incorrect::after {
+            content: '✗';
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            max-height: 700px;
+        }
+        
+        .info-panel h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 24px;
+            border-bottom: 3px solid #00d4ff;
+            padding-bottom: 10px;
+        }
+        
+        .component-info {
+            display: none;
+        }
+        
+        .component-info.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .component-info h3 {
+            color: #2a5298;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .component-info .icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .component-info p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .component-info ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .component-info li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .quiz-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .quiz-question {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .quiz-option {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .quiz-option:hover {
+            background: #e7f3ff;
+            border-color: #00d4ff;
+        }
+        
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #00ff88;
+            color: #155724;
+        }
+        
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #ff4444;
+            color: #721c24;
+        }
+        
+        .quiz-option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            transition: width 0.5s;
+            border-radius: 5px;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #00d4ff;
+            color: white;
+        }
+        
+        .btn:hover {
+            background: #00b8e6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .welcome-message h3 {
+            color: #2a5298;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-message p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚁 Геоскан Пионер Базовый</h1>
+            <p>Интерактивный тренажер по изучению компонентов квадрокоптера</p>
+        </header>
+        
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="switchMode('learn')">📚 Изучение</button>
+            <button class="mode-btn" onclick="switchMode('quiz')">🎯 Тест</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="drone-view">
+                <div class="drone-svg-container" id="droneContainer">
+                    <svg class="drone-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Тень -->
+                        <ellipse cx="300" cy="520" rx="180" ry="30" fill="rgba(0,0,0,0.1)"/>
+                        
+                        <!-- Защитные дуги (обода) вокруг пропеллеров -->
+                        <!-- Передняя левая -->
+                        <circle cx="150" cy="150" r="75" fill="none" stroke="#ff6b35" stroke-width="8" opacity="0.9"/>
+                        <circle cx="150" cy="150" r="75" fill="none" stroke="#ff8c5a" stroke-width="3"/>
+                        
+                        <!-- Передняя правая -->
+                        <circle cx="450" cy="150" r="75" fill="none" stroke="#ff6b35" stroke-width="8" opacity="0.9"/>
+                        <circle cx="450" cy="150" r="75" fill="none" stroke="#ff8c5a" stroke-width="3"/>
+                        
+                        <!-- Задняя левая -->
+                        <circle cx="150" cy="450" r="75" fill="none" stroke="#ff6b35" stroke-width="8" opacity="0.9"/>
+                        <circle cx="150" cy="450" r="75" fill="none" stroke="#ff8c5a" stroke-width="3"/>
+                        
+                        <!-- Задняя правая -->
+                        <circle cx="450" cy="450" r="75" fill="none" stroke="#ff6b35" stroke-width="8" opacity="0.9"/>
+                        <circle cx="450" cy="450" r="75" fill="none" stroke="#ff8c5a" stroke-width="3"/>
+                        
+                        <!-- Лучи рамы (X-образная форма) -->
+                        <!-- Передний левый луч -->
+                        <line x1="260" y1="260" x2="150" y2="150" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+                        <line x1="260" y1="260" x2="150" y2="150" stroke="#34495e" stroke-width="12" stroke-linecap="round"/>
+                        
+                        <!-- Передний правый луч -->
+                        <line x1="340" y1="260" x2="450" y2="150" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+                        <line x1="340" y1="260" x2="450" y2="150" stroke="#34495e" stroke-width="12" stroke-linecap="round"/>
+                        
+                        <!-- Задний левый луч -->
+                        <line x1="260" y1="340" x2="150" y2="450" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+                        <line x1="260" y1="340" x2="150" y2="450" stroke="#34495e" stroke-width="12" stroke-linecap="round"/>
+                        
+                        <!-- Задний правый луч -->
+                        <line x1="340" y1="340" x2="450" y2="450" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+                        <line x1="340" y1="340" x2="450" y2="450" stroke="#34495e" stroke-width="12" stroke-linecap="round"/>
+                        
+                        <!-- Центральный корпус (рама) -->
+                        <rect x="250" y="250" width="100" height="100" rx="15" fill="#ff6b35"/>
+                        <rect x="255" y="255" width="90" height="90" rx="12" fill="#ff8c5a"/>
+                        <rect x="260" y="260" width="80" height="80" rx="10" fill="#ff6b35"/>
+                        
+                        <!-- Детали корпуса -->
+                        <circle cx="300" cy="300" r="25" fill="#2c3e50"/>
+                        <circle cx="300" cy="300" r="20" fill="#34495e"/>
+                        <circle cx="300" cy="300" r="8" fill="#00d4ff"/>
+                        
+                        <!-- Моторы -->
+                        <!-- Передний левый -->
+                        <circle cx="150" cy="150" r="28" fill="#2c3e50"/>
+                        <circle cx="150" cy="150" r="22" fill="#34495e"/>
+                        <circle cx="150" cy="150" r="8" fill="#555"/>
+                        
+                        <!-- Передний правый -->
+                        <circle cx="450" cy="150" r="28" fill="#2c3e50"/>
+                        <circle cx="450" cy="150" r="22" fill="#34495e"/>
+                        <circle cx="450" cy="150" r="8" fill="#555"/>
+                        
+                        <!-- Задний левый -->
+                        <circle cx="150" cy="450" r="28" fill="#2c3e50"/>
+                        <circle cx="150" cy="450" r="22" fill="#34495e"/>
+                        <circle cx="150" cy="450" r="8" fill="#555"/>
+                        
+                        <!-- Задний правый -->
+                        <circle cx="450" cy="450" r="28" fill="#2c3e50"/>
+                        <circle cx="450" cy="450" r="22" fill="#34495e"/>
+                        <circle cx="450" cy="450" r="8" fill="#555"/>
+                        
+                        <!-- Пропеллеры -->
+                        <!-- Передний левый -->
+                        <ellipse cx="150" cy="150" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(45 150 150)"/>
+                        <ellipse cx="150" cy="150" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(-45 150 150)"/>
+                        
+                        <!-- Передний правый -->
+                        <ellipse cx="450" cy="150" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(45 450 150)"/>
+                        <ellipse cx="450" cy="150" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(-45 450 150)"/>
+                        
+                        <!-- Задний левый -->
+                        <ellipse cx="150" cy="450" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(45 150 450)"/>
+                        <ellipse cx="150" cy="450" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(-45 150 450)"/>
+                        
+                        <!-- Задний правый -->
+                        <ellipse cx="450" cy="450" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(45 450 450)"/>
+                        <ellipse cx="450" cy="450" rx="60" ry="12" fill="rgba(100, 200, 255, 0.4)" transform="rotate(-45 450 450)"/>
+                        
+                        <!-- Аккумулятор (снизу) -->
+                        <rect x="270" y="360" width="60" height="35" rx="5" fill="#3498db"/>
+                        <rect x="275" y="365" width="50" height="25" rx="3" fill="#5dade2"/>
+                        <rect x="330" y="370" width="8" height="15" rx="2" fill="#3498db"/>
+                        <text x="300" y="382" font-size="10" fill="white" text-anchor="middle" font-weight="bold">Li-Po</text>
+                        
+                        <!-- Камера/датчик спереди -->
+                        <rect x="285" y="240" width="30" height="20" rx="3" fill="#2c3e50"/>
+                        <circle cx="300" cy="250" r="8" fill="#1a1a1a"/>
+                        <circle cx="300" cy="250" r="5" fill="#00d4ff"/>
+                        
+                        <!-- LED индикаторы -->
+                        <!-- Передние (зеленые) -->
+                        <circle cx="150" cy="120" r="6" fill="#00ff88">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="450" cy="120" r="6" fill="#00ff88">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        
+                        <!-- Задние (красные) -->
+                        <circle cx="150" cy="480" r="6" fill="#ff4444">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="450" cy="480" r="6" fill="#ff4444">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        
+                        <!-- Посадочные опоры -->
+                        <!-- Левая опора -->
+                        <rect x="230" y="360" width="8" height="50" rx="4" fill="#555"/>
+                        <rect x="220" y="405" width="28" height="8" rx="4" fill="#666"/>
+                        
+                        <!-- Правая опора -->
+                        <rect x="362" y="360" width="8" height="50" rx="4" fill="#555"/>
+                        <rect x="352" y="405" width="28" height="8" rx="4" fill="#666"/>
+                        
+                        <!-- Датчики (на корпусе) -->
+                        <circle cx="280" cy="280" r="5" fill="#ffd700"/>
+                        <circle cx="320" cy="280" r="5" fill="#ffd700"/>
+                        <circle cx="280" cy="320" r="5" fill="#ffd700"/>
+                        <circle cx="320" cy="320" r="5" fill="#ffd700"/>
+                        
+                        <!-- Антенна -->
+                        <line x1="300" y1="250" x2="300" y2="220" stroke="#333" stroke-width="3"/>
+                        <circle cx="300" cy="218" r="4" fill="#333"/>
+                    </svg>
+                    
+                    <!-- Hotspots будут добавлены через JavaScript -->
+                </div>
+            </div>
+            
+            <div class="info-panel" id="infoPanel">
+                <div class="welcome-message" id="welcomeMessage">
+                    <h3>Добро пожаловать!</h3>
+                    <p>Выберите режим работы:</p>
+                    <p><strong>📚 Изучение</strong> - кликайте на компоненты квадрокоптера для получения подробной информации</p>
+                    <p><strong>🎯 Тест</strong> - проверьте свои знания, отвечая на вопросы о компонентах</p>
+                </div>
+                
+                <div class="component-info" id="componentInfo">
+                    <div class="icon" id="componentIcon"></div>
+                    <h3 id="componentTitle"></h3>
+                    <div id="componentDescription"></div>
+                </div>
+                
+                <div class="quiz-section" id="quizSection" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="score-display">
+                        Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">10</span> | 
+                        Правильных: <span id="correctAnswers">0</span>
+                    </div>
+                    <div class="quiz-question" id="quizQuestion"></div>
+                    <div class="quiz-options" id="quizOptions"></div>
+                    <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display: none; margin-top: 20px; width: 100%;">
+                        Следующий вопрос →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные о компонентах
+        const components = [
+            {
+                id: 'frame',
+                name: 'Рама (каркас)',
+                icon: '🏗️',
+                description: `
+                    <p><strong>Рама</strong> — это основа квадрокоптера, к которой крепятся все остальные компоненты.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Обеспечивает жесткость и прочность конструкции</li>
+                        <li>Защищает внутренние компоненты от повреждений</li>
+                        <li>Определяет геометрию и размер дрона</li>
+                        <li>Служит основанием для крепления моторов и электроники</li>
+                    </ul>
+                    <p><strong>Особенность Геоскан Пионер:</strong> X-образная рама с защитными дугами вокруг пропеллеров для безопасного обучения.</p>
+                `
+            },
+            {
+                id: 'motors',
+                name: 'Моторы и пропеллеры',
+                icon: '⚙️',
+                description: `
+                    <p><strong>Электродвигатели</strong> приводят в движение пропеллеры, создавая подъемную силу.</p>
+                    <p><strong>Пропеллеры (винты)</strong> — вращаются, создавая поток воздуха и подъемную силу.</p>
+                    <p><strong>Особенности:</strong></p>
+                    <ul>
+                        <li>В квадрокоптере 4 мотора (по одному на каждом луче)</li>
+                        <li>Два мотора вращаются по часовой стрелке, два — против</li>
+                        <li>Скорость вращения каждого мотора управляется отдельно</li>
+                        <li>Изменение скорости вращения позволяет управлять дроном</li>
+                    </ul>
+                    <p><strong>Тип моторов:</strong> Бесколлекторные электродвигатели — надежные и эффективные.</p>
+                `
+            },
+            {
+                id: 'controller',
+                name: 'Полетный контроллер',
+                icon: '🧠',
+                description: `
+                    <p><strong>Полетный контроллер</strong> — это "мозг" квадрокоптера, управляющий всеми системами.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Обрабатывает данные с датчиков</li>
+                        <li>Управляет скоростью вращения моторов</li>
+                        <li>Поддерживает стабильность полета</li>
+                        <li>Выполняет команды с пульта управления</li>
+                        <li>Контролирует режимы полета</li>
+                    </ul>
+                    <p><strong>Расположение:</strong> Находится в центральном корпусе дрона.</p>
+                `
+            },
+            {
+                id: 'battery',
+                name: 'Аккумулятор (батарея)',
+                icon: '🔋',
+                description: `
+                    <p><strong>Аккумулятор</strong> — источник энергии для всех систем квадрокоптера.</p>
+                    <p><strong>Характеристики:</strong></p>
+                    <ul>
+                        <li>Тип: Li-Po (литий-полимерный) аккумулятор</li>
+                        <li>Обеспечивает питание моторов и электроники</li>
+                        <li>Определяет время полета (обычно 10-15 минут)</li>
+                        <li>Требует правильной зарядки и хранения</li>
+                    </ul>
+                    <p><strong>Расположение:</strong> Крепится снизу корпуса для устойчивости.</p>
+                    <p><strong>Важно:</strong> Следите за уровнем заряда! При низком заряде дрон может упасть.</p>
+                `
+            },
+            {
+                id: 'sensors',
+                name: 'Датчики',
+                icon: '📡',
+                description: `
+                    <p><strong>Датчики</strong> позволяют квадрокоптеру понимать свое положение в пространстве.</p>
+                    <p><strong>Основные датчики:</strong></p>
+                    <ul>
+                        <li><strong>Гироскоп</strong> — измеряет угловую скорость вращения</li>
+                        <li><strong>Акселерометр</strong> — измеряет ускорение и наклон</li>
+                        <li><strong>Барометр</strong> — измеряет атмосферное давление для определения высоты</li>
+                        <li><strong>Магнитометр</strong> — определяет направление (компас)</li>
+                    </ul>
+                    <p><strong>Расположение:</strong> Находятся на центральном корпусе дрона.</p>
+                `
+            },
+            {
+                id: 'camera',
+                name: 'Камера',
+                icon: '📷',
+                description: `
+                    <p><strong>Камера</strong> позволяет вести видеосъемку с воздуха и передавать изображение в реальном времени.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Видеосъемка в HD качестве</li>
+                        <li>Передача видео на пульт управления</li>
+                        <li>Фотографирование с воздуха</li>
+                        <li>Помощь в навигации и посадке</li>
+                    </ul>
+                    <p><strong>Расположение:</strong> Спереди корпуса для лучшего обзора.</p>
+                `
+            },
+            {
+                id: 'leds',
+                name: 'LED индикация',
+                icon: '💡',
+                description: `
+                    <p><strong>Светодиоды (LED)</strong> служат для индикации состояния квадрокоптера.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Показывают направление дрона (передние/задние огни)</li>
+                        <li>Индикация уровня заряда батареи</li>
+                        <li>Сигнализация о режимах полета</li>
+                        <li>Предупреждение о низком заряде</li>
+                        <li>Облегчают управление в темное время суток</li>
+                    </ul>
+                    <p><strong>Цвета:</strong> Передние моторы — зеленые огни, задние — красные.</p>
+                `
+            },
+            {
+                id: 'landing',
+                name: 'Посадочные опоры',
+                icon: '🛬',
+                description: `
+                    <p><strong>Посадочные опоры (шасси)</strong> обеспечивают безопасную посадку и взлет.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Защищают корпус от повреждений при посадке</li>
+                        <li>Обеспечивают устойчивость на поверхности</li>
+                        <li>Предотвращают контакт пропеллеров с землей</li>
+                        <li>Поглощают удары при жесткой посадке</li>
+                    </ul>
+                    <p><strong>Материал:</strong> Обычно изготавливаются из гибкого пластика, способного поглощать удары.</p>
+                `
+            },
+            {
+                id: 'guards',
+                name: 'Защитные дуги',
+                icon: '🛡️',
+                description: `
+                    <p><strong>Защитные дуги (обода)</strong> — важная особенность учебных квадрокоптеров.</p>
+                    <p><strong>Функции:</strong></p>
+                    <ul>
+                        <li>Защищают пропеллеры от повреждений при столкновениях</li>
+                        <li>Предотвращают травмы при контакте с людьми</li>
+                        <li>Позволяют безопасно обучаться пилотированию</li>
+                        <li>Защищают мебель и предметы интерьера</li>
+                    </ul>
+                    <p><strong>Особенность:</strong> Характерная черта квадрокоптеров серии Геоскан Пионер для безопасного обучения.</p>
+                `
+            }
+        ];
+
+        // Вопросы для теста
+        const quizQuestions = [
+            {
+                question: "Какой компонент является 'мозгом' квадрокоптера и управляет всеми системами?",
+                options: ["Аккумулятор", "Полетный контроллер", "Моторы", "Датчики"],
+                correct: 1,
+                component: 'controller'
+            },
+            {
+                question: "Сколько моторов имеет квадрокоптер?",
+                options: ["2", "3", "4", "6"],
+                correct: 2,
+                component: 'motors'
+            },
+            {
+                question: "Какой тип аккумулятора используется в квадрокоптерах?",
+                options: ["Ni-Cd", "Li-Po", "Li-Ion", "Свинцовый"],
+                correct: 1,
+                component: 'battery'
+            },
+            {
+                question: "Какой датчик измеряет высоту полета?",
+                options: ["Гироскоп", "Акселерометр", "Барометр", "Магнитометр"],
+                correct: 2,
+                component: 'sensors'
+            },
+            {
+                question: "Для чего нужны посадочные опоры?",
+                options: [
+                    "Для украшения дрона",
+                    "Для безопасной посадки и защиты корпуса",
+                    "Для увеличения скорости",
+                    "Для улучшения связи"
+                ],
+                correct: 1,
+                component: 'landing'
+            },
+            {
+                question: "Что создают вращающиеся пропеллеры?",
+                options: [
+                    "Электрический ток",
+                    "Подъемную силу",
+                    "Тепло",
+                    "Звуковые волны"
+                ],
+                correct: 1,
+                component: 'motors'
+            },
+            {
+                question: "Какой цвет LED обычно указывает на переднюю часть дрона?",
+                options: ["Красный", "Зеленый", "Синий", "Желтый"],
+                correct: 1,
+                component: 'leds'
+            },
+            {
+                question: "Какая особенность отличает учебные квадрокоптеры Геоскан Пионер?",
+                options: [
+                    "Большие размеры",
+                    "Защитные дуги вокруг пропеллеров",
+                    "Дополнительные моторы",
+                    "Деревянная рама"
+                ],
+                correct: 1,
+                component: 'guards'
+            },
+            {
+                question: "Какой датчик измеряет угловую скорость вращения?",
+                options: ["Барометр", "Акселерометр", "Гироскоп", "Термометр"],
+                correct: 2,
+                component: 'sensors'
+            },
+            {
+                question: "Для чего нужна камера на квадрокоптере?",
+                options: [
+                    "Только для украшения",
+                    "Для видеосъемки и передачи изображения",
+                    "Для измерения высоты",
+                    "Для связи с пультом"
+                ],
+                correct: 1,
+                component: 'camera'
+            }
+        ];
+
+        let currentMode = 'learn';
+        let currentQuestionIndex = 0;
+        let correctAnswersCount = 0;
+        let selectedComponent = null;
+
+        // Создание hotspots
+        function createHotspots() {
+            const container = document.getElementById('droneContainer');
+            const positions = {
+                frame: { x: '50%', y: '50%' },
+                motors: { x: '25%', y: '25%' },
+                controller: { x: '50%', y: '50%' },
+                battery: { x: '50%', y: '63%' },
+                sensors: { x: '45%', y: '45%' },
+                camera: { x: '50%', y: '40%' },
+                leds: { x: '25%', y: '20%' },
+                landing: { x: '40%', y: '68%' },
+                guards: { x: '25%', y: '25%' }
+            };
+
+            components.forEach(comp => {
+                const hotspot = document.createElement('div');
+                hotspot.className = 'component-hotspot';
+                hotspot.id = `hotspot-${comp.id}`;
+                hotspot.style.left = positions[comp.id].x;
+                hotspot.style.top = positions[comp.id].y;
+                hotspot.style.transform = 'translate(-50%, -50%)';
+                hotspot.onclick = () => selectComponent(comp.id);
+                container.appendChild(hotspot);
+            });
+        }
+
+        function selectComponent(componentId) {
+            if (currentMode === 'quiz') return;
+
+            const component = components.find(c => c.id === componentId);
+            if (!component) return;
+
+            // Убираем выделение с предыдущего
+            document.querySelectorAll('.component-hotspot').forEach(h => {
+                h.classList.remove('selected');
+            });
+
+            // Выделяем текущий
+            const hotspot = document.getElementById(`hotspot-${componentId}`);
+            hotspot.classList.add('selected');
+
+            // Показываем информацию
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('componentInfo').classList.add('active');
+            document.getElementById('componentIcon').textContent = component.icon;
+            document.getElementById('componentTitle').textContent = component.name;
+            document.getElementById('componentDescription').innerHTML = component.description;
+
+            selectedComponent = componentId;
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Обновляем кнопки
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Сбрасываем состояние
+            document.querySelectorAll('.component-hotspot').forEach(h => {
+                h.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            if (mode === 'learn') {
+                document.getElementById('welcomeMessage').style.display = 'block';
+                document.getElementById('componentInfo').classList.remove('active');
+                document.getElementById('quizSection').style.display = 'none';
+            } else {
+                document.getElementById('welcomeMessage').style.display = 'none';
+                document.getElementById('componentInfo').classList.remove('active');
+                document.getElementById('quizSection').style.display = 'block';
+                startQuiz();
+            }
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            document.getElementById('totalQuestions').textContent = quizQuestions.length;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = quizQuestions[currentQuestionIndex];
+            
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('correctAnswers').textContent = correctAnswersCount;
+            document.getElementById('progressFill').style.width = 
+                ((currentQuestionIndex / quizQuestions.length) * 100) + '%';
+            
+            document.getElementById('quizQuestion').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function selectAnswer(answerIndex) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => opt.classList.add('disabled'));
+            
+            if (answerIndex === question.correct) {
+                options[answerIndex].classList.add('correct');
+                correctAnswersCount++;
+                
+                // Подсвечиваем правильный компонент на схеме
+                const hotspot = document.getElementById(`hotspot-${question.component}`);
+                if (hotspot) hotspot.classList.add('correct');
+            } else {
+                options[answerIndex].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                
+                const hotspot = document.getElementById(`hotspot-${question.component}`);
+                if (hotspot) hotspot.classList.add('incorrect');
+            }
+            
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            // Сбрасываем подсветку компонентов
+            document.querySelectorAll('.component-hotspot').forEach(h => {
+                h.classList.remove('correct', 'incorrect');
+            });
+            
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function showResults() {
+            const percentage = Math.round((correctAnswersCount / quizQuestions.length) * 100);
+            
+            document.getElementById('quizSection').innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <h2 style="color: #1e3c72; margin-bottom: 20px;">🎉 Тест завершен!</h2>
+                    <div style="font-size: 48px; margin-bottom: 20px;">
+                        ${percentage >= 80 ? '🏆' : percentage >= 60 ? '👍' : '📚'}
+                    </div>
+                    <div class="score-display" style="font-size: 32px; margin-bottom: 30px;">
+                        Ваш результат: ${correctAnswersCount} из ${quizQuestions.length} (${percentage}%)
+                    </div>
+                    <p style="font-size: 18px; margin-bottom: 30px; color: #666;">
+                        ${percentage >= 80 ? 'Отлично! Вы прекрасно знаете компоненты квадрокоптера!' :
+                          percentage >= 60 ? 'Хорошо! Но есть что повторить.' :
+                          'Рекомендуем вернуться к режиму изучения.'}
+                    </p>
+                    <button class="btn" onclick="location.reload()">🔄 Пройти заново</button>
+                </div>
+            `;
+            
+            document.getElementById('progressFill').style.width = '100%';
+        }
+
+        // Инициализация
+        createHotspots();
+    </script>
+</body>
+</html>

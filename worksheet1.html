@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рабочий лист - Знакомство с ТРИК Студио</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .worksheet {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2c5aa0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2c5aa0;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .student-info div {
+            display: flex;
+            align-items: center;
+        }
+        
+        .student-info label {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+        
+        .student-info .line {
+            flex: 1;
+            border-bottom: 1px solid #999;
+            height: 20px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            color: #2c5aa0;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2c5aa0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            margin-left: 20px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        .task {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .task-number {
+            display: inline-block;
+            background: #2c5aa0;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .task-content {
+            margin-top: 10px;
+        }
+        
+        .answer-space {
+            border: 1px dashed #999;
+            min-height: 60px;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .answer-space.large {
+            min-height: 120px;
+        }
+        
+        .checkbox-list {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .checkbox-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #2c5aa0;
+            border-radius: 3px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #2c5aa0;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #2c5aa0;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .worksheet {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="worksheet">
+        <div class="header">
+            <h1>🤖 Рабочий лист</h1>
+            <div class="subtitle">Тема: Знакомство со средой программирования ТРИК Студио</div>
+        </div>
+        
+        <div class="student-info">
+            <div>
+                <label>ФИО:</label>
+                <div class="line"></div>
+            </div>
+            <div>
+                <label>Класс:</label>
+                <div class="line"></div>
+            </div>
+            <div>
+                <label>Дата:</label>
+                <div class="line"></div>
+            </div>
+            <div>
+                <label>Вариант:</label>
+                <div class="line"></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📚 Что такое ТРИК Студио?</div>
+            <div class="info-box">
+                <h3>Основные сведения:</h3>
+                <ul>
+                    <li><strong>ТРИК Студио</strong> — это бесплатная среда программирования роботов</li>
+                    <li>Входит в реестр российского программного обеспечения</li>
+                    <li>Поддерживает визуальное (блочное) и текстовое программирование (Python)</li>
+                    <li>Позволяет программировать роботов LEGO Mindstorms NXT/EV3, квадрокоптеры и виртуальных роботов</li>
+                    <li>Имеет встроенный режим имитационного моделирования</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 1: Интерфейс программы</div>
+            <div class="task">
+                <span class="task-number">1</span>
+                <strong>Изучите интерфейс ТРИК Студио и заполните таблицу:</strong>
+                <div class="task-content">
+                    <div class="table-container">
+                        <table>
+                            <tr>
+                                <th>Элемент интерфейса</th>
+                                <th>Назначение</th>
+                            </tr>
+                            <tr>
+                                <td>Палитра блоков</td>
+                                <td class="answer-space"></td>
+                            </tr>
+                            <tr>
+                                <td>Рабочее поле</td>
+                                <td class="answer-space"></td>
+                            </tr>
+                            <tr>
+                                <td>Панель инструментов</td>
+                                <td class="answer-space"></td>
+                            </tr>
+                            <tr>
+                                <td>Окно симуляции</td>
+                                <td class="answer-space"></td>
+                            </tr>
+                            <tr>
+                                <td>Консоль</td>
+                                <td class="answer-space"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 2: Основные блоки</div>
+            <div class="task">
+                <span class="task-number">2</span>
+                <strong>Отметьте, какие блоки вы нашли в палитре:</strong>
+                <div class="task-content">
+                    <ul class="checkbox-list">
+                        <li><span class="checkbox"></span> Блок "Двигаться вперед"</li>
+                        <li><span class="checkbox"></span> Блок "Повернуть"</li>
+                        <li><span class="checkbox"></span> Блок "Ожидание"</li>
+                        <li><span class="checkbox"></span> Блок "Цикл"</li>
+                        <li><span class="checkbox"></span> Блок "Условие"</li>
+                        <li><span class="checkbox"></span> Блок "Датчик"</li>
+                        <li><span class="checkbox"></span> Блок "Звук"</li>
+                        <li><span class="checkbox"></span> Блок "Переменная"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 3: Практическая работа</div>
+            <div class="task">
+                <span class="task-number">3</span>
+                <strong>Создайте простую программу для виртуального робота:</strong>
+                <div class="task-content">
+                    <p><strong>Задача:</strong> Робот должен проехать вперед, повернуть направо и остановиться.</p>
+                    <p style="margin-top: 10px;"><strong>Запишите последовательность блоков:</strong></p>
+                    <div class="answer-space large"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 4: Режимы программирования</div>
+            <div class="task">
+                <span class="task-number">4</span>
+                <strong>Ответьте на вопросы:</strong>
+                <div class="task-content">
+                    <p><strong>1. Какие режимы программирования поддерживает ТРИК Студио?</strong></p>
+                    <div class="answer-space"></div>
+                    
+                    <p style="margin-top: 15px;"><strong>2. В чем разница между визуальным и текстовым программированием?</strong></p>
+                    <div class="answer-space"></div>
+                    
+                    <p style="margin-top: 15px;"><strong>3. Какой язык программирования используется в текстовом режиме?</strong></p>
+                    <div class="answer-space"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 5: Симуляция</div>
+            <div class="task">
+                <span class="task-number">5</span>
+                <strong>Заполните пропуски в предложениях:</strong>
+                <div class="task-content">
+                    <ol style="margin-left: 20px;">
+                        <li style="margin-bottom: 15px;">
+                            Режим имитационного моделирования позволяет _____________________________
+                            <div class="answer-space"></div>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            Для запуска программы в режиме симуляции нужно нажать кнопку _____________________________
+                            <div class="answer-space"></div>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            В окне симуляции можно увидеть _____________________________
+                            <div class="answer-space"></div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">✏️ Задание 6: Рефлексия</div>
+            <div class="task">
+                <span class="task-number">6</span>
+                <strong>Ответьте на вопросы:</strong>
+                <div class="task-content">
+                    <p><strong>1. Что нового вы узнали о ТРИК Студио?</strong></p>
+                    <div class="answer-space large"></div>
+                    
+                    <p style="margin-top: 15px;"><strong>2. Что показалось самым интересным?</strong></p>
+                    <div class="answer-space"></div>
+                    
+                    <p style="margin-top: 15px;"><strong>3. Какие вопросы у вас остались?</strong></p>
+                    <div class="answer-space"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📝 Дополнительные заметки</div>
+            <div class="answer-space large" style="min-height: 150px;"></div>
+        </div>
+        
+        <div class="footer">
+            <p>✅ Проверьте себя перед сдачей работы!</p>
+            <p style="margin-top: 10px;">Оценка: _______ | Подпись учителя: _______</p>
+        </div>
+    </div>
+</body>
+</html>

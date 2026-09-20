@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ключи - Знакомство с ТРИК Студио</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .worksheet {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #28a745;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            color: #28a745;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .task {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .task-number {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .answer {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        
+        .answer-label {
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .answer-cell {
+            background: #d4edda !important;
+            font-weight: 500;
+        }
+        
+        .checkbox-list {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .checkbox-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-checked {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #28a745;
+            border-radius: 3px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            background: #28a745;
+            position: relative;
+        }
+        
+        .checkbox-checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .sequence {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .sequence-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #2c5aa0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sequence-number {
+            background: #2c5aa0;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-style: italic;
+        }
+        
+        .correction {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        
+        .correction-label {
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 5px;
+        }
+        
+        .lang-table {
+            margin-top: 15px;
+        }
+        
+        .lang-table td:first-child {
+            font-weight: bold;
+            width: 40%;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #28a745;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .worksheet {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="worksheet">
+        <div class="header">
+            <h1>✅ Ключи для учителя</h1>
+            <div class="subtitle">Тема: Знакомство со средой программирования ТРИК Студио</div>
+        </div>
+        
+        <div class="correction">
+            <p class="correction-label">⚠️ Важное уточнение по языкам программирования:</p>
+            <p>В ТРИК Студио поддерживаются разные языки программирования в зависимости от платформы:</p>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>Python</strong> — для программирования роботов на платформе ТРИК</li>
+                <li><strong>Lua</strong> — для программирования квадрокоптера «Геоскан Пионер»</li>
+                <li><strong>JavaScript</strong> — также доступен для некоторых платформ</li>
+            </ul>
+            <p style="margin-top: 8px;">При проверке заданий 4 учитывать эту особенность.</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 1: Интерфейс программы</div>
+            <div class="task">
+                <span class="task-number">1</span>
+                <strong>Правильные ответы для таблицы:</strong>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Элемент интерфейса</th>
+                            <th>Назначение</th>
+                        </tr>
+                        <tr>
+                            <td>Палитра блоков</td>
+                            <td class="answer-cell">Содержит все доступные блоки для программирования (движение, датчики, циклы и т.д.)</td>
+                        </tr>
+                        <tr>
+                            <td>Рабочее поле</td>
+                            <td class="answer-cell">Основная область для создания программы путем соединения блоков</td>
+                        </tr>
+                        <tr>
+                            <td>Панель инструментов</td>
+                            <td class="answer-cell">Содержит кнопки для управления программой (запуск, остановка, сохранение, выбор языка программирования)</td>
+                        </tr>
+                        <tr>
+                            <td>Окно симуляции</td>
+                            <td class="answer-cell">Показывает виртуального робота и трассу для тестирования программы</td>
+                        </tr>
+                        <tr>
+                            <td>Консоль</td>
+                            <td class="answer-cell">Отображает сообщения об ошибках, отладочную информацию и результаты выполнения</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="note">
+                    <strong>Примечание:</strong> Принимаются любые ответы, передающие суть назначения элементов. Ключевые слова: палитра - блоки/команды, рабочее поле - создание программы, панель - управление, симуляция - тестирование, консоль - ошибки/сообщения.
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 2: Основные блоки</div>
+            <div class="task">
+                <span class="task-number">2</span>
+                <strong>Правильный ответ:</strong>
+                <div class="answer">
+                    <p>Все блоки должны быть отмечены ✓</p>
+                    <ul class="checkbox-list">
+                        <li><span class="checkbox-checked"></span> Блок "Двигаться вперед"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Повернуть"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Ожидание"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Цикл"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Условие"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Датчик"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Звук"</li>
+                        <li><span class="checkbox-checked"></span> Блок "Переменная"</li>
+                    </ul>
+                </div>
+                <div class="note">
+                    <strong>Примечание:</strong> Это ознакомительное задание. Ученик должен найти все перечисленные блоки в палитре программы.
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 3: Практическая работа</div>
+            <div class="task">
+                <span class="task-number">3</span>
+                <strong>Правильная последовательность блоков:</strong>
+                <div class="sequence">
+                    <div class="sequence-item">
+                        <span class="sequence-number">1</span>
+                        <strong>Блок "Двигаться вперед"</strong> - установить время или расстояние движения
+                    </div>
+                    <div class="sequence-item">
+                        <span class="sequence-number">2</span>
+                        <strong>Блок "Повернуть направо"</strong> - установить угол поворота (90°)
+                    </div>
+                    <div class="sequence-item">
+                        <span class="sequence-number">3</span>
+                        <strong>Блок "Остановиться"</strong> или завершение программы
+                    </div>
+                </div>
+                <div class="answer">
+                    <p><strong>Альтернативные варианты:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Двигаться вперед → Повернуть (направо) → Двигаться вперед (короткое расстояние) → Стоп</li>
+                        <li>Использовать блок "Ожидание" между командами</li>
+                    </ul>
+                </div>
+                <div class="note">
+                    <strong>Примечание:</strong> Принимаются любые логичные последовательности, выполняющие задачу. Важно: движение вперед, поворот направо, остановка.
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 4: Режимы программирования</div>
+            <div class="task">
+                <span class="task-number">4</span>
+                <strong>Правильные ответы:</strong>
+                
+                <div class="answer">
+                    <p class="answer-label">1. Какие режимы программирования поддерживает ТРИК Студио?</p>
+                    <p>Визуальное (блочное) программирование и текстовое программирование. Поддерживаются разные языки в зависимости от платформы.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">2. В чем разница между визуальным и текстовым программированием?</p>
+                    <p><strong>Визуальное:</strong> программа составляется из графических блоков (картинок), которые соединяются между собой. Не требует знания синтаксиса языка программирования.</p>
+                    <p style="margin-top: 8px;"><strong>Текстовое:</strong> программа пишется кодом на языке программирования. Требует знания синтаксиса и команд языка.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">3. Какой язык программирования используется в текстовом режиме?</p>
+                    <p>В ТРИК Студио поддерживаются разные языки в зависимости от платформы:</p>
+                    <table class="lang-table">
+                        <tr>
+                            <td>Платформа ТРИК</td>
+                            <td><strong>Python</strong> и JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td>Квадрокоптер «Геоскан Пионер»</td>
+                            <td><strong>Lua</strong></td>
+                        </tr>
+                        <tr>
+                            <td>LEGO Mindstorms EV3/NXT</td>
+                            <td>Визуальное программирование</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="correction">
+                    <p class="correction-label">⚠️ Внимание при проверке:</p>
+                    <p>Если ученик ответил только «Python» — принять ответ как частичный (1 балл из 2), так как для «Геоскан Пионер» используется <strong>Lua</strong>. Полный ответ (2 балла) должен включать упоминание нескольких языков в зависимости от платформы.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 5: Симуляция</div>
+            <div class="task">
+                <span class="task-number">5</span>
+                <strong>Правильные ответы для заполнения пропусков:</strong>
+                
+                <div class="answer">
+                    <p class="answer-label">1. Режим имитационного моделирования позволяет...</p>
+                    <p>...тестировать программу без реального робота, запуская виртуального робота на виртуальной трассе.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">2. Для запуска программы в режиме симуляции нужно нажать кнопку...</p>
+                    <p>... "Запустить" или "Run" (зеленая кнопка с треугольником ▶) на панели инструментов.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">3. В окне симуляции можно увидеть...</p>
+                    <p>...виртуального робота, трассу (поле для движения), датчики робота и процесс выполнения программы в реальном времени.</p>
+                </div>
+                
+                <div class="note">
+                    <strong>Примечание:</strong> Принимаются ответы, передающие основную суть. Ключевые моменты: тестирование без реального робота, кнопка запуска, виртуальный робот и трасса.
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📋 Задание 6: Рефлексия</div>
+            <div class="task">
+                <span class="task-number">6</span>
+                <strong>Примерные ответы (принимаются любые осмысленные ответы):</strong>
+                
+                <div class="answer">
+                    <p class="answer-label">1. Что нового вы узнали о ТРИК Студио?</p>
+                    <p><em>Пример:</em> Узнал, что это российская программа для программирования роботов, которая поддерживает и визуальное, и текстовое программирование. Можно тестировать программы на виртуальном роботе. Для разных платформ используются разные языки: Python для ТРИК, Lua для Геоскан Пионер.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">2. Что показалось самым интересным?</p>
+                    <p><em>Пример:</em> Возможность создавать программы из блоков-картинок. Интересно, что можно сразу увидеть результат в симуляции. Можно программировать не только роботов, но и квадрокоптеры.</p>
+                </div>
+                
+                <div class="answer">
+                    <p class="answer-label">3. Какие вопросы у вас остались?</p>
+                    <p><em>Пример:</em> Как использовать датчики? Можно ли программировать других роботов? Как создавать сложные программы с условиями? Чем отличается Lua от Python?</p>
+                </div>
+                
+                <div class="note">
+                    <strong>Примечание:</strong> Это рефлексивное задание. Оценивается осмысленность и полнота ответов, а не их точное совпадение с ключами.
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📊 Критерии оценивания</div>
+            <div class="task">
+                <div class="answer">
+                    <p><strong>Задание 1:</strong> 5 баллов (по 1 баллу за каждый правильный ответ)</p>
+                    <p><strong>Задание 2:</strong> 8 баллов (по 1 баллу за каждый найденный блок)</p>
+                    <p><strong>Задание 3:</strong> 5 баллов (логичная последовательность блоков)</p>
+                    <p><strong>Задание 4:</strong> 6 баллов (по 2 балла за каждый вопрос)</p>
+                    <p style="margin-left: 15px;">— вопрос 3: 2 балла, если упомянуты и Python, и Lua; 1 балл, если только Python</p>
+                    <p><strong>Задание 5:</strong> 6 баллов (по 2 балла за каждый пропуск)</p>
+                    <p><strong>Задание 6:</strong> 3 балла (по 1 баллу за каждый осмысленный ответ)</p>
+                    <p style="margin-top: 15px;"><strong>Всего: 33 балла</strong></p>
+                    <p style="margin-top: 10px;"><strong>Шкала оценивания:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>30-33 балла - "5" (отлично)</li>
+                        <li>24-29 баллов - "4" (хорошо)</li>
+                        <li>17-23 балла - "3" (удовлетворительно)</li>
+                        <li>менее 17 баллов - "2" (неудовлетворительно)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">📌 Справочная информация для учителя</div>
+            <div class="task">
+                <div class="answer">
+                    <p><strong>О языках программирования в ТРИК Студио:</strong></p>
+                    <table class="lang-table">
+                        <tr>
+                            <th>Платформа</th>
+                            <th>Язык программирования</th>
+                        </tr>
+                        <tr>
+                            <td>ТРИК (контроллеры ТРИК)</td>
+                            <td>Python, JavaScript</td>
+                        </tr>
+                        <tr>
+                            <td>Квадрокоптер «Геоскан Пионер»</td>
+                            <td><strong>Lua</strong></td>
+                        </tr>
+                        <tr>
+                            <td>LEGO Mindstorms EV3/NXT</td>
+                            <td>Визуальное программирование</td>
+                        </tr>
+                        <tr>
+                            <td>Виртуальные модели</td>
+                            <td>Python, JavaScript</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 15px;"><strong>Важно:</strong> При объяснении ученикам подчеркнуть, что ТРИК Студио — это универсальная среда, которая поддерживает разные языки для разных платформ. Это позволяет использовать одну программу для обучения работе с различными робототехническими системами.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>✅ Ключи для учителя | Тема: Знакомство с ТРИК Студио</p>
+            <p style="margin-top: 5px; font-size: 12px;">Обновлено с учётом поддержки Lua для «Геоскан Пионер»</p>
+        </div>
+    </div>
+</body>
+</html>

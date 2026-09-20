@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>📝 Рабочий лист — Занятие 2: Сложные траектории</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: #2c3e50;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  
+  .worksheet {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .cover {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .cover .logo { font-size: 60px; margin-bottom: 10px; }
+  .cover h1 { font-size: 32px; margin-bottom: 8px; font-weight: 800; }
+  .cover h2 { font-size: 18px; font-weight: 400; opacity: 0.95; margin-bottom: 15px; }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.25);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 5px;
+  }
+  
+  .student-info {
+    background: #f8f9fa;
+    padding: 20px 40px;
+    border-bottom: 2px solid #ecf0f1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .student-info label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .student-info input {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-bottom: 2px dashed #bdc3c7;
+    background: transparent;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  
+  .student-info input:focus {
+    outline: none;
+    border-bottom-color: #ff6b35;
+  }
+  
+  .content { padding: 30px 40px; }
+  
+  .stage {
+    margin-bottom: 40px;
+    border: 2px solid #ecf0f1;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  
+  .stage-header {
+    background: linear-gradient(90deg, #ff6b35, #ff8c5a);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .stage-num {
+    background: white;
+    color: #ff6b35;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  
+  .stage-header h2 { font-size: 20px; font-weight: 700; }
+  
+  .stage-header .time {
+    margin-left: auto;
+    background: rgba(255,255,255,0.25);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .stage-body { padding: 25px; }
+  
+  .stage-artifact {
+    background: linear-gradient(135deg, #fff3e6, #ffe8d6);
+    border-left: 4px solid #ff6b35;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  .stage-artifact b { color: #ff6b35; }
+  
+  .task {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .task h3 {
+    color: #ff6b35;
+    font-size: 17px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .task h3 .task-num {
+    background: #ff6b35;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  
+  .task p { font-size: 14px; margin-bottom: 10px; }
+  
+  .trajectory-box {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+  
+  .trajectory-svg {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 10px;
+    padding: 10px;
+    flex-shrink: 0;
+  }
+  
+  .trajectory-desc { flex: 1; min-width: 250px; }
+  .trajectory-desc h4 { color: #2a5298; font-size: 14px; margin-bottom: 8px; }
+  .trajectory-desc ul { margin-left: 20px; font-size: 13px; }
+  .trajectory-desc li { margin-bottom: 4px; }
+  
+  /* ===== БЛОКИ ТРИК СТУДИО ===== */
+  .trik-workspace {
+    background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+    border: 2px dashed #bdc3c7;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    min-height: 150px;
+  }
+  
+  .trik-workspace-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .trik-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .trik-block {
+    position: relative;
+    padding: 10px 16px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+  }
+  
+  .trik-block::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 20px;
+    width: 16px;
+    height: 4px;
+    background: inherit;
+    border-radius: 3px 3px 0 0;
+  }
+  
+  .trik-block::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 20px;
+    width: 16px;
+    height: 4px;
+    background: inherit;
+    border-radius: 0 0 3px 3px;
+    z-index: 1;
+  }
+  
+  .trik-block:first-child::before { display: none; }
+  .trik-block.last-visible::after { display: none; }
+  
+  /* Цвета категорий как в ТРИК Студио */
+  .trik-height { background: linear-gradient(135deg, #27ae60, #229954); }
+  .trik-move { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .trik-turn { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .trik-loop { 
+    background: linear-gradient(135deg, #9b59b6, #8e44ad); 
+    padding-bottom: 0;
+  }
+  .trik-wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+  
+  .trik-block .block-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  
+  .trik-block .block-label {
+    flex-shrink: 0;
+  }
+  
+  .trik-block input {
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    width: 65px;
+    text-align: center;
+  }
+  
+  .trik-block input:focus {
+    outline: none;
+    background: rgba(255,255,255,0.5);
+    border-color: white;
+  }
+  
+  .trik-block .block-unit {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 500;
+  }
+  
+  /* Блок цикла с вложенной областью */
+  .trik-loop-container {
+    margin: 4px 0 8px 20px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.15);
+    border-left: 3px solid rgba(255,255,255,0.5);
+    border-radius: 0 8px 8px 0;
+    min-height: 50px;
+  }
+  
+  .trik-loop-container .trik-block {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  
+  .trik-loop-hint {
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    padding: 8px;
+  }
+  
+  /* Палитра блоков ТРИК Студио */
+  .trik-palette {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 15px 0;
+    border: 1px solid #ecf0f1;
+  }
+  
+  .trik-palette-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  
+  .trik-palette-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  
+  .trik-palette-row:last-child { margin-bottom: 0; }
+  
+  .trik-palette-block {
+    padding: 7px 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  
+  .trik-palette-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .trik-palette-block:active { transform: scale(0.97); }
+  
+  .answer-area {
+    border: 2px dashed #bdc3c7;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    min-height: 80px;
+    background: #fafbfc;
+  }
+  
+  .answer-area textarea {
+    width: 100%;
+    min-height: 60px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    color: #2c3e50;
+  }
+  
+  .answer-area textarea:focus { outline: none; }
+  
+  .info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #3498db;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .info-box b { color: #2980b9; }
+  
+  .tip-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .tip-box b { color: #d35400; }
+  
+  /* Конструктор блок-схемы */
+  .flowchart-builder {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+  }
+  
+  .flowchart-builder h4 {
+    color: #ff6b35;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  
+  .block-palette {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #ecf0f1;
+  }
+  
+  .block-palette-label {
+    width: 100%;
+    font-size: 12px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  
+  .flow-block-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .flow-block-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  .fb-start { background: linear-gradient(135deg, #27ae60, #229954); border-radius: 20px; }
+  .fb-end { background: linear-gradient(135deg, #e74c3c, #c0392b); border-radius: 20px; }
+  .fb-takeoff { background: linear-gradient(135deg, #27ae60, #229954); }
+  .fb-land { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .fb-move { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .fb-turn { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .fb-wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+  .fb-loop { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+  .fb-decision { background: linear-gradient(135deg, #f39c12, #d35400); }
+  
+  .flowchart-canvas {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .flow-node {
+    position: relative;
+    padding: 10px 20px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    min-width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .flow-node:hover { transform: scale(1.03); }
+  
+  .flow-node.start, .flow-node.end {
+    border-radius: 25px;
+    padding: 10px 30px;
+  }
+  
+  .flow-node.start { background: linear-gradient(135deg, #27ae60, #229954); }
+  .flow-node.end { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+  .flow-node.takeoff { background: linear-gradient(135deg, #27ae60, #229954); border-radius: 8px; }
+  .flow-node.land { background: linear-gradient(135deg, #e67e22, #d35400); border-radius: 8px; }
+  .flow-node.move { background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 8px; }
+  .flow-node.turn { background: linear-gradient(135deg, #e67e22, #d35400); border-radius: 8px; }
+  .flow-node.wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); border-radius: 8px; }
+  .flow-node.loop { background: linear-gradient(135deg, #9b59b6, #8e44ad); border-radius: 8px; border: 3px double white; }
+  .flow-node.decision {
+    background: linear-gradient(135deg, #f39c12, #d35400);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    padding: 25px 40px;
+    min-width: 160px;
+  }
+  
+  .flow-node input {
+    background: rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: bold;
+    width: 55px;
+    text-align: center;
+  }
+  
+  .flow-node input:focus {
+    outline: none;
+    background: rgba(255,255,255,0.4);
+  }
+  
+  .flow-node .delete-node {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    border: 2px solid white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .flow-node:hover .delete-node { opacity: 1; }
+  
+  .flow-arrow {
+    color: #7f8c8d;
+    font-size: 20px;
+    margin: 2px 0;
+    user-select: none;
+  }
+  
+  .flow-empty {
+    color: #bdc3c7;
+    font-style: italic;
+    padding: 40px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .flow-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    justify-content: center;
+  }
+  
+  .flow-ctrl-btn {
+    padding: 8px 16px;
+    border: 2px solid #ff6b35;
+    background: white;
+    color: #ff6b35;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .flow-ctrl-btn:hover {
+    background: #ff6b35;
+    color: white;
+  }
+  
+  /* Презентация */
+  .presentation {
+    background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 15px 0;
+  }
+  
+  .presentation h4 { color: #ff6b35; margin-bottom: 15px; font-size: 16px; }
+  
+  .presentation-item {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-left: 4px solid #ff6b35;
+  }
+  
+  .presentation-item label {
+    display: block;
+    font-weight: 700;
+    color: #ff6b35;
+    font-size: 13px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .presentation-item textarea {
+    width: 100%;
+    min-height: 60px;
+    border: 1px solid #ecf0f1;
+    border-radius: 6px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    color: #2c3e50;
+  }
+  
+  .presentation-item textarea:focus {
+    outline: none;
+    border-color: #ff6b35;
+  }
+  
+  .checklist { list-style: none; margin: 0; }
+  
+  .checklist li {
+    padding: 10px 15px 10px 40px;
+    margin-bottom: 6px;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #ecf0f1;
+    font-size: 14px;
+  }
+  
+  .checklist li:hover {
+    background: #fff3e6;
+    border-color: #ff6b35;
+  }
+  
+  .checklist li.checked {
+    background: #d4edda;
+    border-color: #27ae60;
+    color: #155724;
+  }
+  
+  .checklist li::before {
+    content: '○';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ff6b35;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .checklist li.checked::before {
+    content: '✓';
+    color: #27ae60;
+  }
+  
+  .self-assessment {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+  }
+  
+  .assess-option {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 12px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .assess-option:hover {
+    border-color: #ff6b35;
+    transform: translateY(-3px);
+  }
+  
+  .assess-option.selected {
+    background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+    color: white;
+    border-color: #ff6b35;
+  }
+  
+  .assess-option .emoji { font-size: 36px; display: block; margin-bottom: 5px; }
+  .assess-option .label { font-size: 12px; font-weight: 600; }
+  
+  .footer {
+    background: #f8f9fa;
+    padding: 20px 40px;
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 12px;
+    border-top: 2px solid #ecf0f1;
+  }
+  
+  .print-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #ff6b35;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+    z-index: 100;
+  }
+  
+  .print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+  }
+  
+  @media print {
+    body { background: white; padding: 0; }
+    .worksheet { box-shadow: none; }
+    .print-btn { display: none; }
+  }
+  
+  @media (max-width: 700px) {
+    .content { padding: 20px; }
+    .student-info { grid-template-columns: 1fr; padding: 20px; }
+    .self-assessment { grid-template-columns: repeat(2, 1fr); }
+    .trajectory-box { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Распечатать</button>
+
+<div class="worksheet">
+  
+  <div class="cover">
+    <div class="logo">📝</div>
+    <h1>Рабочий лист · Занятие 2</h1>
+    <h2>Сложные траектории и авторский Эко-маршрут</h2>
+    <div>
+      <span class="badge">🚁 Геоскан Пионер</span>
+      <span class="badge">🎨 ТРИК Студио</span>
+      <span class="badge">⏱️ 40 минут</span>
+    </div>
+  </div>
+  
+  <div class="student-info">
+    <label>👤 ФИО: <input type="text" placeholder="Иванов Иван"></label>
+    <label>🏫 Класс: <input type="text" placeholder="7 А"></label>
+    <label>👥 Команда: <input type="text" placeholder="Эко-патруль"></label>
+    <label>📅 Дата: <input type="date"></label>
+  </div>
+  
+  <div class="content">
+    
+    <!-- ===== ЭТАП 5: СЛОЖНЫЕ ТРАЕКТОРИИ ===== -->
+    <div class="stage">
+      <div class="stage-header">
+        <div class="stage-num">5</div>
+        <h2>Сложные траектории</h2>
+        <div class="time">⏱️ 15 мин</div>
+      </div>
+      <div class="stage-body">
+        
+        <div class="stage-artifact">
+          🎯 <b>Артефакт спринта:</b> две работающие программы в симуляторе — сложная траектория и программа с промежуточным приземлением.
+        </div>
+        
+        <div class="info-box">
+          💡 <b>Напоминаем:</b> в ТРИК Студио программа собирается из цветных блоков. Каждый блок — это команда для квадрокоптера. Блоки соединяются сверху вниз, как вагоны поезда.
+        </div>
+        
+        <!-- ЗАДАНИЕ 5.1 -->
+        <div class="task">
+          <h3><span class="task-num">5.1</span> Сложная траектория — буква «Г»</h3>
+          
+          <p>Перед тобой программа полёта. <b>Измени значения в блоках</b> (жёлтые поля) так, чтобы квадрокоптер нарисовал букву «Г».</p>
+          
+          <div class="trajectory-box">
+            <div class="trajectory-svg">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <defs>
+                  <pattern id="g1" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                  </pattern>
+                  <marker id="ag1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#ff6b35"/>
+                  </marker>
+                </defs>
+                <rect width="200" height="200" fill="url(#g1)"/>
+                
+                <path d="M 40 40 L 160 40 L 160 160" 
+                      fill="none" stroke="#ff6b35" stroke-width="4" stroke-linecap="round"
+                      marker-end="url(#ag1)"/>
+                
+                <circle cx="40" cy="40" r="7" fill="#27ae60"/>
+                <text x="40" y="25" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">СТАРТ</text>
+                
+                <circle cx="160" cy="40" r="5" fill="#3498db"/>
+                <circle cx="160" cy="160" r="5" fill="#e74c3c"/>
+                <text x="160" y="180" font-size="11" fill="#e74c3c" text-anchor="middle" font-weight="bold">ФИНИШ</text>
+                
+                <text x="100" y="35" font-size="11" fill="#555" text-anchor="middle">150 см →</text>
+                <text x="175" y="100" font-size="11" fill="#555">↓ 150</text>
+              </svg>
+            </div>
+            
+            <div class="trajectory-desc">
+              <h4>📋 Параметры траектории:</h4>
+              <ul>
+                <li>Высота полёта: <b>100 см</b></li>
+                <li>Горизонтальный участок: <b>150 см</b></li>
+                <li>Вертикальный участок: <b>150 см</b></li>
+                <li>Поворот: <b>90°</b> направо</li>
+              </ul>
+            </div>
+          </div>
+          
+          <p><b>✏️ Отредактируй программу в стиле ТРИК Студио</b> (измени значения в полях):</p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">🎨 Программа в ТРИК Студио</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <input type="number" value="100">
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <input type="number" value="100">
+                <span class="block-unit">см</span>
+                <span style="opacity:0.8;font-size:12px;margin-left:4px;">// горизонтальная часть</span>
+              </div>
+              <div class="trik-block trik-turn">
+                <span class="block-icon">↻</span>
+                <span class="block-label">Направо на</span>
+                <input type="number" value="90">
+                <span class="block-unit">°</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <input type="number" value="100">
+                <span class="block-unit">см</span>
+                <span style="opacity:0.8;font-size:12px;margin-left:4px;">// вертикальная часть</span>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tip-box">
+            💡 <b>Подсказка:</b> после поворота направо на 90° квадрокоптер полетит в новом направлении. Убедись, что длина второго участка тоже 150 см!
+          </div>
+        </div>
+        
+        <!-- ЗАДАНИЕ 5.2 -->
+        <div class="task">
+          <h3><span class="task-num">5.2</span> Полёт с промежуточным приземлением</h3>
+          
+          <p>Собери программу, в которой квадрокоптер:</p>
+          <ol style="margin-left: 20px; font-size: 14px;">
+            <li>Взлетает на высоту 80 см</li>
+            <li>Пролетает 100 см вперёд</li>
+            <li><b>Садится</b> (промежуточная посадка)</li>
+            <li>Ожидает 2 секунды</li>
+            <li><b>Снова взлетает</b> на высоту 80 см</li>
+            <li>Пролетает ещё 100 см вперёд</li>
+            <li>Садится окончательно</li>
+          </ol>
+          
+          <div class="trajectory-box">
+            <div class="trajectory-svg">
+              <svg width="320" height="150" viewBox="0 0 320 150">
+                <defs>
+                  <pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                  </pattern>
+                  <marker id="ag2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#ff6b35"/>
+                  </marker>
+                </defs>
+                <rect width="320" height="150" fill="url(#g2)"/>
+                
+                <path d="M 40 50 L 160 50" stroke="#ff6b35" stroke-width="3" stroke-dasharray="5,5"/>
+                <path d="M 160 50 L 280 50" stroke="#ff6b35" stroke-width="3" stroke-dasharray="5,5" marker-end="url(#ag2)"/>
+                
+                <circle cx="40" cy="50" r="7" fill="#27ae60"/>
+                <circle cx="160" cy="50" r="9" fill="#f39c12" stroke="white" stroke-width="2"/>
+                <circle cx="280" cy="50" r="7" fill="#e74c3c"/>
+                
+                <text x="40" y="30" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">ВЗЛЁТ</text>
+                <text x="160" y="30" font-size="11" fill="#f39c12" text-anchor="middle" font-weight="bold">ПОСАДКА</text>
+                <text x="160" y="80" font-size="10" fill="#7f8c8d" text-anchor="middle">⏱ 2 сек</text>
+                <text x="160" y="95" font-size="10" fill="#7f8c8d" text-anchor="middle">повторный</text>
+                <text x="160" y="108" font-size="10" fill="#7f8c8d" text-anchor="middle">взлёт</text>
+                <text x="280" y="30" font-size="11" fill="#e74c3c" text-anchor="middle" font-weight="bold">ФИНИШ</text>
+                
+                <text x="100" y="70" font-size="11" fill="#555" text-anchor="middle">100 см</text>
+                <text x="220" y="70" font-size="11" fill="#555" text-anchor="middle">100 см</text>
+              </svg>
+            </div>
+          </div>
+          
+          <p><b>✏️ Собери программу из блоков ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">🎨 Программа в ТРИК Студио</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <input type="number" value="80">
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <input type="number" value="100">
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-land">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+                <span style="opacity:0.8;font-size:12px;margin-left:4px;">// промежуточная</span>
+              </div>
+              <div class="trik-block trik-wait">
+                <span class="block-icon">⏱</span>
+                <span class="block-label">Ожидание</span>
+                <input type="number" value="2">
+                <span class="block-unit">с</span>
+              </div>
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <input type="number" value="80">
+                <span class="block-unit">см</span>
+                <span style="opacity:0.8;font-size:12px;margin-left:4px;">// повторный</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <input type="number" value="100">
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+                <span style="opacity:0.8;font-size:12px;margin-left:4px;">// окончательная</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            💡 <b>Зачем нужна промежуточная посадка?</b><br>
+            В реальных задачах квадрокоптер может садиться, чтобы взять груз, сделать снимок местности или проверить датчики, а затем продолжить полёт.
+          </div>
+          
+          <p><b>🤔 Вопрос для размышления:</b></p>
+          <div class="answer-area">
+            <textarea placeholder="Где в реальной жизни квадрокоптеру может понадобиться промежуточная посадка? Приведи пример..."></textarea>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== ЭТАП 6: СВОЙ ЭКО-МАРШРУТ ===== -->
+    <div class="stage">
+      <div class="stage-header">
+        <div class="stage-num">6</div>
+        <h2>Свой Эко-маршрут</h2>
+        <div class="time">⏱️ 15 мин</div>
+      </div>
+      <div class="stage-body">
+        
+        <div class="stage-artifact">
+          🎯 <b>Артефакт спринта:</b> блок-схема и авторский код полёта.
+        </div>
+        
+        <div class="task">
+          <h3><span class="task-num">6.1</span> Придумай свой Эко-маршрут</h3>
+          
+          <p>Представь, что твой квадрокоптер — <b>Эко-патрульный</b>. Он обследует территорию парка, ищет мусор, проверяет состояние деревьев или делает фотоснимки водоёма.</p>
+          
+          <div class="answer-area">
+            <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">🎯 ЦЕЛЬ МАРШРУТА (что будет делать квадрокоптер?):</label>
+            <textarea placeholder="Например: Облететь пруд по кругу и сделать 4 снимка..."></textarea>
+          </div>
+          
+          <div class="answer-area">
+            <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">🗺️ ОПИСАНИЕ ТРАЕКТОРИИ (какую фигуру нарисует дрон?):</label>
+            <textarea placeholder="Например: Квадрат со стороной 200 см на высоте 80 см..."></textarea>
+          </div>
+          
+          <div class="answer-area">
+            <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">✨ ОСОБЕННОСТИ (циклы, повороты, промежуточные посадки?):</label>
+            <textarea placeholder="Например: 2 цикла по 2 обвода, с ожиданием 1 сек в каждой вершине..."></textarea>
+          </div>
+        </div>
+        
+        <div class="task">
+          <h3><span class="task-num">6.2</span> Нарисуй блок-схему алгоритма</h3>
+          
+          <p>Блок-схема — это графическое представление алгоритма. Используй готовые блоки:</p>
+          
+          <div class="flowchart-builder">
+            <h4>🧩 Палитра блоков (кликай, чтобы добавить):</h4>
+            
+            <div class="block-palette">
+              <div class="block-palette-label">📍 Служебные:</div>
+              <button class="flow-block-btn fb-start" onclick="addFlowNode('start', '🟢 СТАРТ')">🟢 Старт</button>
+              <button class="flow-block-btn fb-end" onclick="addFlowNode('end', '🔴 КОНЕЦ')">🔴 Конец</button>
+            </div>
+            
+            <div class="block-palette">
+              <div class="block-palette-label">🚁 Команды дрона:</div>
+              <button class="flow-block-btn fb-takeoff" onclick="addFlowNode('takeoff', '🛫 Взлёт')">🛫 Взлёт</button>
+              <button class="flow-block-btn fb-land" onclick="addFlowNode('land', '🛬 Посадка')">🛬 Посадка</button>
+              <button class="flow-block-btn fb-move" onclick="addFlowNode('move', '→ Вперёд')">→ Вперёд</button>
+              <button class="flow-block-btn fb-turn" onclick="addFlowNode('turn', '↻ Поворот')">↻ Поворот</button>
+              <button class="flow-block-btn fb-wait" onclick="addFlowNode('wait', '⏱ Ожидание')">⏱ Ожидание</button>
+            </div>
+            
+            <div class="block-palette">
+              <div class="block-palette-label">🔁 Управление:</div>
+              <button class="flow-block-btn fb-loop" onclick="addFlowNode('loop', '🔁 Цикл')">🔁 Цикл</button>
+              <button class="flow-block-btn fb-decision" onclick="addFlowNode('decision', '❓ Условие')">❓ Условие</button>
+            </div>
+            
+            <h4 style="margin-top: 15px;">📊 Твоя блок-схема:</h4>
+            <div class="flowchart-canvas" id="flowchartCanvas">
+              <div class="flow-empty">
+                Добавь блоки из палитры выше.<br>
+                Начни с блока «🟢 Старт»
+              </div>
+            </div>
+            
+            <div class="flow-controls">
+              <button class="flow-ctrl-btn" onclick="moveFlowNode(-1)">⬆ Поднять</button>
+              <button class="flow-ctrl-btn" onclick="moveFlowNode(1)">⬇ Опустить</button>
+              <button class="flow-ctrl-btn" onclick="clearFlowchart()">🗑 Очистить</button>
+            </div>
+          </div>
+          
+          <div class="tip-box">
+            💡 <b>Совет:</b> классическая блок-схема начинается с «Старт» и заканчивается «Конец». Команды изображаются прямоугольниками, условия — ромбами, циклы — прямоугольниками с двойной рамкой.
+          </div>
+        </div>
+        
+        <div class="task">
+          <h3><span class="task-num">6.3</span> Собери авторскую программу в ТРИК Студио</h3>
+          
+          <p>Переведи свою блок-схему в программу. Кликай по блокам в палитре, чтобы добавить их в программу. Редактируй значения прямо в блоках.</p>
+          
+          <div class="trik-palette">
+            <div class="trik-palette-title">🟢 Высота</div>
+            <div class="trik-palette-row">
+              <div class="trik-palette-block trik-height" onclick="addTrikBlock('takeoff')">🛫 Взлёт</div>
+              <div class="trik-palette-block trik-height" onclick="addTrikBlock('land')">🛬 Посадка</div>
+              <div class="trik-palette-block trik-height" onclick="addTrikBlock('up')">↑ Подняться</div>
+              <div class="trik-palette-block trik-height" onclick="addTrikBlock('down')">↓ Опуститься</div>
+            </div>
+            
+            <div class="trik-palette-title">🔵 Движение</div>
+            <div class="trik-palette-row">
+              <div class="trik-palette-block trik-move" onclick="addTrikBlock('forward')">→ Вперёд</div>
+              <div class="trik-palette-block trik-move" onclick="addTrikBlock('backward')">← Назад</div>
+            </div>
+            
+            <div class="trik-palette-title">🟠 Повороты</div>
+            <div class="trik-palette-row">
+              <div class="trik-palette-block trik-turn" onclick="addTrikBlock('turnRight')">↻ Направо</div>
+              <div class="trik-palette-block trik-turn" onclick="addTrikBlock('turnLeft')">↺ Налево</div>
+            </div>
+            
+            <div class="trik-palette-title">🟣 Управление</div>
+            <div class="trik-palette-row">
+              <div class="trik-palette-block trik-loop" onclick="addTrikBlock('loop')">🔁 Повторить N раз</div>
+              <div class="trik-palette-block trik-wait" onclick="addTrikBlock('wait')">⏱ Ожидание</div>
+            </div>
+          </div>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>🎨 Твоя программа</span>
+              <button class="flow-ctrl-btn" onclick="clearTrikProgram()" style="padding:4px 10px;font-size:11px;">🗑 Очистить</button>
+            </div>
+            <div class="trik-blocks" id="trikProgramBlocks">
+              <div class="flow-empty" style="padding:20px;">
+                Кликай по блокам в палитре выше,<br>чтобы собрать свою программу
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            💡 <b>Как работать с циклом:</b> блок «🔁 Повторить N раз» содержит вложенную область. Чтобы добавить команды внутрь цикла, кликай по блокам, когда курсор находится над фиолетовой областью цикла.
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== ЭТАП 7: ЗАЩИТА МАРШРУТОВ ===== -->
+    <div class="stage">
+      <div class="stage-header">
+        <div class="stage-num">7</div>
+        <h2>Защита маршрутов</h2>
+        <div class="time">⏱️ 10 мин</div>
+      </div>
+      <div class="stage-body">
+        
+        <div class="stage-artifact">
+          🎯 <b>Артефакт спринта:</b> презентация продукта — демонстрация маршрута и объяснение его логики «заказчику».
+        </div>
+        
+        <div class="presentation">
+          <h4>🎤 Подготовь презентацию своего Эко-маршрута</h4>
+          <p style="font-size: 13px; color: #7f8c8d; margin-bottom: 15px;">Заполни поля — это твой план выступления перед «заказчиком» (учителем или другой командой).</p>
+          
+          <div class="presentation-item">
+            <label>👋 1. Приветствие и название команды</label>
+            <textarea placeholder="Здравствуйте! Мы — команда ... Представляем Эко-маршрут под названием ..."></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>🎯 2. Какую задачу решает наш маршрут?</label>
+            <textarea placeholder="Наш квадрокоптер будет обследовать ... чтобы обнаружить / проверить / сфотографировать ..."></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>🗺️ 3. Какую траекторию мы выбрали и почему?</label>
+            <textarea placeholder="Мы выбрали траекторию в виде ... потому что это позволяет ..."></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>⚙️ 4. Какие блоки ТРИК Студио мы использовали?</label>
+            <textarea placeholder="В нашей программе есть блоки: 🛫 Взлёт, 🔁 Цикл из N повторений, → Вперёд, ↻ Направо, 🛬 Посадка..."></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>🔁 5. Где в программе используется цикл? Зачем?</label>
+            <textarea placeholder="Фиолетовый блок «Повторить» выполняется N раз, потому что ... (это позволяет сократить код / обойти фигуру / ...)"></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>🏆 6. Чем наш маршрут особенный?</label>
+            <textarea placeholder="Наша особенность в том, что мы ... (использовали промежуточную посадку / придумали новую фигуру / ...)"></textarea>
+          </div>
+          
+          <div class="presentation-item">
+            <label>🙏 7. Заключение</label>
+            <textarea placeholder="Спасибо за внимание! Готовы ответить на ваши вопросы."></textarea>
+          </div>
+        </div>
+        
+        <div class="task">
+          <h3><span class="task-num">7.1</span> Чек-лист готовности к защите</h3>
+          <p>Отметь пункты, которые ваша команда выполнила:</p>
+          
+          <ul class="checklist" id="readyChecklist">
+            <li onclick="toggleCheck(this)">Составили блок-схему алгоритма</li>
+            <li onclick="toggleCheck(this)">Собрали авторскую программу в ТРИК Студио</li>
+            <li onclick="toggleCheck(this)">Протестировали программу в симуляторе</li>
+            <li onclick="toggleCheck(this)">Квадрокоптер успешно выполняет маршрут</li>
+            <li onclick="toggleCheck(this)">Заполнили все пункты презентации</li>
+            <li onclick="toggleCheck(this)">Распределили роли: кто показывает, кто объясняет</li>
+            <li onclick="toggleCheck(this)">Прогнали выступление по таймеру (не более 2 минут)</li>
+          </ul>
+        </div>
+        
+        <div class="task">
+          <h3><span class="task-num">7.2</span> Вопросы от «заказчика»</h3>
+          <p>Запиши вопросы, которые задали вашей команде, и ваши ответы:</p>
+          
+          <div class="answer-area">
+            <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">❓ ВОПРОС 1:</label>
+            <textarea placeholder="Вопрос от заказчика..."></textarea>
+            <label style="display:block; font-weight:600; color:#27ae60; margin:10px 0 5px; font-size:13px;">💬 НАШ ОТВЕТ:</label>
+            <textarea placeholder="Наш ответ..."></textarea>
+          </div>
+          
+          <div class="answer-area">
+            <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">❓ ВОПРОС 2:</label>
+            <textarea placeholder="Вопрос от заказчика..."></textarea>
+            <label style="display:block; font-weight:600; color:#27ae60; margin:10px 0 5px; font-size:13px;">💬 НАШ ОТВЕТ:</label>
+            <textarea placeholder="Наш ответ..."></textarea>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== САМООЦЕНКА ===== -->
+    <div class="stage">
+      <div class="stage-header">
+        <div class="stage-num">⭐</div>
+        <h2>Самооценка</h2>
+      </div>
+      <div class="stage-body">
+        
+        <p style="margin-bottom: 15px;">Оцени, как прошло занятие:</p>
+        
+        <div class="self-assessment" id="assessment">
+          <div class="assess-option" onclick="selectAssess(this, 'easy')">
+            <span class="emoji">😎</span>
+            <span class="label">Всё понятно!</span>
+          </div>
+          <div class="assess-option" onclick="selectAssess(this, 'ok')">
+            <span class="emoji">🙂</span>
+            <span class="label">В основном получилось</span>
+          </div>
+          <div class="assess-option" onclick="selectAssess(this, 'hard')">
+            <span class="emoji">😓</span>
+            <span class="label">Были трудности</span>
+          </div>
+          <div class="assess-option" onclick="selectAssess(this, 'confused')">
+            <span class="emoji">😵</span>
+            <span class="label">Нужна помощь</span>
+          </div>
+        </div>
+        
+        <div class="answer-area">
+          <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">💭 ЧТО ЗАПОМНИЛОСЬ БОЛЬШЕ ВСЕГО?</label>
+          <textarea placeholder="Напиши, что было самым интересным или сложным на этом занятии..."></textarea>
+        </div>
+        
+        <div class="answer-area">
+          <label style="display:block; font-weight:600; color:#ff6b35; margin-bottom:5px; font-size:13px;">🚀 ЧТО ХОТЕЛОСЬ БЫ УСЛОЖНИТЬ В СЛЕДУЮЩИЙ РАЗ?</label>
+          <textarea placeholder="Например: добавить больше поворотов, использовать несколько циклов, сделать фигуру посложнее..."></textarea>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="footer">
+    📘 Рабочий лист · Занятие 2 · Сложные траектории и Эко-маршрут<br>
+    🚁 Геоскан Пионер Базовый · ТРИК Студио
+  </div>
+  
+</div>
+
+<script>
+// ==================== БЛОК-СХЕМА ====================
+let flowNodes = [];
+let selectedNodeIndex = -1;
+
+const nodeTemplates = {
+  start: { type: 'start', label: '🟢 СТАРТ', editable: false },
+  end: { type: 'end', label: '🔴 КОНЕЦ', editable: false },
+  takeoff: { type: 'takeoff', label: '🛫 Взлёт', editable: true, unit: 'см', defaultVal: 100 },
+  land: { type: 'land', label: '🛬 Посадка', editable: false },
+  move: { type: 'move', label: '→ Вперёд', editable: true, unit: 'см', defaultVal: 100 },
+  turn: { type: 'turn', label: '↻ Поворот', editable: true, unit: '°', defaultVal: 90 },
+  wait: { type: 'wait', label: '⏱ Ожидание', editable: true, unit: 'с', defaultVal: 1 },
+  loop: { type: 'loop', label: '🔁 Цикл', editable: true, unit: 'раз', defaultVal: 4 },
+  decision: { type: 'decision', label: '❓ Условие', editable: true, unit: '', defaultVal: '', placeholder: 'условие' }
+};
+
+function addFlowNode(type) {
+  const template = nodeTemplates[type];
+  flowNodes.push({
+    type: template.type,
+    label: template.label,
+    editable: template.editable,
+    unit: template.unit,
+    value: template.defaultVal,
+    placeholder: template.placeholder || ''
+  });
+  selectedNodeIndex = flowNodes.length - 1;
+  renderFlowchart();
+}
+
+function renderFlowchart() {
+  const canvas = document.getElementById('flowchartCanvas');
+  canvas.innerHTML = '';
+  
+  if (flowNodes.length === 0) {
+    canvas.innerHTML = '<div class="flow-empty">Добавь блоки из палитры выше.<br>Начни с блока «🟢 Старт»</div>';
+    return;
+  }
+  
+  flowNodes.forEach((node, idx) => {
+    const nodeEl = document.createElement('div');
+    nodeEl.className = `flow-node ${node.type}`;
+    nodeEl.onclick = () => {
+      selectedNodeIndex = idx;
+      document.querySelectorAll('.flow-node').forEach(n => n.style.outline = '');
+      nodeEl.style.outline = '3px solid #ffd700';
+    };
+    
+    let content = node.label;
+    if (node.editable) {
+      const inputType = node.placeholder ? 'text' : 'number';
+      const placeholderAttr = node.placeholder ? `placeholder="${node.placeholder}"` : '';
+      content += ` <input type="${inputType}" value="${node.value}" ${placeholderAttr} 
+                    onclick="event.stopPropagation()" 
+                    oninput="updateNodeValue(${idx}, this.value)">`;
+      if (node.unit) content += ` ${node.unit}`;
+    }
+    
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-node';
+    delBtn.textContent = '×';
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      flowNodes.splice(idx, 1);
+      selectedNodeIndex = -1;
+      renderFlowchart();
+    };
+    
+    nodeEl.innerHTML = content;
+    nodeEl.appendChild(delBtn);
+    canvas.appendChild(nodeEl);
+    
+    if (idx < flowNodes.length - 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'flow-arrow';
+      arrow.textContent = '↓';
+      canvas.appendChild(arrow);
+    }
+  });
+}
+
+function updateNodeValue(idx, value) {
+  flowNodes[idx].value = value;
+}
+
+function moveFlowNode(direction) {
+  if (selectedNodeIndex < 0 || selectedNodeIndex >= flowNodes.length) {
+    alert('Сначала выбери блок, кликнув по нему');
+    return;
+  }
+  const newIdx = selectedNodeIndex + direction;
+  if (newIdx < 0 || newIdx >= flowNodes.length) return;
+  
+  [flowNodes[selectedNodeIndex], flowNodes[newIdx]] = [flowNodes[newIdx], flowNodes[selectedNodeIndex]];
+  selectedNodeIndex = newIdx;
+  renderFlowchart();
+}
+
+function clearFlowchart() {
+  if (flowNodes.length === 0) return;
+  if (confirm('Очистить блок-схему?')) {
+    flowNodes = [];
+    selectedNodeIndex = -1;
+    renderFlowchart();
+  }
+}
+
+// ==================== АВТОРСКАЯ ПРОГРАММА В ТРИК СТУДИО ====================
+let trikProgram = [];
+
+const trikBlockTemplates = {
+  takeoff:   { type: 'takeoff', category: 'height', icon: '🛫', label: 'Взлёт на', value: 100, unit: 'см', hasBody: false },
+  land:      { type: 'land', category: 'height', icon: '🛬', label: 'Посадка', value: null, unit: '', hasBody: false },
+  up:        { type: 'up', category: 'height', icon: '↑', label: 'Подняться на', value: 50, unit: 'см', hasBody: false },
+  down:      { type: 'down', category: 'height', icon: '↓', label: 'Опуститься на', value: 50, unit: 'см', hasBody: false },
+  forward:   { type: 'forward', category: 'move', icon: '→', label: 'Вперёд на', value: 100, unit: 'см', hasBody: false },
+  backward:  { type: 'backward', category: 'move', icon: '←', label: 'Назад на', value: 100, unit: 'см', hasBody: false },
+  turnRight: { type: 'turnRight', category: 'turn', icon: '↻', label: 'Направо на', value: 90, unit: '°', hasBody: false },
+  turnLeft:  { type: 'turnLeft', category: 'turn', icon: '↺', label: 'Налево на', value: 90, unit: '°', hasBody: false },
+  loop:      { type: 'loop', category: 'loop', icon: '🔁', label: 'Повторить', value: 4, unit: 'раз', hasBody: true },
+  wait:      { type: 'wait', category: 'wait', icon: '⏱', label: 'Ожидание', value: 1, unit: 'с', hasBody: false }
+};
+
+let currentLoopTarget = null; // куда добавлять блоки (в цикл или в корень)
+
+function addTrikBlock(type) {
+  const template = trikBlockTemplates[type];
+  const block = {
+    id: 'tb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    type: template.type,
+    category: template.category,
+    icon: template.icon,
+    label: template.label,
+    value: template.value,
+    unit: template.unit,
+    hasBody: template.hasBody,
+    body: template.hasBody ? [] : null
+  };
+  
+  if (currentLoopTarget && currentLoopTarget.hasBody) {
+    currentLoopTarget.body.push(block);
+  } else {
+    trikProgram.push(block);
+  }
+  
+  renderTrikProgram();
+}
+
+function removeTrikBlock(id) {
+  // Поиск и удаление в корне
+  for (let i = 0; i < trikProgram.length; i++) {
+    if (trikProgram[i].id === id) {
+      trikProgram.splice(i, 1);
+      renderTrikProgram();
+      return;
+    }
+    if (trikProgram[i].hasBody && trikProgram[i].body) {
+      for (let j = 0; j < trikProgram[i].body.length; j++) {
+        if (trikProgram[i].body[j].id === id) {
+          trikProgram[i].body.splice(j, 1);
+          renderTrikProgram();
+          return;
+        }
+      }
+    }
+  }
+}
+
+function updateTrikBlockValue(id, value) {
+  for (const block of trikProgram) {
+    if (block.id === id) {
+      block.value = parseFloat(value) || 0;
+      return;
+    }
+    if (block.hasBody && block.body) {
+      for (const child of block.body) {
+        if (child.id === id) {
+          child.value = parseFloat(value) || 0;
+          return;
+        }
+      }
+    }
+  }
+}
+
+function selectLoopTarget(id) {
+  if (id === null) {
+    currentLoopTarget = null;
+    document.querySelectorAll('.trik-loop-container').forEach(c => c.style.background = 'rgba(0,0,0,0.15)');
+    return;
+  }
+  for (const block of trikProgram) {
+    if (block.id === id && block.hasBody) {
+      currentLoopTarget = block;
+      document.querySelectorAll('.trik-loop-container').forEach(c => c.style.background = 'rgba(0,0,0,0.15)');
+      const container = document.querySelector(`[data-loop-id="${id}"]`);
+      if (container) container.style.background = 'rgba(255, 215, 0, 0.3)';
+      return;
+    }
+  }
+}
+
+function renderTrikProgram() {
+  const container = document.getElementById('trikProgramBlocks');
+  container.innerHTML = '';
+  
+  if (trikProgram.length === 0) {
+    container.innerHTML = '<div class="flow-empty" style="padding:20px;">Кликай по блокам в палитре выше,<br>чтобы собрать свою программу</div>';
+    return;
+  }
+  
+  trikProgram.forEach((block, idx) => {
+    container.appendChild(createTrikBlockElement(block, idx === trikProgram.length - 1 && !block.hasBody));
+  });
+}
+
+function createTrikBlockElement(block, isLast) {
+  const wrapper = document.createElement('div');
+  
+  const blockEl = document.createElement('div');
+  blockEl.className = `trik-block trik-${block.category}`;
+  if (isLast) blockEl.classList.add('last-visible');
+  
+  let content = `<span class="block-icon">${block.icon}</span>`;
+  content += `<span class="block-label">${block.label}</span>`;
+  
+  if (block.value !== null) {
+    content += `<input type="number" value="${block.value}" 
+                 oninput="updateTrikBlockValue('${block.id}', this.value)"
+                 onclick="event.stopPropagation()">`;
+    content += `<span class="block-unit">${block.unit}</span>`;
+  }
+  
+  if (block.hasBody) {
+    const isActive = currentLoopTarget && currentLoopTarget.id === block.id;
+    content += `<button class="delete-node" onclick="event.stopPropagation(); removeTrikBlock('${block.id}')" 
+                 style="position:absolute;top:-8px;right:-8px;background:#e74c3c;color:white;border:2px solid white;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">×</button>`;
+    content += `<div style="font-size:11px;opacity:0.8;margin-left:auto;cursor:pointer;" 
+                 onclick="event.stopPropagation(); selectLoopTarget('${block.id}')">
+                 ${isActive ? '🎯 Добавляем сюда' : '📥 Клик — добавлять внутрь'}
+               </div>`;
+  } else {
+    content += `<button class="delete-node" onclick="event.stopPropagation(); removeTrikBlock('${block.id}')" 
+                 style="position:absolute;top:-8px;right:-8px;background:#e74c3c;color:white;border:2px solid white;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;"
+                 onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">×</button>`;
+  }
+  
+  blockEl.innerHTML = content;
+  wrapper.appendChild(blockEl);
+  
+  // Вложенная область цикла
+  if (block.hasBody) {
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'trik-loop-container';
+    bodyDiv.dataset.loopId = block.id;
+    
+    if (block.body.length === 0) {
+      bodyDiv.innerHTML = '<div class="trik-loop-hint">🔁 Кликни сюда, чтобы выбирать этот цикл, затем добавляй блоки из палитры</div>';
+    } else {
+      block.body.forEach((child, idx) => {
+        bodyDiv.appendChild(createTrikBlockElement(child, idx === block.body.length - 1));
+      });
+    }
+    
+    wrapper.appendChild(bodyDiv);
+  }
+  
+  return wrapper;
+}
+
+function clearTrikProgram() {
+  if (trikProgram.length === 0) return;
+  if (confirm('Очистить программу?')) {
+    trikProgram = [];
+    currentLoopTarget = null;
+    renderTrikProgram();
+  }
+}
+
+// ==================== ЧЕК-ЛИСТ ====================
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+}
+
+// ==================== САМООЦЕНКА ====================
+function selectAssess(el, value) {
+  document.querySelectorAll('.assess-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// Инициализация
+renderFlowchart();
+renderTrikProgram();
+</script>
+
+</body>
+</html>

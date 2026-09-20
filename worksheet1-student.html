@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный рабочий лист - ТРИК Студио</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .section-title {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 5px;
+            height: 30px;
+            background: #667eea;
+            margin-right: 15px;
+            border-radius: 3px;
+        }
+        
+        .task-instruction {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        /* Task Result Badge */
+        .task-result-badge {
+            display: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .task-result-badge.visible {
+            display: flex;
+        }
+        
+        .task-result-badge.perfect {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        .task-result-badge.partial {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        
+        .task-result-badge.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        
+        /* Drag and Drop Matching */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .matching-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .matching-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .matching-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .matching-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        .matching-item.hidden {
+            display: none;
+        }
+        
+        .matching-target {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed #667eea;
+            min-height: 60px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .matching-target.drag-over {
+            background: #e7f3ff;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+        
+        .matching-target.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            border-style: solid;
+        }
+        
+        .matching-target.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            border-style: solid;
+        }
+        
+        .matching-target .correct-answer-label {
+            display: none;
+            margin-top: 8px;
+            padding: 8px;
+            background: #d4edda;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #155724;
+            border-left: 3px solid #28a745;
+        }
+        
+        .matching-target .correct-answer-label.visible {
+            display: block;
+        }
+        
+        /* Checkbox Selection */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .checkbox-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+        }
+        
+        .checkbox-item.selected {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+        
+        .checkbox-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .checkbox-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .checkbox-item.missed-correct {
+            background: #fff3cd;
+            border-color: #ffc107;
+            border-style: dashed;
+        }
+        
+        .checkbox-item .missed-label {
+            display: none;
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #ffc107;
+            color: #856404;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .checkbox-item.missed-correct .missed-label {
+            display: block;
+        }
+        
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-item.selected .custom-checkbox {
+            background: #667eea;
+        }
+        
+        .checkbox-item.selected .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Sequence Ordering */
+        .sequence-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .sequence-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: grab;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sequence-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sequence-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .sequence-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .sequence-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .sequence-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .sequence-correct-hint {
+            display: none;
+            margin-left: auto;
+            padding: 4px 10px;
+            background: #ffc107;
+            color: #856404;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .sequence-item.incorrect .sequence-correct-hint.visible {
+            display: inline-block;
+        }
+        
+        /* Multiple Choice */
+        .choice-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .choice-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .choice-item:hover {
+            border-color: #667eea;
+        }
+        
+        .choice-item.selected {
+            background: #e7f3ff;
+            border-color: #667eea;
+        }
+        
+        .choice-item.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .choice-item.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .choice-item.missed-correct {
+            background: #fff3cd;
+            border-color: #ffc107;
+            border-style: dashed;
+        }
+        
+        .choice-item .missed-label {
+            display: none;
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #ffc107;
+            color: #856404;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .choice-item.missed-correct .missed-label {
+            display: block;
+        }
+        
+        /* Fill in the Blanks */
+        .blank-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .blank-sentence {
+            margin-bottom: 20px;
+            line-height: 2;
+        }
+        
+        .blank-input {
+            border: none;
+            border-bottom: 2px solid #667eea;
+            padding: 5px 10px;
+            font-size: 16px;
+            min-width: 200px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .blank-input:focus {
+            border-bottom-color: #764ba2;
+        }
+        
+        .blank-input.correct {
+            border-bottom-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .blank-input.incorrect {
+            border-bottom-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .blank-hint {
+            display: none;
+            margin-top: 5px;
+            padding: 6px 10px;
+            background: #d4edda;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #155724;
+            border-left: 3px solid #28a745;
+        }
+        
+        .blank-hint.visible {
+            display: inline-block;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20893a 100%);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* Results Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .result-score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .result-grade {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .grade-2 { color: #dc3545; }
+        .grade-3 { color: #ffc107; }
+        .grade-4 { color: #17a2b8; }
+        .grade-5 { color: #28a745; }
+        
+        .result-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        /* Task Breakdown */
+        .task-breakdown {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .task-breakdown-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .task-breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .task-breakdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-breakdown-name {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .task-breakdown-score {
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+        
+        .task-breakdown-score.perfect {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .task-breakdown-score.partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .task-breakdown-score.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-buttons .btn {
+            margin: 0;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+        
+        /* Review Mode Banner */
+        .review-banner {
+            display: none;
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+        
+        .review-banner.visible {
+            display: block;
+        }
+        
+        .review-banner h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .review-banner p {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .review-banner .btn {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        
+        /* Legend */
+        .legend {
+            display: none;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .legend.visible {
+            display: block;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+        
+        .legend-color.green {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .legend-color.red {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .legend-color.yellow {
+            background: #fff3cd;
+            border-color: #ffc107;
+            border-style: dashed;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Интерактивный рабочий лист</h1>
+            <div class="subtitle">Знакомство со средой программирования ТРИК Студио</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Легенда -->
+            <div class="legend" id="legend">
+                <div class="legend-title">📖 Обозначения:</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color green"></div>
+                        <span>Правильный ответ</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color red"></div>
+                        <span>Ваш неправильный ответ</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color yellow"></div>
+                        <span>Пропущенный правильный ответ</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Баннер режима просмотра -->
+            <div class="review-banner" id="reviewBanner">
+                <h3>🔍 Режим просмотра правильных ответов</h3>
+                <p>Изучите правильные ответы и проанализируйте свои ошибки. Вы можете прокрутить страницу вверх для просмотра.</p>
+                <button class="btn btn-secondary" onclick="hideReview()">🔒 Скрыть правильные ответы</button>
+                <button class="btn btn-success" onclick="location.reload()">🔄 Попробовать снова</button>
+            </div>
+            
+            <!-- Задание 1: Сопоставление -->
+            <div class="section">
+                <div class="section-title">Задание 1: Сопоставьте элементы интерфейса</div>
+                <div class="task-result-badge" id="badge1">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text"></span>
+                </div>
+                <div class="task-instruction">
+                    <strong>Инструкция:</strong> Перетащите элементы интерфейса из левой колонки к их описаниям в правой колонке.
+                </div>
+                <div class="matching-container" id="matchingTask1">
+                    <div class="matching-column" id="leftColumn">
+                        <div class="matching-item" draggable="true" data-id="1">Палитра блоков</div>
+                        <div class="matching-item" draggable="true" data-id="2">Рабочее поле</div>
+                        <div class="matching-item" draggable="true" data-id="3">Окно симуляции</div>
+                        <div class="matching-item" draggable="true" data-id="4">Консоль</div>
+                    </div>
+                    <div class="matching-column" id="rightColumn">
+                        <div class="matching-target" data-correct="2" data-original-text="Основная область для создания программы">Основная область для создания программы</div>
+                        <div class="matching-target" data-correct="4" data-original-text="Отображает сообщения об ошибках">Отображает сообщения об ошибках</div>
+                        <div class="matching-target" data-correct="1" data-original-text="Содержит блоки для программирования">Содержит блоки для программирования</div>
+                        <div class="matching-target" data-correct="3" data-original-text="Показывает виртуального робота">Показывает виртуального робота</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Задание 2: Выбор блоков -->
+            <div class="section">
+                <div class="section-title">Задание 2: Выберите основные блоки</div>
+                <div class="task-result-badge" id="badge2">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text"></span>
+                </div>
+                <div class="task-instruction">
+                    <strong>Инструкция:</strong> Отметьте все блоки, которые существуют в ТРИК Студио.
+                </div>
+                <div class="checkbox-grid" id="checkboxTask2">
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Двигаться вперед"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Повернуть"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Цикл"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="false">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Распечатать"</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Условие"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Датчик"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="false">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Отправить email"</span>
+                    </div>
+                    <div class="checkbox-item" data-correct="true">
+                        <div class="custom-checkbox"></div>
+                        <span>Блок "Звук"</span>
+                        <span class="missed-label">Нужно было выбрать</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Задание 3: Порядок блоков -->
+            <div class="section">
+                <div class="section-title">Задание 3: Расставьте блоки в правильном порядке</div>
+                <div class="task-result-badge" id="badge3">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text"></span>
+                </div>
+                <div class="task-instruction">
+                    <strong>Инструкция:</strong> Перетащите блоки в правильном порядке для выполнения задачи: "Робот едет вперед, поворачивает направо и останавливается".
+                </div>
+                <div class="sequence-container" id="sequenceTask3">
+                    <div class="sequence-item" draggable="true" data-correct="2">
+                        <div class="sequence-number">?</div>
+                        <span>Блок "Повернуть направо"</span>
+                        <span class="sequence-correct-hint">Должен быть на позиции 2</span>
+                    </div>
+                    <div class="sequence-item" draggable="true" data-correct="1">
+                        <div class="sequence-number">?</div>
+                        <span>Блок "Двигаться вперед"</span>
+                        <span class="sequence-correct-hint">Должен быть на позиции 1</span>
+                    </div>
+                    <div class="sequence-item" draggable="true" data-correct="3">
+                        <div class="sequence-number">?</div>
+                        <span>Блок "Остановиться"</span>
+                        <span class="sequence-correct-hint">Должен быть на позиции 3</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Задание 4: Выбор языка -->
+            <div class="section">
+                <div class="section-title">Задание 4: Выберите правильный язык программирования</div>
+                <div class="task-result-badge" id="badge4">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text"></span>
+                </div>
+                <div class="task-instruction">
+                    <strong>Вопрос:</strong> Какой язык программирования используется для квадрокоптера «Геоскан Пионер» в ТРИК Студио?
+                </div>
+                <div class="choice-container" id="choiceTask4">
+                    <div class="choice-item" data-correct="false">Python</div>
+                    <div class="choice-item" data-correct="true">Lua</div>
+                    <div class="choice-item" data-correct="false">JavaScript</div>
+                    <div class="choice-item" data-correct="false">C++</div>
+                </div>
+            </div>
+            
+            <!-- Задание 5: Заполнение пропусков -->
+            <div class="section">
+                <div class="section-title">Задание 5: Заполните пропуски</div>
+                <div class="task-result-badge" id="badge5">
+                    <span class="badge-icon"></span>
+                    <span class="badge-text"></span>
+                </div>
+                <div class="task-instruction">
+                    <strong>Инструкция:</strong> Впишите правильные слова в пропуски.
+                </div>
+                <div class="blank-container" id="blankTask5">
+                    <div class="blank-sentence">
+                        1. ТРИК Студио — это бесплатная среда для программирования 
+                        <input type="text" class="blank-input" data-answer="роботов" placeholder="введите слово">
+                        <div class="blank-hint">✅ Правильный ответ: <strong>роботов</strong></div>
+                    </div>
+                    <div class="blank-sentence">
+                        2. Режим имитационного моделирования позволяет тестировать программу без 
+                        <input type="text" class="blank-input" data-answer="реального" placeholder="введите слово"> робота.
+                        <div class="blank-hint">✅ Правильный ответ: <strong>реального</strong></div>
+                    </div>
+                    <div class="blank-sentence">
+                        3. Для запуска программы нужно нажать кнопку 
+                        <input type="text" class="blank-input" data-answer="запустить" placeholder="введите слово">.
+                        <div class="blank-hint">✅ Правильный ответ: <strong>запустить</strong></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" id="checkButton">Проверить ответы</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно с результатами -->
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-score" id="resultScore">0%</div>
+            <div class="result-grade" id="resultGrade">Оценка</div>
+            <div class="result-message" id="resultMessage">Сообщение</div>
+            
+            <div class="task-breakdown" id="taskBreakdown">
+                <div class="task-breakdown-title">📊 Результаты по заданиям:</div>
+                <div id="breakdownList"></div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn btn-success" id="showAnswersBtn">🔍 Посмотреть правильные ответы</button>
+                <button class="btn btn-secondary" onclick="location.reload()">🔄 Попробовать снова</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Хранение результатов по заданиям
+        const taskResults = {
+            1: { earned: 0, total: 4 },
+            2: { earned: 0, total: 8 },
+            3: { earned: 0, total: 3 },
+            4: { earned: 0, total: 2 },
+            5: { earned: 0, total: 3 }
+        };
+        
+        // Задание 1: Drag and Drop Matching
+        const matchingItems = document.querySelectorAll('.matching-item');
+        const matchingTargets = document.querySelectorAll('.matching-target');
+        let draggedItem = null;
+        
+        matchingItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = item;
+                setTimeout(() => item.classList.add('dragging'), 0);
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                draggedItem = null;
+            });
+        });
+        
+        matchingTargets.forEach(target => {
+            target.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                target.classList.add('drag-over');
+            });
+            
+            target.addEventListener('dragleave', () => {
+                target.classList.remove('drag-over');
+            });
+            
+            target.addEventListener('drop', (e) => {
+                e.preventDefault();
+                target.classList.remove('drag-over');
+                
+                if (draggedItem) {
+                    target.textContent = draggedItem.textContent;
+                    target.dataset.selected = draggedItem.dataset.id;
+                    target.dataset.selectedText = draggedItem.textContent;
+                    draggedItem.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Задание 2: Checkbox Selection
+        const checkboxItems = document.querySelectorAll('#checkboxTask2 .checkbox-item');
+        checkboxItems.forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('selected');
+            });
+        });
+        
+        // Задание 3: Sequence Ordering
+        const sequenceItems = document.querySelectorAll('#sequenceTask3 .sequence-item');
+        let draggedSequenceItem = null;
+        
+        sequenceItems.forEach((item, index) => {
+            item.querySelector('.sequence-number').textContent = index + 1;
+            
+            item.addEventListener('dragstart', (e) => {
+                draggedSequenceItem = item;
+                setTimeout(() => item.classList.add('dragging'), 0);
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                draggedSequenceItem = null;
+                updateSequenceNumbers();
+            });
+            
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedSequenceItem !== item) {
+                    const parent = item.parentNode;
+                    const allItems = [...parent.children];
+                    const draggedIndex = allItems.indexOf(draggedSequenceItem);
+                    const targetIndex = allItems.indexOf(item);
+                    
+                    if (draggedIndex < targetIndex) {
+                        parent.insertBefore(draggedSequenceItem, item.nextSibling);
+                    } else {
+                        parent.insertBefore(draggedSequenceItem, item);
+                    }
+                    
+                    updateSequenceNumbers();
+                }
+            });
+        });
+        
+        function updateSequenceNumbers() {
+            const items = document.querySelectorAll('#sequenceTask3 .sequence-item');
+            items.forEach((item, index) => {
+                item.querySelector('.sequence-number').textContent = index + 1;
+            });
+        }
+        
+        // Задание 4: Multiple Choice
+        const choiceItems = document.querySelectorAll('#choiceTask4 .choice-item');
+        choiceItems.forEach(item => {
+            item.addEventListener('click', () => {
+                choiceItems.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        });
+        
+        // Функция для показа бейджа результата задания
+        function showTaskBadge(taskNum, earned, total) {
+            const badge = document.getElementById('badge' + taskNum);
+            const icon = badge.querySelector('.badge-icon');
+            const text = badge.querySelector('.badge-text');
+            
+            badge.classList.add('visible');
+            
+            const percentage = (earned / total) * 100;
+            
+            if (percentage === 100) {
+                badge.classList.add('perfect');
+                badge.classList.remove('partial', 'fail');
+                icon.textContent = '✅';
+                text.textContent = `Отлично! ${earned}/${total} баллов`;
+            } else if (percentage > 0) {
+                badge.classList.add('partial');
+                badge.classList.remove('perfect', 'fail');
+                icon.textContent = '⚠️';
+                text.textContent = `Частично верно: ${earned}/${total} баллов`;
+            } else {
+                badge.classList.add('fail');
+                badge.classList.remove('perfect', 'partial');
+                icon.textContent = '❌';
+                text.textContent = `Неверно: 0/${total} баллов`;
+            }
+        }
+        
+        // Проверка ответов
+        document.getElementById('checkButton').addEventListener('click', () => {
+            let earnedPoints = 0;
+            let totalPossiblePoints = 0;
+            
+            // Задание 1: Matching (4 балла)
+            taskResults[1].earned = 0;
+            taskResults[1].total = 4;
+            matchingTargets.forEach(target => {
+                const correct = target.dataset.correct;
+                const selected = target.dataset.selected;
+                
+                if (selected === correct) {
+                    target.classList.add('correct');
+                    taskResults[1].earned++;
+                } else if (selected) {
+                    target.classList.add('incorrect');
+                }
+            });
+            
+            // Задание 2: Checkboxes (8 баллов)
+            taskResults[2].earned = 0;
+            taskResults[2].total = 8;
+            checkboxItems.forEach(item => {
+                const isCorrect = item.dataset.correct === 'true';
+                const isSelected = item.classList.contains('selected');
+                
+                if (isCorrect === isSelected) {
+                    item.classList.add('correct');
+                    taskResults[2].earned++;
+                } else {
+                    item.classList.add('incorrect');
+                }
+            });
+            
+            // Задание 3: Sequence (3 балла)
+            taskResults[3].earned = 0;
+            taskResults[3].total = 3;
+            const sequenceItems = document.querySelectorAll('#sequenceTask3 .sequence-item');
+            sequenceItems.forEach((item, index) => {
+                const correct = parseInt(item.dataset.correct);
+                const position = index + 1;
+                
+                if (correct === position) {
+                    item.classList.add('correct');
+                    taskResults[3].earned++;
+                } else {
+                    item.classList.add('incorrect');
+                }
+            });
+            
+            // Задание 4: Choice (2 балла)
+            taskResults[4].earned = 0;
+            taskResults[4].total = 2;
+            const selectedChoice = document.querySelector('#choiceTask4 .choice-item.selected');
+            if (selectedChoice) {
+                if (selectedChoice.dataset.correct === 'true') {
+                    selectedChoice.classList.add('correct');
+                    taskResults[4].earned = 2;
+                } else {
+                    selectedChoice.classList.add('incorrect');
+                }
+            }
+            
+            // Задание 5: Fill in blanks (3 балла)
+            taskResults[5].earned = 0;
+            taskResults[5].total = 3;
+            const blankInputs = document.querySelectorAll('.blank-input');
+            blankInputs.forEach(input => {
+                const correctAnswer = input.dataset.answer.toLowerCase();
+                const userAnswer = input.value.toLowerCase().trim();
+                
+                if (userAnswer === correctAnswer) {
+                    input.classList.add('correct');
+                    taskResults[5].earned++;
+                } else if (userAnswer) {
+                    input.classList.add('incorrect');
+                }
+            });
+            
+            // Подсчет общих результатов
+            for (let i = 1; i <= 5; i++) {
+                earnedPoints += taskResults[i].earned;
+                totalPossiblePoints += taskResults[i].total;
+            }
+            
+            const percentage = Math.round((earnedPoints / totalPossiblePoints) * 100);
+            let grade = 2;
+            let message = '';
+            let icon = '😔';
+            
+            if (percentage > 85) {
+                grade = 5;
+                message = 'Отлично! Вы прекрасно разобрались в ТРИК Студио!';
+                icon = '🎉';
+            } else if (percentage >= 71) {
+                grade = 4;
+                message = 'Хорошо! Вы хорошо усвоили материал!';
+                icon = '😊';
+            } else if (percentage >= 51) {
+                grade = 3;
+                message = 'Удовлетворительно. Стоит повторить материал.';
+                icon = '🤔';
+            } else {
+                grade = 2;
+                message = 'Нужно изучить материал подробнее.';
+                icon = '😔';
+            }
+            
+            // Показ результатов в модалке
+            document.getElementById('resultIcon').textContent = icon;
+            document.getElementById('resultScore').textContent = percentage + '%';
+            document.getElementById('resultGrade').textContent = 'Оценка: ' + grade;
+            document.getElementById('resultGrade').className = 'result-grade grade-' + grade;
+            document.getElementById('resultMessage').textContent = message;
+            
+            // Заполнение детализации по заданиям
+            const breakdownList = document.getElementById('breakdownList');
+            breakdownList.innerHTML = '';
+            const taskNames = {
+                1: 'Задание 1: Сопоставление элементов',
+                2: 'Задание 2: Выбор блоков',
+                3: 'Задание 3: Порядок блоков',
+                4: 'Задание 4: Язык программирования',
+                5: 'Задание 5: Заполнение пропусков'
+            };
+            
+            for (let i = 1; i <= 5; i++) {
+                const result = taskResults[i];
+                const taskPercentage = (result.earned / result.total) * 100;
+                let scoreClass = 'fail';
+                if (taskPercentage === 100) scoreClass = 'perfect';
+                else if (taskPercentage > 0) scoreClass = 'partial';
+                
+                const item = document.createElement('div');
+                item.className = 'task-breakdown-item';
+                item.innerHTML = `
+                    <span class="task-breakdown-name">${taskNames[i]}</span>
+                    <span class="task-breakdown-score ${scoreClass}">${result.earned}/${result.total}</span>
+                `;
+                breakdownList.appendChild(item);
+            }
+            
+            // Показ бейджей результатов на странице
+            for (let i = 1; i <= 5; i++) {
+                showTaskBadge(i, taskResults[i].earned, taskResults[i].total);
+            }
+            
+            document.getElementById('resultModal').classList.add('active');
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            // Обработчик кнопки показа ответов
+            document.getElementById('showAnswersBtn').onclick = () => {
+                document.getElementById('resultModal').classList.remove('active');
+                showCorrectAnswers();
+            };
+        });
+        
+        // Функция показа правильных ответов
+        function showCorrectAnswers() {
+            // Показать легенду и баннер
+            document.getElementById('legend').classList.add('visible');
+            document.getElementById('reviewBanner').classList.add('visible');
+            
+            // Скрыть кнопку проверки
+            document.getElementById('checkButton').style.display = 'none';
+            
+            // Задание 1: Показать правильные ответы для неправильных сопоставлений
+            matchingTargets.forEach(target => {
+                const correct = target.dataset.correct;
+                const selected = target.dataset.selected;
+                const correctItem = document.querySelector(`.matching-item[data-id="${correct}"]`);
+                const correctText = correctItem ? correctItem.textContent : '';
+                
+                if (selected !== correct) {
+                    // Создаем подсказку с правильным ответом
+                    const hint = document.createElement('div');
+                    hint.className = 'correct-answer-label visible';
+                    hint.innerHTML = `✅ Правильный ответ: <strong>${correctText}</strong>`;
+                    target.appendChild(hint);
+                }
+            });
+            
+            // Задание 2: Показать пропущенные правильные ответы
+            checkboxItems.forEach(item => {
+                const isCorrect = item.dataset.correct === 'true';
+                const isSelected = item.classList.contains('selected');
+                
+                if (isCorrect && !isSelected) {
+                    item.classList.add('missed-correct');
+                }
+            });
+            
+            // Задание 3: Показать подсказки для неправильного порядка
+            const sequenceItems = document.querySelectorAll('#sequenceTask3 .sequence-item');
+            sequenceItems.forEach((item, index) => {
+                const correct = parseInt(item.dataset.correct);
+                const position = index + 1;
+                
+                if (correct !== position) {
+                    const hint = item.querySelector('.sequence-correct-hint');
+                    if (hint) hint.classList.add('visible');
+                }
+            });
+            
+            // Задание 4: Показать правильный ответ
+            const choiceItems = document.querySelectorAll('#choiceTask4 .choice-item');
+            choiceItems.forEach(item => {
+                if (item.dataset.correct === 'true' && !item.classList.contains('selected')) {
+                    item.classList.add('missed-correct');
+                    const label = document.createElement('span');
+                    label.className = 'missed-label';
+                    label.textContent = 'Правильный ответ';
+                    item.appendChild(label);
+                }
+            });
+            
+            // Задание 5: Показать правильные ответы
+            const blankInputs = document.querySelectorAll('.blank-input');
+            blankInputs.forEach(input => {
+                const correctAnswer = input.dataset.answer.toLowerCase();
+                const userAnswer = input.value.toLowerCase().trim();
+                
+                if (userAnswer !== correctAnswer) {
+                    const hint = input.nextElementSibling;
+                    if (hint && hint.classList.contains('blank-hint')) {
+                        hint.classList.add('visible');
+                    }
+                }
+            });
+            
+            // Прокрутка к началу
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Функция скрытия правильных ответов
+        function hideReview() {
+            document.getElementById('legend').classList.remove('visible');
+            document.getElementById('reviewBanner').classList.remove('visible');
+            
+            // Скрыть подсказки в задании 1
+            document.querySelectorAll('.correct-answer-label').forEach(el => el.remove());
+            
+            // Скрыть missed-correct в задании 2
+            checkboxItems.forEach(item => {
+                item.classList.remove('missed-correct');
+            });
+            
+            // Скрыть подсказки в задании 3
+            document.querySelectorAll('.sequence-correct-hint').forEach(el => {
+                el.classList.remove('visible');
+            });
+            
+            // Скрыть missed-correct в задании 4
+            choiceItems.forEach(item => {
+                item.classList.remove('missed-correct');
+                const label = item.querySelector('.missed-label');
+                if (label) label.remove();
+            });
+            
+            // Скрыть подсказки в задании 5
+            document.querySelectorAll('.blank-hint').forEach(el => {
+                el.classList.remove('visible');
+            });
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

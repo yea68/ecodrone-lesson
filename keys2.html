@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>🔑 Ключи для учителя — Занятие 2: Сложные траектории</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    color: #2c3e50;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  
+  .worksheet {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  /* Обложка ключей */
+  .cover {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .cover::before {
+    content: '🔑';
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 60px;
+    opacity: 0.3;
+  }
+  
+  .cover .label {
+    display: inline-block;
+    background: #e74c3c;
+    color: white;
+    padding: 4px 14px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+  }
+  
+  .cover h1 { font-size: 32px; margin-bottom: 8px; font-weight: 800; }
+  .cover h2 { font-size: 18px; font-weight: 400; opacity: 0.9; margin-bottom: 15px; }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 5px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  
+  .teacher-info {
+    background: #fff3cd;
+    padding: 15px 40px;
+    border-bottom: 2px solid #ffc107;
+    font-size: 13px;
+    color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .teacher-info b { color: #d35400; }
+  
+  .content { padding: 30px 40px; }
+  
+  .toc {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-bottom: 30px;
+    border-left: 5px solid #2c3e50;
+  }
+  
+  .toc h3 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .toc ol {
+    margin-left: 20px;
+  }
+  
+  .toc li {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  
+  .toc a {
+    color: #2c3e50;
+    text-decoration: none;
+    border-bottom: 1px dashed #7f8c8d;
+  }
+  
+  .toc a:hover {
+    color: #ff6b35;
+    border-bottom-color: #ff6b35;
+  }
+  
+  .answer-section {
+    margin-bottom: 40px;
+    border: 2px solid #ecf0f1;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  
+  .answer-header {
+    background: linear-gradient(90deg, #27ae60, #229954);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .answer-header.task5 { background: linear-gradient(90deg, #27ae60, #229954); }
+  .answer-header.task6 { background: linear-gradient(90deg, #3498db, #2980b9); }
+  .answer-header.criteria { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+  
+  .answer-num {
+    background: white;
+    color: #27ae60;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  
+  .answer-header.task6 .answer-num { color: #3498db; }
+  .answer-header.criteria .answer-num { color: #9b59b6; }
+  
+  .answer-header h2 { font-size: 20px; font-weight: 700; }
+  
+  .answer-body { padding: 25px; }
+  
+  .solution-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #27ae60;
+  }
+  
+  .solution-card h3 {
+    color: #27ae60;
+    font-size: 17px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .solution-card h3 .check {
+    background: #27ae60;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  
+  /* Блоки ТРИК Студио */
+  .trik-workspace {
+    background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+    border: 2px dashed #bdc3c7;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+  }
+  
+  .trik-workspace-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .trik-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .trik-block {
+    position: relative;
+    padding: 10px 16px;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+  }
+  
+  .trik-block::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 20px;
+    width: 16px;
+    height: 4px;
+    background: inherit;
+    border-radius: 3px 3px 0 0;
+  }
+  
+  .trik-block::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 20px;
+    width: 16px;
+    height: 4px;
+    background: inherit;
+    border-radius: 0 0 3px 3px;
+    z-index: 1;
+  }
+  
+  .trik-block:first-child::before { display: none; }
+  .trik-block.last-visible::after { display: none; }
+  
+  .trik-height { background: linear-gradient(135deg, #27ae60, #229954); }
+  .trik-move { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .trik-turn { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .trik-loop { background: linear-gradient(135deg, #9b59b6, #8e44ad); padding-bottom: 0; }
+  .trik-wait { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+  
+  .trik-block .block-icon { font-size: 16px; flex-shrink: 0; }
+  .trik-block .block-label { flex-shrink: 0; }
+  
+  .trik-block .block-value {
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.6);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 45px;
+    text-align: center;
+  }
+  
+  .trik-block .block-unit {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 500;
+  }
+  
+  .trik-block .block-comment {
+    font-size: 12px;
+    opacity: 0.8;
+    font-style: italic;
+    margin-left: 4px;
+  }
+  
+  .trik-loop-container {
+    margin: 4px 0 8px 20px;
+    padding: 10px 12px;
+    background: rgba(0,0,0,0.15);
+    border-left: 3px solid rgba(255,255,255,0.5);
+    border-radius: 0 8px 8px 0;
+    min-height: 50px;
+  }
+  
+  .trik-loop-container .trik-block {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  
+  /* Блок-схема */
+  .flowchart-solution {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+  }
+  
+  .flowchart-solution h4 {
+    color: #2c3e50;
+    font-size: 14px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  
+  .flowchart-solution svg {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .trajectory-box {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+  
+  .trajectory-svg {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 10px;
+    padding: 10px;
+    flex-shrink: 0;
+  }
+  
+  .trajectory-desc { flex: 1; min-width: 250px; }
+  .trajectory-desc h4 { color: #2a5298; font-size: 14px; margin-bottom: 8px; }
+  .trajectory-desc ul { margin-left: 20px; font-size: 13px; }
+  .trajectory-desc li { margin-bottom: 4px; }
+  
+  .info-box {
+    background: #e7f3ff;
+    border-left: 4px solid #3498db;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .info-box b { color: #2980b9; }
+  
+  .tip-box {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .tip-box b { color: #d35400; }
+  
+  .warning-box {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .warning-box b { color: #c0392b; }
+  
+  .success-box {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+    padding: 12px 16px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .success-box b { color: #229954; }
+  
+  .errors-list {
+    background: #fff5f5;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  .errors-list h4 {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .errors-list ul {
+    margin-left: 20px;
+    font-size: 13px;
+  }
+  
+  .errors-list li {
+    margin-bottom: 6px;
+    padding-left: 5px;
+  }
+  
+  .errors-list li b { color: #c0392b; }
+  
+  /* Примеры Эко-маршрутов */
+  .example-card {
+    background: white;
+    border: 2px solid #ecf0f1;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+  
+  .example-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed #ecf0f1;
+  }
+  
+  .example-num {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  
+  .example-header h3 {
+    color: #2c3e50;
+    font-size: 17px;
+  }
+  
+  .example-header .difficulty {
+    margin-left: auto;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .diff-easy { background: #d4edda; color: #155724; }
+  .diff-medium { background: #fff3cd; color: #856404; }
+  .diff-hard { background: #f8d7da; color: #721c24; }
+  
+  .example-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .meta-item {
+    background: #f8f9fa;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  
+  .meta-item b {
+    display: block;
+    color: #7f8c8d;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  
+  /* Критерии оценки */
+  .criteria-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 13px;
+  }
+  
+  .criteria-table th {
+    background: #9b59b6;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .criteria-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ecf0f1;
+    vertical-align: top;
+  }
+  
+  .criteria-table tr:nth-child(even) td {
+    background: #f8f9fa;
+  }
+  
+  .criteria-table .points {
+    font-weight: 700;
+    color: #9b59b6;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .grade-summary {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  .grade-summary h3 {
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  .grades {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .grade-item {
+    background: rgba(255,255,255,0.15);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  
+  .grade-item .mark {
+    font-size: 28px;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .grade-item .range {
+    font-size: 12px;
+    opacity: 0.9;
+  }
+  
+  .footer {
+    background: #f8f9fa;
+    padding: 20px 40px;
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 12px;
+    border-top: 2px solid #ecf0f1;
+  }
+  
+  .print-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    z-index: 100;
+  }
+  
+  .print-btn:hover {
+    transform: translateY(-2px);
+    background: #34495e;
+  }
+  
+  @media print {
+    body { background: white; padding: 0; }
+    .worksheet { box-shadow: none; }
+    .print-btn { display: none; }
+    .answer-section { page-break-inside: avoid; }
+    .example-card { page-break-inside: avoid; }
+  }
+  
+  @media (max-width: 700px) {
+    .content { padding: 20px; }
+    .trajectory-box { flex-direction: column; }
+    .example-meta { grid-template-columns: 1fr; }
+    .grades { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Распечатать</button>
+
+<div class="worksheet">
+  
+  <!-- Обложка -->
+  <div class="cover">
+    <div class="label">Для учителя</div>
+    <h1>🔑 Ключи к рабочему листу</h1>
+    <h2>Занятие 2: Сложные траектории и Эко-маршрут</h2>
+    <div>
+      <span class="badge">🚁 Геоскан Пионер</span>
+      <span class="badge">🎨 ТРИК Студио</span>
+      <span class="badge">Этапы 5–7</span>
+    </div>
+  </div>
+  
+  <div class="teacher-info">
+    ⚠️ <b>Внимание!</b> Документ содержит ответы и критерии оценки. Не передавайте ученикам.
+  </div>
+  
+  <div class="content">
+    
+    <!-- Содержание -->
+    <div class="toc">
+      <h3>📑 Содержание</h3>
+      <ol>
+        <li><a href="#task51">Ответы к заданию 5.1 — буква «Г»</a></li>
+        <li><a href="#task52">Ответы к заданию 5.2 — промежуточная посадка</a></li>
+        <li><a href="#task6">Примеры авторских Эко-маршрутов (задание 6)</a></li>
+        <li><a href="#criteria">Критерии оценки и рекомендации</a></li>
+      </ol>
+    </div>
+    
+    <!-- ===== ЗАДАНИЕ 5.1 ===== -->
+    <div class="answer-section" id="task51">
+      <div class="answer-header task5">
+        <div class="answer-num">5.1</div>
+        <h2>Буква «Г» — правильное решение</h2>
+      </div>
+      <div class="answer-body">
+        
+        <div class="solution-card">
+          <h3><span class="check">✓</span> Эталонная программа в ТРИК Студио</h3>
+          
+          <div class="trajectory-box">
+            <div class="trajectory-svg">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <defs>
+                  <pattern id="g1k" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                  </pattern>
+                  <marker id="ag1k" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#27ae60"/>
+                  </marker>
+                </defs>
+                <rect width="200" height="200" fill="url(#g1k)"/>
+                
+                <path d="M 40 40 L 160 40 L 160 160" 
+                      fill="none" stroke="#27ae60" stroke-width="4" stroke-linecap="round"
+                      marker-end="url(#ag1k)"/>
+                
+                <circle cx="40" cy="40" r="7" fill="#27ae60"/>
+                <text x="40" y="25" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">СТАРТ</text>
+                
+                <circle cx="160" cy="40" r="5" fill="#3498db"/>
+                <circle cx="160" cy="160" r="5" fill="#e74c3c"/>
+                <text x="160" y="180" font-size="11" fill="#e74c3c" text-anchor="middle" font-weight="bold">ФИНИШ</text>
+                
+                <text x="100" y="35" font-size="11" fill="#555" text-anchor="middle">150 см →</text>
+                <text x="175" y="100" font-size="11" fill="#555">↓ 150</text>
+              </svg>
+            </div>
+            
+            <div class="trajectory-desc">
+              <h4>📋 Параметры:</h4>
+              <ul>
+                <li>Высота: <b>100 см</b></li>
+                <li>Горизонталь: <b>150 см</b></li>
+                <li>Вертикаль: <b>150 см</b></li>
+                <li>Поворот: <b>90°</b> направо</li>
+                <li>Всего блоков: <b>5</b></li>
+              </ul>
+            </div>
+          </div>
+          
+          <p><b>🎨 Правильная программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">✅ Эталонное решение</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">100</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <span class="block-value">150</span>
+                <span class="block-unit">см</span>
+                <span class="block-comment">// горизонтальная часть</span>
+              </div>
+              <div class="trik-block trik-turn">
+                <span class="block-icon">↻</span>
+                <span class="block-label">Направо на</span>
+                <span class="block-value">90</span>
+                <span class="block-unit">°</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <span class="block-value">150</span>
+                <span class="block-unit">см</span>
+                <span class="block-comment">// вертикальная часть</span>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            💡 <b>Пояснение для учителя:</b> в ТРИК Студио блок «Вперёд» перемещает квадрокоптер вдоль его текущей оси. После поворота «Направо на 90°» ось дрона меняется, и следующий блок «Вперёд» ведёт дрон уже в новом направлении — вниз по букве «Г».
+          </div>
+        </div>
+        
+        <div class="solution-card">
+          <h3><span class="check">✓</span> Блок-схема алгоритма</h3>
+          
+          <div class="flowchart-solution">
+            <h4>Линейный алгоритм полёта по букве «Г»</h4>
+            <svg width="320" height="480" viewBox="0 0 320 480">
+              <!-- Старт -->
+              <ellipse cx="160" cy="30" rx="60" ry="22" fill="#27ae60"/>
+              <text x="160" y="36" font-size="14" fill="white" text-anchor="middle" font-weight="bold">СТАРТ</text>
+              
+              <line x1="160" y1="52" x2="160" y2="78" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Взлёт -->
+              <rect x="70" y="80" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="108" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛫 Взлёт на 100 см</text>
+              
+              <line x1="160" y1="125" x2="160" y2="151" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Вперёд 150 -->
+              <rect x="70" y="153" width="180" height="45" rx="6" fill="#3498db"/>
+              <text x="160" y="181" font-size="13" fill="white" text-anchor="middle" font-weight="600">→ Вперёд на 150 см</text>
+              
+              <line x1="160" y1="198" x2="160" y2="224" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Направо 90 -->
+              <rect x="70" y="226" width="180" height="45" rx="6" fill="#e67e22"/>
+              <text x="160" y="254" font-size="13" fill="white" text-anchor="middle" font-weight="600">↻ Направо на 90°</text>
+              
+              <line x1="160" y1="271" x2="160" y2="297" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Вперёд 150 (2) -->
+              <rect x="70" y="299" width="180" height="45" rx="6" fill="#3498db"/>
+              <text x="160" y="327" font-size="13" fill="white" text-anchor="middle" font-weight="600">→ Вперёд на 150 см</text>
+              
+              <line x1="160" y1="344" x2="160" y2="370" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Посадка -->
+              <rect x="70" y="372" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="400" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛬 Посадка</text>
+              
+              <line x1="160" y1="417" x2="160" y2="443" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK)"/>
+              
+              <!-- Конец -->
+              <ellipse cx="160" cy="460" rx="60" ry="22" fill="#e74c3c"/>
+              <text x="160" y="466" font-size="14" fill="white" text-anchor="middle" font-weight="bold">КОНЕЦ</text>
+              
+              <defs>
+                <marker id="arrowK" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#7f8c8d"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="errors-list">
+          <h4>❌ Типичные ошибки учеников:</h4>
+          <ul>
+            <li><b>Значение 100 вместо 150</b> в блоках «Вперёд» — ученик не изменил значения по умолчанию</li>
+            <li><b>Поворот на 180°</b> вместо 90° — дрон полетит обратно, а не вниз</li>
+            <li><b>Поворот «Налево»</b> вместо «Направо» — буква «Г» получится зеркальной</li>
+            <li><b>Отсутствует блок «Посадка»</b> в конце программы</li>
+            <li><b>Использование блока «Цикл»</b> — в этом задании алгоритм должен быть линейным</li>
+            <li><b>Высота взлёта не 100 см</b> (например, 50 или 200)</li>
+          </ul>
+        </div>
+        
+        <div class="success-box">
+          <b>✅ Критерии успеха:</b> программа содержит ровно 5 блоков, значения 100-150-90-150, нет цикла, дрон в симуляторе рисует букву «Г» и садится.
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== ЗАДАНИЕ 5.2 ===== -->
+    <div class="answer-section" id="task52">
+      <div class="answer-header task5">
+        <div class="answer-num">5.2</div>
+        <h2>Промежуточная посадка — правильное решение</h2>
+      </div>
+      <div class="answer-body">
+        
+        <div class="solution-card">
+          <h3><span class="check">✓</span> Эталонная программа в ТРИК Студио</h3>
+          
+          <div class="trajectory-box">
+            <div class="trajectory-svg">
+              <svg width="320" height="150" viewBox="0 0 320 150">
+                <defs>
+                  <pattern id="g2k" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                  </pattern>
+                  <marker id="ag2k" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#27ae60"/>
+                  </marker>
+                </defs>
+                <rect width="320" height="150" fill="url(#g2k)"/>
+                
+                <path d="M 40 50 L 160 50" stroke="#27ae60" stroke-width="3" stroke-dasharray="5,5"/>
+                <path d="M 160 50 L 280 50" stroke="#27ae60" stroke-width="3" stroke-dasharray="5,5" marker-end="url(#ag2k)"/>
+                
+                <circle cx="40" cy="50" r="7" fill="#27ae60"/>
+                <circle cx="160" cy="50" r="9" fill="#f39c12" stroke="white" stroke-width="2"/>
+                <circle cx="280" cy="50" r="7" fill="#e74c3c"/>
+                
+                <text x="40" y="30" font-size="11" fill="#27ae60" text-anchor="middle" font-weight="bold">ВЗЛЁТ</text>
+                <text x="160" y="30" font-size="11" fill="#f39c12" text-anchor="middle" font-weight="bold">ПОСАДКА</text>
+                <text x="160" y="80" font-size="10" fill="#7f8c8d" text-anchor="middle">⏱ 2 сек</text>
+                <text x="280" y="30" font-size="11" fill="#e74c3c" text-anchor="middle" font-weight="bold">ФИНИШ</text>
+                
+                <text x="100" y="70" font-size="11" fill="#555" text-anchor="middle">100 см</text>
+                <text x="220" y="70" font-size="11" fill="#555" text-anchor="middle">100 см</text>
+              </svg>
+            </div>
+          </div>
+          
+          <p><b>🎨 Правильная программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">✅ Эталонное решение (7 блоков)</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">80</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <span class="block-value">100</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+                <span class="block-comment">// промежуточная</span>
+              </div>
+              <div class="trik-block trik-wait">
+                <span class="block-icon">⏱</span>
+                <span class="block-label">Ожидание</span>
+                <span class="block-value">2</span>
+                <span class="block-unit">с</span>
+              </div>
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">80</span>
+                <span class="block-unit">см</span>
+                <span class="block-comment">// повторный взлёт</span>
+              </div>
+              <div class="trik-block trik-move">
+                <span class="block-icon">→</span>
+                <span class="block-label">Вперёд на</span>
+                <span class="block-value">100</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+                <span class="block-comment">// окончательная</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            💡 <b>Ключевая идея:</b> в ТРИК Студио блок «Посадка» может встречаться в программе <b>несколько раз</b>. Каждый раз, когда дрон встречает этот блок, он опускается на землю. Это позволяет моделировать реальные сценарии: доставка груза, фотосъёмка с разных точек, проверка датчиков.
+          </div>
+        </div>
+        
+        <div class="solution-card">
+          <h3><span class="check">✓</span> Блок-схема алгоритма</h3>
+          
+          <div class="flowchart-solution">
+            <h4>Алгоритм с промежуточной посадкой</h4>
+            <svg width="320" height="700" viewBox="0 0 320 700">
+              <!-- Старт -->
+              <ellipse cx="160" cy="30" rx="60" ry="22" fill="#27ae60"/>
+              <text x="160" y="36" font-size="14" fill="white" text-anchor="middle" font-weight="bold">СТАРТ</text>
+              
+              <line x1="160" y1="52" x2="160" y2="78" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="80" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="108" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛫 Взлёт на 80 см</text>
+              
+              <line x1="160" y1="125" x2="160" y2="151" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="153" width="180" height="45" rx="6" fill="#3498db"/>
+              <text x="160" y="181" font-size="13" fill="white" text-anchor="middle" font-weight="600">→ Вперёд на 100 см</text>
+              
+              <line x1="160" y1="198" x2="160" y2="224" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="226" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="254" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛬 Посадка</text>
+              <text x="260" y="254" font-size="10" fill="#7f8c8d" font-style="italic">(промежут.)</text>
+              
+              <line x1="160" y1="271" x2="160" y2="297" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="299" width="180" height="45" rx="6" fill="#95a5a6"/>
+              <text x="160" y="327" font-size="13" fill="white" text-anchor="middle" font-weight="600">⏱ Ожидание 2 с</text>
+              
+              <line x1="160" y1="344" x2="160" y2="370" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="372" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="400" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛫 Взлёт на 80 см</text>
+              <text x="260" y="400" font-size="10" fill="#7f8c8d" font-style="italic">(повторно)</text>
+              
+              <line x1="160" y1="417" x2="160" y2="443" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="445" width="180" height="45" rx="6" fill="#3498db"/>
+              <text x="160" y="473" font-size="13" fill="white" text-anchor="middle" font-weight="600">→ Вперёд на 100 см</text>
+              
+              <line x1="160" y1="490" x2="160" y2="516" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <rect x="70" y="518" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="546" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛬 Посадка</text>
+              <text x="260" y="546" font-size="10" fill="#7f8c8d" font-style="italic">(окончат.)</text>
+              
+              <line x1="160" y1="563" x2="160" y2="589" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowK2)"/>
+              
+              <ellipse cx="160" cy="610" rx="60" ry="22" fill="#e74c3c"/>
+              <text x="160" y="616" font-size="14" fill="white" text-anchor="middle" font-weight="bold">КОНЕЦ</text>
+              
+              <defs>
+                <marker id="arrowK2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#7f8c8d"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="errors-list">
+          <h4>❌ Типичные ошибки учеников:</h4>
+          <ul>
+            <li><b>Пропуск промежуточной посадки</b> — дрон просто пролетает 200 см без остановки</li>
+            <li><b>Отсутствие блока «Ожидание»</b> или неверное значение (не 2 секунды)</li>
+            <li><b>Пропуск повторного взлёта</b> — после посадки дрон не может двигаться, пока снова не взлетит</li>
+            <li><b>Разные значения высоты</b> первого и второго взлёта (должно быть одинаково — 80 см)</li>
+            <li><b>Использование цикла</b> — в этом задании цикл не нужен, так как последовательность линейная</li>
+          </ul>
+        </div>
+        
+        <div class="solution-card">
+          <h3><span class="check">✓</span> Ответ на вопрос для размышления</h3>
+          <p><b>Вопрос:</b> Где в реальной жизни квадрокоптеру может понадобиться промежуточная посадка?</p>
+          <div class="info-box">
+            <b>Возможные правильные ответы:</b>
+            <ul style="margin-top: 8px; margin-left: 20px;">
+              <li>📦 <b>Доставка грузов</b> — дрон садится в точке А, чтобы взять посылку, затем летит в точку Б</li>
+              <li>📸 <b>Фотосъёмка с земли</b> — для детальных снимков растений, животных, артефактов</li>
+              <li>🔋 <b>Подзарядка / замена батареи</b> — на промежуточной базе</li>
+              <li>🔍 <b>Экологический мониторинг</b> — взять пробу почвы или воды в определённой точке</li>
+              <li>🚨 <b>Поисково-спасательные операции</b> — обследовать зону, сесть для точной проверки, лететь дальше</li>
+              <li>🌾 <b>Сельское хозяйство</b> — обработка разных участков поля с возвратом на базу</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== ПРИМЕРЫ ЭКО-МАРШРУТОВ ===== -->
+    <div class="answer-section" id="task6">
+      <div class="answer-header task6">
+        <div class="answer-num">6</div>
+        <h2>Примеры авторских Эко-маршрутов</h2>
+      </div>
+      <div class="answer-body">
+        
+        <div class="info-box">
+          💡 <b>Для учителя:</b> задание 6 — творческое. Ученики могут придумать свои маршруты. Ниже приведены <b>4 примера-ориентира</b> разной сложности, которые можно показать ученикам как образец или использовать для проверки их работ.
+        </div>
+        
+        <!-- ПРИМЕР 1 -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-num">A</div>
+            <h3>🌳 Обход лесопосадки по квадрату</h3>
+            <span class="difficulty diff-easy">Лёгкий</span>
+          </div>
+          
+          <div class="example-meta">
+            <div class="meta-item">
+              <b>🎯 Цель</b>
+              Облететь участок лесопосадки и проверить состояние деревьев по периметру
+            </div>
+            <div class="meta-item">
+              <b>🗺️ Траектория</b>
+              Квадрат со стороной 200 см на высоте 80 см
+            </div>
+            <div class="meta-item">
+              <b>⚙️ Используемые блоки</b>
+              🛫 Взлёт, 🔁 Цикл (4), → Вперёд, ↻ Направо, 🛬 Посадка
+            </div>
+            <div class="meta-item">
+              <b>✨ Особенность</b>
+              Используется цикл для сокращения программы
+            </div>
+          </div>
+          
+          <p><b>🎨 Программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">📋 Пример A — Обход квадратом</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">80</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-loop">
+                <span class="block-icon">🔁</span>
+                <span class="block-label">Повторить</span>
+                <span class="block-value">4</span>
+                <span class="block-unit">раз</span>
+                <div class="trik-loop-container">
+                  <div class="trik-block trik-move">
+                    <span class="block-icon">→</span>
+                    <span class="block-label">Вперёд на</span>
+                    <span class="block-value">200</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                  <div class="trik-block trik-turn last-visible">
+                    <span class="block-icon">↻</span>
+                    <span class="block-label">Направо на</span>
+                    <span class="block-value">90</span>
+                    <span class="block-unit">°</span>
+                  </div>
+                </div>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flowchart-solution">
+            <h4>Блок-схема примера A</h4>
+            <svg width="320" height="430" viewBox="0 0 320 430">
+              <ellipse cx="160" cy="30" rx="60" ry="22" fill="#27ae60"/>
+              <text x="160" y="36" font-size="14" fill="white" text-anchor="middle" font-weight="bold">СТАРТ</text>
+              
+              <line x1="160" y1="52" x2="160" y2="78" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowA)"/>
+              
+              <rect x="70" y="80" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="108" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛫 Взлёт на 80 см</text>
+              
+              <line x1="160" y1="125" x2="160" y2="151" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowA)"/>
+              
+              <!-- Цикл (двойная рамка) -->
+              <rect x="50" y="153" width="220" height="180" rx="8" fill="none" stroke="#9b59b6" stroke-width="3" stroke-dasharray="2"/>
+              <rect x="60" y="163" width="200" height="160" rx="6" fill="#9b59b6"/>
+              <text x="160" y="185" font-size="13" fill="white" text-anchor="middle" font-weight="700">🔁 Повторить 4 раза:</text>
+              <text x="160" y="215" font-size="12" fill="white" text-anchor="middle">→ Вперёд 200 см</text>
+              <text x="160" y="240" font-size="12" fill="white" text-anchor="middle">↻ Направо 90°</text>
+              <text x="160" y="305" font-size="10" fill="#9b59b6" text-anchor="middle" font-style="italic">(тело цикла)</text>
+              
+              <line x1="160" y1="333" x2="160" y2="359" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowA)"/>
+              
+              <rect x="70" y="361" width="180" height="45" rx="6" fill="#27ae60"/>
+              <text x="160" y="389" font-size="13" fill="white" text-anchor="middle" font-weight="600">🛬 Посадка</text>
+              
+              <line x1="160" y1="406" x2="160" y2="432" stroke="#7f8c8d" stroke-width="2" marker-end="url(#arrowA)"/>
+              
+              <!-- Стрелка к концу за пределами -->
+              <ellipse cx="160" cy="450" rx="60" ry="22" fill="#e74c3c"/>
+              <text x="160" y="456" font-size="14" fill="white" text-anchor="middle" font-weight="bold">КОНЕЦ</text>
+              
+              <defs>
+                <marker id="arrowA" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" fill="#7f8c8d"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- ПРИМЕР 2 -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-num">B</div>
+            <h3>📸 Фотосъёмка пруда с 4 точек</h3>
+            <span class="difficulty diff-medium">Средний</span>
+          </div>
+          
+          <div class="example-meta">
+            <div class="meta-item">
+              <b>🎯 Цель</b>
+              Облететь пруд по кругу и сделать 4 снимка в каждой вершине
+            </div>
+            <div class="meta-item">
+              <b>🗺️ Траектория</b>
+              Квадрат 150 см с промежуточными посадками в каждой вершине
+            </div>
+            <div class="meta-item">
+              <b>⚙️ Используемые блоки</b>
+              🛫 Взлёт, 🔁 Цикл (4), → Вперёд, ↻ Направо, 🛬 Посадка, ⏱ Ожидание
+            </div>
+            <div class="meta-item">
+              <b>✨ Особенность</b>
+              Промежуточные посадки для «фотосъёмки» в каждой вершине
+            </div>
+          </div>
+          
+          <p><b>🎨 Программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">📋 Пример B — Фотосъёмка с 4 точек</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">100</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-loop">
+                <span class="block-icon">🔁</span>
+                <span class="block-label">Повторить</span>
+                <span class="block-value">4</span>
+                <span class="block-unit">раз</span>
+                <div class="trik-loop-container">
+                  <div class="trik-block trik-move">
+                    <span class="block-icon">→</span>
+                    <span class="block-label">Вперёд на</span>
+                    <span class="block-value">150</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                  <div class="trik-block trik-height">
+                    <span class="block-icon">🛬</span>
+                    <span class="block-label">Посадка</span>
+                    <span class="block-comment">// фотосъёмка</span>
+                  </div>
+                  <div class="trik-block trik-wait">
+                    <span class="block-icon">⏱</span>
+                    <span class="block-label">Ожидание</span>
+                    <span class="block-value">2</span>
+                    <span class="block-unit">с</span>
+                  </div>
+                  <div class="trik-block trik-height">
+                    <span class="block-icon">🛫</span>
+                    <span class="block-label">Взлёт на</span>
+                    <span class="block-value">100</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                  <div class="trik-block trik-turn last-visible">
+                    <span class="block-icon">↻</span>
+                    <span class="block-label">Направо на</span>
+                    <span class="block-value">90</span>
+                    <span class="block-unit">°</span>
+                  </div>
+                </div>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+                <span class="block-comment">// окончательная</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tip-box">
+            💡 <b>Обратите внимание:</b> внутри цикла 5 блоков — это более сложная структура, чем в примере A. Здесь цикл содержит промежуточную посадку, ожидание и повторный взлёт.
+          </div>
+        </div>
+        
+        <!-- ПРИМЕР 3 -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-num">C</div>
+            <h3>⭐ Облёт по звезде</h3>
+            <span class="difficulty diff-medium">Средний</span>
+          </div>
+          
+          <div class="example-meta">
+            <div class="meta-item">
+              <b>🎯 Цель</b>
+              Обследовать территорию по траектории пятиконечной звезды
+            </div>
+            <div class="meta-item">
+              <b>🗺️ Траектория</b>
+              Пятиконечная звезда с лучом 150 см на высоте 120 см
+            </div>
+            <div class="meta-item">
+              <b>⚙️ Используемые блоки</b>
+              🛫 Взлёт, 🔁 Цикл (5), → Вперёд, ↻ Направо 144°, 🛬 Посадка
+            </div>
+            <div class="meta-item">
+              <b>✨ Особенность</b>
+              Нестандартный угол поворота 144° (математика пятиконечной звезды)
+            </div>
+          </div>
+          
+          <p><b>🎨 Программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">📋 Пример C — Пятиконечная звезда</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">120</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-loop">
+                <span class="block-icon">🔁</span>
+                <span class="block-label">Повторить</span>
+                <span class="block-value">5</span>
+                <span class="block-unit">раз</span>
+                <div class="trik-loop-container">
+                  <div class="trik-block trik-move">
+                    <span class="block-icon">→</span>
+                    <span class="block-label">Вперёд на</span>
+                    <span class="block-value">150</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                  <div class="trik-block trik-turn last-visible">
+                    <span class="block-icon">↻</span>
+                    <span class="block-label">Направо на</span>
+                    <span class="block-value">144</span>
+                    <span class="block-unit">°</span>
+                  </div>
+                </div>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-box">
+            💡 <b>Математическая справка:</b> угол 144° получается по формуле 180° − (180° ÷ 5) = 144°. Это внешний угол пятиконечной звезды. Ученики могут вывести эту формулу самостоятельно.
+          </div>
+        </div>
+        
+        <!-- ПРИМЕР 4 -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-num">D</div>
+            <h3>🗺️ Эко-патруль «Зигзаг»</h3>
+            <span class="difficulty diff-hard">Сложный</span>
+          </div>
+          
+          <div class="example-meta">
+            <div class="meta-item">
+              <b>🎯 Цель</b>
+              Обследовать прямоугольное поле зигзагообразным маршрутом
+            </div>
+            <div class="meta-item">
+              <b>🗺️ Траектория</b>
+              Зигзаг: 3 ряда по 200 см с поворотами и смещением
+            </div>
+            <div class="meta-item">
+              <b>⚙️ Используемые блоки</b>
+              🛫 Взлёт, 🔁 Цикл (вложенные), → Вперёд, ↻/↺ Повороты, ↑↓ Подняться/Опуститься, ⏱ Ожидание, 🛬 Посадка
+            </div>
+            <div class="meta-item">
+              <b>✨ Особенность</b>
+              Комбинация нескольких циклов, изменение высоты между рядами
+            </div>
+          </div>
+          
+          <p><b>🎨 Программа в ТРИК Студио:</b></p>
+          
+          <div class="trik-workspace">
+            <div class="trik-workspace-title">📋 Пример D — Зигзаг с изменением высоты</div>
+            <div class="trik-blocks">
+              <div class="trik-block trik-height">
+                <span class="block-icon">🛫</span>
+                <span class="block-label">Взлёт на</span>
+                <span class="block-value">80</span>
+                <span class="block-unit">см</span>
+              </div>
+              <div class="trik-block trik-loop">
+                <span class="block-icon">🔁</span>
+                <span class="block-label">Повторить</span>
+                <span class="block-value">3</span>
+                <span class="block-unit">раз</span>
+                <div class="trik-loop-container">
+                  <div class="trik-block trik-move">
+                    <span class="block-icon">→</span>
+                    <span class="block-label">Вперёд на</span>
+                    <span class="block-value">200</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                  <div class="trik-block trik-wait">
+                    <span class="block-icon">⏱</span>
+                    <span class="block-label">Ожидание</span>
+                    <span class="block-value">1</span>
+                    <span class="block-unit">с</span>
+                    <span class="block-comment">// сканирование</span>
+                  </div>
+                  <div class="trik-block trik-turn">
+                    <span class="block-icon">↻</span>
+                    <span class="block-label">Направо на</span>
+                    <span class="block-value">90</span>
+                    <span class="block-unit">°</span>
+                  </div>
+                  <div class="trik-block trik-move">
+                    <span class="block-icon">→</span>
+                    <span class="block-label">Вперёд на</span>
+                    <span class="block-value">50</span>
+                    <span class="block-unit">см</span>
+                    <span class="block-comment">// смещение</span>
+                  </div>
+                  <div class="trik-block trik-turn">
+                    <span class="block-icon">↺</span>
+                    <span class="block-label">Налево на</span>
+                    <span class="block-value">90</span>
+                    <span class="block-unit">°</span>
+                  </div>
+                  <div class="trik-block trik-height last-visible">
+                    <span class="block-icon">↑</span>
+                    <span class="block-label">Подняться на</span>
+                    <span class="block-value">10</span>
+                    <span class="block-unit">см</span>
+                  </div>
+                </div>
+              </div>
+              <div class="trik-block trik-height last-visible">
+                <span class="block-icon">🛬</span>
+                <span class="block-label">Посадка</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tip-box">
+            💡 <b>Для учителя:</b> этот пример демонстрирует, что ученики могут комбинировать разные блоки и использовать нестандартные решения. Не обязательно требовать от всех именно такой сложности — главное, чтобы программа работала и соответствовала задумке автора.
+          </div>
+        </div>
+        
+        <div class="success-box">
+          <b>✅ Что принимать как правильное решение в задании 6:</b>
+          <ul style="margin-top: 8px; margin-left: 20px;">
+            <li>Программа начинается с блока «Взлёт» и заканчивается «Посадка»</li>
+            <li>Используется хотя бы один блок «Цикл»</li>
+            <li>Траектория имеет осмысленное название и цель</li>
+            <li>Блок-схема соответствует программе</li>
+            <li>Программа успешно выполняется в симуляторе</li>
+            <li>Ученик может объяснить логику своего маршрута</li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ===== КРИТЕРИИ ОЦЕНКИ ===== -->
+    <div class="answer-section" id="criteria">
+      <div class="answer-header criteria">
+        <div class="answer-num">★</div>
+        <h2>Критерии оценки и рекомендации</h2>
+      </div>
+      <div class="answer-body">
+        
+        <h3 style="color: #9b59b6; margin-bottom: 15px;">📊 Критерии оценки для заданий 5.1 и 5.2</h3>
+        
+        <table class="criteria-table">
+          <tr>
+            <th>Критерий</th>
+            <th>Баллы</th>
+            <th>Описание</th>
+          </tr>
+          <tr>
+            <td>Правильная структура программы</td>
+            <td class="points">2 балла</td>
+            <td>Все нужные блоки в правильном порядке</td>
+          </tr>
+          <tr>
+            <td>Корректные значения параметров</td>
+            <td class="points">2 балла</td>
+            <td>Числа в блоках совпадают с заданием</td>
+          </tr>
+          <tr>
+            <td>Программа выполняется в симуляторе</td>
+            <td class="points">2 балла</td>
+            <td>Дрон рисует нужную траекторию</td>
+          </tr>
+          <tr>
+            <td>Ответ на вопрос для размышления (5.2)</td>
+            <td class="points">1 балл</td>
+            <td>Осмысленный пример из реальной жизни</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">ИТОГО за каждое задание</td>
+            <td class="points" style="font-size: 16px;">7 баллов</td>
+            <td></td>
+          </tr>
+        </table>
+        
+        <h3 style="color: #9b59b6; margin: 25px 0 15px;">📊 Критерии оценки для задания 6 (Эко-маршрут)</h3>
+        
+        <table class="criteria-table">
+          <tr>
+            <th>Критерий</th>
+            <th>Баллы</th>
+            <th>Описание</th>
+          </tr>
+          <tr>
+            <td>Придумана цель и название маршрута</td>
+            <td class="points">1 балл</td>
+            <td>Осмысленное описание задачи</td>
+          </tr>
+          <tr>
+            <td>Нарисована блок-схема</td>
+            <td class="points">2 балла</td>
+            <td>Схема содержит Старт, команды, Конец</td>
+          </tr>
+          <tr>
+            <td>Собрана программа в стиле ТРИК Студио</td>
+            <td class="points">2 балла</td>
+            <td>Используются правильные блоки и цвета</td>
+          </tr>
+          <tr>
+            <td>Использован блок «Цикл»</td>
+            <td class="points">2 балла</td>
+            <td>Программа содержит хотя бы один цикл</td>
+          </tr>
+          <tr>
+            <td>Программа работает в симуляторе</td>
+            <td class="points">2 балла</td>
+            <td>Дрон успешно выполняет маршрут</td>
+          </tr>
+          <tr>
+            <td>Защита маршрута (этап 7)</td>
+            <td class="points">3 балла</td>
+            <td>Команда может объяснить свою логику</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700;">ИТОГО за задание 6</td>
+            <td class="points" style="font-size: 16px;">12 баллов</td>
+            <td></td>
+          </tr>
+        </table>
+        
+        <div class="grade-summary">
+          <h3>🏆 Шкала итоговых оценок</h3>
+          <p style="font-size: 14px; opacity: 0.9;">Максимум: 7 + 7 + 12 = 26 баллов</p>
+          
+          <div class="grades">
+            <div class="grade-item">
+              <span class="mark">5</span>
+              <span class="range">23–26 баллов</span>
+            </div>
+            <div class="grade-item">
+              <span class="mark">4</span>
+              <span class="range">18–22 балла</span>
+            </div>
+            <div class="grade-item">
+              <span class="mark">3</span>
+              <span class="range">12–17 баллов</span>
+            </div>
+            <div class="grade-item">
+              <span class="mark">2</span>
+              <span class="range">менее 12 баллов</span>
+            </div>
+          </div>
+        </div>
+        
+        <h3 style="color: #9b59b6; margin: 25px 0 15px;">💡 Рекомендации для учителя</h3>
+        
+        <div class="tip-box">
+          <b>🕐 Тайминг занятия:</b>
+          <ul style="margin-top: 8px; margin-left: 20px;">
+            <li>Этап 5 (15 мин) — жёстко ограничивайте время, иначе ученики «застрянут» на отладке</li>
+            <li>Этап 6 (15 мин) — дайте 5 мин на идею, 7 мин на реализацию, 3 мин на подготовку защиты</li>
+            <li>Этап 7 (10 мин) — 2 мин на выступление + 1 мин на вопросы от «заказчика»</li>
+          </ul>
+        </div>
+        
+        <div class="info-box">
+          <b>🎯 Дифференцированный подход:</b>
+          <ul style="margin-top: 8px; margin-left: 20px;">
+            <li><b>Сильным ученикам:</b> предложите добавить в Эко-маршрут вложенные циклы или несколько промежуточных посадок</li>
+            <li><b>Средним ученикам:</b> разрешите использовать примеры A или C как основу для своей работы</li>
+            <li><b>Слабым ученикам:</b> дайте готовую блок-схему и попросите только собрать программу по ней</li>
+          </ul>
+        </div>
+        
+        <div class="warning-box">
+          <b>⚠️ Частые проблемы на занятии:</b>
+          <ul style="margin-top: 8px; margin-left: 20px;">
+            <li>Ученики забывают, что после «Посадки» дрон не может двигаться — нужен повторный «Взлёт»</li>
+            <li>Путают «Направо» и «Налево» — объясните, что поворот происходит относительно текущего курса дрона</li>
+            <li>В цикле забывают изменить количество повторений с дефолтного «4» на нужное</li>
+            <li>При защите маршрута не могут объяснить, зачем нужен цикл — подготовьте наводящие вопросы</li>
+          </ul>
+        </div>
+        
+        <div class="success-box">
+          <b>✅ Признаки успешного занятия:</b>
+          <ul style="margin-top: 8px; margin-left: 20px;">
+            <li>Все команды сдали работающие программы для заданий 5.1 и 5.2</li>
+            <li>Каждая команда придумала свой уникальный Эко-маршрут</li>
+            <li>Ученики могут объяснить разницу между линейным алгоритмом и циклом</li>
+            <li>На защите команд звучат вопросы от «заказчика» — значит, они слушают друг друга</li>
+            <li>В самооценке большинство выбирает «Легко» или «В основном получилось»</li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+  <div class="footer">
+    🔑 Ключи для учителя · Занятие 2 · Сложные траектории и Эко-маршрут<br>
+    🚁 Геоскан Пионер Базовый · ТРИК Студио · Этапы 5–7
+  </div>
+  
+</div>
+
+</body>
+</html>

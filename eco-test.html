@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Хранители природы Тамбовского края</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/comfortaa@latest/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/nunito@latest/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/nunito@latest/latin-700.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --green-dark: #2d5a3d;
+    --green-mid: #4a8f5f;
+    --green-light: #8bc34a;
+    --blue-river: #5cb8d6;
+    --brown: #8b6f47;
+    --cream: #fdf8e8;
+    --yellow: #ffc93c;
+    --red: #e74c3c;
+    --text: #2c3e2d;
+  }
+  
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #a8e6a3 0%, #c8e6c9 40%, #b3e0e0 100%);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  /* Floating leaves background */
+  .leaf {
+    position: fixed;
+    font-size: 2rem;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: float 15s infinite linear;
+    z-index: 0;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(-100px) rotate(0deg); }
+    100% { transform: translateY(110vh) rotate(360deg); }
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .screen {
+    display: none;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .screen.active { display: block; }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* INTRO SCREEN */
+  .intro-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 60px rgba(45, 90, 61, 0.2);
+    text-align: center;
+    margin-top: 30px;
+    border: 4px solid var(--green-light);
+  }
+  
+  .hero-illustration {
+    width: 100%;
+    max-width: 400px;
+    height: 220px;
+    margin: 0 auto 20px;
+    background: linear-gradient(180deg, #87ceeb 0%, #b3e0e0 60%, #8bc34a 60%, #4a8f5f 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero-illustration::before {
+    content: '🌳🦫🌊🌿';
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    letter-spacing: 10px;
+  }
+  
+  .hero-illustration::after {
+    content: '☀️';
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2.5rem;
+  }
+  
+  h1 {
+    font-family: 'Comfortaa', cursive;
+    font-size: 2.2rem;
+    color: var(--green-dark);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--brown);
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  
+  .intro-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 25px;
+    text-align: left;
+    padding: 0 10px;
+  }
+  
+  .intro-text strong {
+    color: var(--green-dark);
+  }
+  
+  .btn {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: 'Comfortaa', cursive;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(45, 90, 61, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(45, 90, 61, 0.4);
+  }
+  
+  .btn:active { transform: translateY(0); }
+  
+  .btn-secondary {
+    background: linear-gradient(135deg, var(--yellow), #ffa726);
+    color: var(--text);
+  }
+  
+  /* QUIZ SCREEN */
+  .progress-container {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .progress-text {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 700;
+    color: var(--green-dark);
+    white-space: nowrap;
+  }
+  
+  .progress-bar {
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid var(--green-light);
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-light), var(--green-mid));
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 10px;
+  }
+  
+  .question-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: 30px 25px;
+    box-shadow: 0 15px 40px rgba(45, 90, 61, 0.15);
+    border: 3px solid var(--green-light);
+  }
+  
+  .question-icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .question-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.4rem;
+    color: var(--green-dark);
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .question-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    color: var(--text);
+  }
+  
+  .answers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .answer {
+    background: var(--cream);
+    border: 3px solid transparent;
+    padding: 15px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 1rem;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .answer:hover:not(:disabled) {
+    border-color: var(--green-mid);
+    transform: translateX(5px);
+    background: #fff;
+  }
+  
+  .answer-letter {
+    background: var(--green-mid);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Comfortaa', cursive;
+  }
+  
+  .answer.correct {
+    background: #c8e6c9;
+    border-color: var(--green-dark);
+    animation: pulse 0.5s;
+  }
+  
+  .answer.wrong {
+    background: #ffcdd2;
+    border-color: var(--red);
+    opacity: 0.7;
+  }
+  
+  .answer:disabled { cursor: default; }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  
+  .feedback {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #e8f5e9, #fff8e1);
+    border-left: 5px solid var(--green-mid);
+    display: none;
+    animation: slideDown 0.4s;
+  }
+  
+  .feedback.show { display: block; }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .feedback-title {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+  }
+  
+  .feedback-fact {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  
+  .next-btn-container {
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+  }
+  
+  .next-btn-container.show { display: block; }
+  
+  /* RESULT SCREEN */
+  .result-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 30px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(45, 90, 61, 0.25);
+    border: 4px solid var(--yellow);
+    margin-top: 30px;
+  }
+  
+  .trophy {
+    font-size: 5rem;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  
+  .result-title {
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.8rem;
+    color: var(--green-dark);
+    margin-bottom: 15px;
+  }
+  
+  .score-display {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 15px 0;
+    box-shadow: 0 8px 20px rgba(74, 143, 95, 0.3);
+  }
+  
+  .result-message {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--cream);
+    border-radius: 15px;
+    color: var(--text);
+  }
+  
+  .buttons-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 100;
+    animation: confetti-fall 3s linear forwards;
+  }
+  
+  @keyframes confetti-fall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  
+  @media (max-width: 600px) {
+    h1 { font-size: 1.6rem; }
+    .intro-card, .question-card, .result-card { padding: 25px 18px; }
+    .question-title { font-size: 1.15rem; }
+    .answer { font-size: 0.95rem; padding: 12px 15px; }
+    .btn { padding: 14px 25px; font-size: 1rem; }
+    .result-title { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="intro-screen">
+    <div class="intro-card">
+      <div class="hero-illustration"></div>
+      <h1>🌿 Хранители природы Тамбовского края 🌿</h1>
+      <p class="subtitle">Интерактивный эко-тест</p>
+      <p class="intro-text">
+        Привет, <strong>эко-детектив!</strong> 👋<br><br>
+        Наша Тамбовская область — это край густых дубрав, быстрых рек и удивительных животных. Но им нужна твоя помощь!<br><br>
+        Пройди <strong>10 испытаний</strong> и узнай, насколько ты готов защищать родную природу от мусора! 🌳🦫🌊
+      </p>
+      <button class="btn" onclick="startQuiz()">
+        Начать тест 🚀
+      </button>
+    </div>
+  </div>
+  
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quiz-screen">
+    <div class="progress-container">
+      <div class="progress-text" id="progress-text">Вопрос 1 / 10</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+    
+    <div class="question-card">
+      <div class="question-icon" id="question-icon">🦫</div>
+      <h2 class="question-title" id="question-title">Наш заповедный сосед</h2>
+      <p class="question-text" id="question-text"></p>
+      <div class="answers" id="answers"></div>
+      
+      <div class="feedback" id="feedback">
+        <div class="feedback-title" id="feedback-title"></div>
+        <div class="feedback-fact" id="feedback-fact"></div>
+      </div>
+      
+      <div class="next-btn-container" id="next-btn-container">
+        <button class="btn btn-secondary" onclick="nextQuestion()">
+          Далее ➡️
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="result-screen">
+    <div class="result-card">
+      <div class="trophy" id="trophy">🏆</div>
+      <h2 class="result-title" id="result-title">Тест завершён!</h2>
+      <div class="score-display" id="score-display">0 / 10</div>
+      <div class="result-message" id="result-message"></div>
+      <div class="buttons-group">
+        <button class="btn" onclick="restartQuiz()">
+          Пройти ещё раз 🔄
+        </button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+  // Floating leaves
+  const leaves = ['🍃', '🌿', '🍂', '🌱', '🍀'];
+  for (let i = 0; i < 12; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+    leaf.style.left = Math.random() * 100 + '%';
+    leaf.style.animationDelay = Math.random() * 15 + 's';
+    leaf.style.animationDuration = (12 + Math.random() * 10) + 's';
+    leaf.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
+    document.body.appendChild(leaf);
+  }
+  
+  const questions = [
+    {
+      icon: '🦫',
+      title: 'Наш заповедный сосед',
+      text: 'В Тамбовской области есть знаменитый Воронинский государственный природный заповедник. Какое животное является его главным «символом» и требует чистой воды, которую мы должны беречь от загрязнения мусором?',
+      answers: ['Белый медведь', 'Речной бобр', 'Пустынная лиса (фенек)'],
+      correct: 1,
+      fact: 'Бобры — отличные строители и санитары леса. Но если в реку попадет пластиковая сетка или мусор, бобры могут запутаться в них или принять пластик за еду. Заповедник охраняет их именно в Тамбовской области!'
+    },
+    {
+      icon: '🍎',
+      title: 'Гонка разложения',
+      text: 'Ты гулял в лесу и перекусил. Что из этого мусора исчезнет (разложится) в почве быстрее всего, не нанеся вреда природе?',
+      answers: ['Огрызок яблока или банановая кожура', 'Пластиковая бутылка из-под воды', 'Стеклянная банка из-под варенья'],
+      correct: 0,
+      fact: 'Органические отходы (огрызки, хлеб) разлагаются за несколько месяцев и становятся удобрением. А вот пластиковая бутылка будет лежать в лесу более 400 лет, постепенно превращаясь в микропластик!'
+    },
+    {
+      icon: '🌊',
+      title: 'Река Цна',
+      text: 'Река Цна — одна из главных водных артерий Тамбовщины. Почему категорически нельзя бросать мусор на берегу, даже если ты уверен, что вода его «унесет»?',
+      answers: ['Мусор может зацепиться за камни и создать затор, а рыбы и птицы примут его за еду', 'Река обидится и перестанет течь', 'Мусор превратит воду в сладкий сироп'],
+      correct: 0,
+      fact: 'В реках Тамбовской области водятся щуки, окуни и сомы. Пластиковые пакеты в воде становятся похожи на медуз, и рыбы (а также водоплавающие птицы) часто гибнут, наевшись такого «лакомства».'
+    },
+    {
+      icon: '🌳',
+      title: 'Лес и стекло',
+      text: 'Тамбовская область славится своими дубовыми лесами. Почему опасно оставлять в лесу стеклянные бутылки?',
+      answers: ['Стекло может порезать лапы зайцам и ежам', 'Осколки стекла работают как линза, фокусируют солнце и могут вызвать лесной пожар', 'Оба варианта верны'],
+      correct: 2,
+      fact: 'Лесные пожары — страшное бедствие. Бутылка или осколок стекла в солнечный день могут стать причиной пожара, который уничтожит деревья, дома и жизни животных. Стекло также разлагается более 1000 лет!'
+    },
+    {
+      icon: '🔋',
+      title: 'Маленькая батарейка — большая беда',
+      text: 'Ты заменил батарейки в плеере или мышке. Куда их нужно деть?',
+      answers: ['Закопать в лесу под березой', 'Выбросить в обычный мусорный бак во дворе', 'Сдать в специальный контейнер для сбора батареек (например, в магазине или школе)'],
+      correct: 2,
+      fact: 'Одна пальчиковая батарейка, выброшенная на землю, способна загрязнить тяжелыми металлами около 20 квадратных метров почвы! В лесу это площадь, на которой может не вырасти ни одно дерево, и погибнут черви и микроорганизмы.'
+    },
+    {
+      icon: '🦌',
+      title: 'Европейская косуля',
+      text: 'В лесах нашего края можно встретить грациозную европейскую косулю. Чем опасен для нее мусор, оставленный туристами (например, пластиковые упаковки от чипсов или консервные банки)?',
+      answers: ['Мусор громко шумит, и косуля пугается', 'Животное может засунуть голову в упаковку, не сможет снять ее и погибнет от голода', 'Мусор привлекает к косуле комаров'],
+      correct: 1,
+      fact: 'Животные очень любопытны. Они часто нюхают оставленную людьми еду. Если голова косули или лисы застрянет в жестяной банке или пластиковой петле, зверь не сможет питаться и погибнет.'
+    },
+    {
+      icon: '♻️',
+      title: 'Волшебное превращение',
+      text: 'Что происходит с пластиковыми бутылками и макулатурой, если мы не выбрасываем их в обычный мусор, а сдаем в пункт переработки?',
+      answers: ['Их отправляют на Луну', 'Они становятся новыми, полезными вещами (одеждой, тетрадями, скамейками)', 'Они исчезают по волшебству'],
+      correct: 1,
+      fact: 'Переработка 1 тонны макулатуры спасает от вырубки 17 взрослых деревьев! А из переработанного пластика делают флисовую одежду, из которой шьют теплые кофты и шапки.'
+    },
+    {
+      icon: '🍂',
+      title: 'Осенний листопад',
+      text: 'В парках осенью опадает много листьев. Что делать с листвой и ветками, чтобы помочь природе, а не навредить ей?',
+      answers: ['Сжечь их у костра, чтобы дым улетел в облака', 'Собрать в компостную кучу — к весне получится отличное удобрение для деревьев', 'Сгрести в ближайший овраг'],
+      correct: 1,
+      fact: 'Сжигать листья вредно: дым содержит токсины, которые отравляют воздух, которым мы дышим. А вот компост — это «черное золото» садоводов, которое возвращает почве питательные вещества.'
+    },
+    {
+      icon: '💧',
+      title: 'Эко-привычка',
+      text: 'Какое действие поможет тебе лично сократить количество мусора и спасти природу?',
+      answers: ['Каждый день покупать новую воду в пластиковой бутылке', 'Использовать многоразовую бутылку для воды и тканевый шоппер вместо пакетов', 'Заворачивать каждый бутерброд в новую фольгу'],
+      correct: 1,
+      fact: 'Если каждый житель Тамбова будет использовать одну многоразовую бутылку вместо покупки пластиковых, за год в нашем регионе останется на миллионы единиц меньше пластикового мусора!'
+    },
+    {
+      icon: '🏆',
+      title: 'Суперсила эколога',
+      text: 'Представь, что ты нашел в лесу свалку мусора, которую оставили взрослые. Какое твое действие будет самым правильным?',
+      answers: ['Пройти мимо, это не моя земля', 'Самому разобрать весь мусор голыми руками', 'Рассказать взрослым, учителю или родителям, и вместе организовать субботник или сообщить в экологические службы'],
+      correct: 2,
+      fact: 'Ты — будущее нашего края! Твоя суперсила — это твоя активность. Взрослые часто ленятся, но если дети покажут пример и поднимут вопрос о чистоте леса, взрослые обязательно помогут и всё исправят.'
+    }
+  ];
+  
+  let currentQuestion = 0;
+  let score = 0;
+  
+  function startQuiz() {
+    document.getElementById('intro-screen').classList.remove('active');
+    document.getElementById('quiz-screen').classList.add('active');
+    currentQuestion = 0;
+    score = 0;
+    showQuestion();
+  }
+  
+  function showQuestion() {
+    const q = questions[currentQuestion];
+    document.getElementById('progress-text').textContent = `Вопрос ${currentQuestion + 1} / 10`;
+    document.getElementById('progress-fill').style.width = ((currentQuestion) / 10 * 100) + '%';
+    document.getElementById('question-icon').textContent = q.icon;
+    document.getElementById('question-title').textContent = q.title;
+    document.getElementById('question-text').textContent = q.text;
+    
+    const answersContainer = document.getElementById('answers');
+    answersContainer.innerHTML = '';
+    const letters = ['А', 'Б', 'В'];
+    
+    q.answers.forEach((answer, index) => {
+      const btn = document.createElement('button');
+      btn.className = 'answer';
+      btn.innerHTML = `<span class="answer-letter">${letters[index]}</span><span>${answer}</span>`;
+      btn.onclick = () => selectAnswer(index, btn);
+      answersContainer.appendChild(btn);
+    });
+    
+    document.getElementById('feedback').classList.remove('show');
+    document.getElementById('next-btn-container').classList.remove('show');
+  }
+  
+  function selectAnswer(index, btn) {
+    const q = questions[currentQuestion];
+    const allAnswers = document.querySelectorAll('.answer');
+    allAnswers.forEach(a => a.disabled = true);
+    
+    if (index === q.correct) {
+      btn.classList.add('correct');
+      score++;
+      document.getElementById('feedback-title').textContent = '✅ Правильно! Отличная работа!';
+    } else {
+      btn.classList.add('wrong');
+      allAnswers[q.correct].classList.add('correct');
+      document.getElementById('feedback-title').textContent = '❌ Не совсем так...';
+    }
+    
+    document.getElementById('feedback-fact').innerHTML = `<strong>💡 Интересный факт:</strong> ${q.fact}`;
+    document.getElementById('feedback').classList.add('show');
+    document.getElementById('next-btn-container').classList.add('show');
+  }
+  
+  function nextQuestion() {
+    currentQuestion++;
+    if (currentQuestion >= questions.length) {
+      showResult();
+    } else {
+      // Re-animate question card
+      const quizScreen = document.getElementById('quiz-screen');
+      quizScreen.classList.remove('active');
+      setTimeout(() => {
+        quizScreen.classList.add('active');
+        showQuestion();
+      }, 50);
+    }
+  }
+  
+  function showResult() {
+    document.getElementById('quiz-screen').classList.remove('active');
+    document.getElementById('result-screen').classList.add('active');
+    
+    document.getElementById('score-display').textContent = `${score} / 10`;
+    
+    let title, message, trophy;
+    if (score >= 8) {
+      trophy = '🏆';
+      title = '🌟 Хранитель Тамбовского края!';
+      message = 'Ты настоящий эко-герой! Природа родного края может спать спокойно, пока такие ребята, как ты, следят за ней. Продолжай беречь леса, реки и их обитателей! 🌳🦫💚';
+      launchConfetti();
+    } else if (score >= 5) {
+      trophy = '🌿';
+      title = '🌿 Юный натуралист';
+      message = 'У тебя отличные знания, но есть куда расти. Продолжай изучать экологию и подавай пример друзьям! Вместе мы сделаем Тамбовский край ещё чище! 💪';
+    } else {
+      trophy = '🌱';
+      title = '🌱 Эко-новичок';
+      message = 'Не беда! Сегодня ты узнал много нового о том, как мусор влияет на наш лес и реки. Начни с малого: например, сдай одну батарейку в спецконтейнер! Каждое маленькое действие важно! 💚';
+    }
+    
+    document.getElementById('trophy').textContent = trophy;
+    document.getElementById('result-title').textContent = title;
+    document.getElementById('result-message').textContent = message;
+  }
+  
+  function restartQuiz() {
+    document.getElementById('result-screen').classList.remove('active');
+    document.getElementById('intro-screen').classList.add('active');
+    currentQuestion = 0;
+    score = 0;
+  }
+  
+  function launchConfetti() {
+    const colors = ['#8bc34a', '#ffc93c', '#5cb8d6', '#e74c3c', '#4a8f5f'];
+    for (let i = 0; i < 60; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 2 + 's';
+      confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 5000);
+    }
+  }
+</script>
+
+</body>
+</html>

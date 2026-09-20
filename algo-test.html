@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>📝 Интерактивный тест — Алгоритмы и ТРИК Студио</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #f0f2f5 0%, #dfe4ea 100%);
+    color: #2c3e50;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .container { max-width: 800px; margin: 0 auto; }
+  
+  .screen { display: none; }
+  .screen.active { display: block; }
+  
+  /* ===== ЭКРАН ПРИВЕТСТВИЯ ===== */
+  .welcome {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
+    color: white;
+    border-radius: 24px;
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);
+  }
+  
+  .welcome .icon { font-size: 80px; margin-bottom: 15px; }
+  .welcome h1 { font-size: 36px; margin-bottom: 10px; font-weight: 800; }
+  .welcome h2 { font-size: 18px; font-weight: 400; opacity: 0.95; margin-bottom: 25px; }
+  
+  .welcome-info {
+    background: rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .welcome-info h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  
+  .welcome-info ul { list-style: none; }
+  
+  .welcome-info li {
+    padding: 6px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .welcome-info li::before {
+    content: '✓';
+    background: white;
+    color: #ff6b35;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  
+  .btn-start {
+    background: white;
+    color: #ff6b35;
+    border: none;
+    padding: 16px 50px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  }
+  
+  /* ===== ЭКРАН ТЕСТА ===== */
+  .quiz-card {
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+  
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ecf0f1;
+  }
+  
+  .quiz-progress {
+    font-size: 13px;
+    color: #7f8c8d;
+    font-weight: 600;
+  }
+  
+  .quiz-progress b {
+    color: #ff6b35;
+    font-size: 16px;
+  }
+  
+  .quiz-score {
+    background: #fff3e6;
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ff6b35;
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 25px;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b35, #ff8c5a);
+    transition: width 0.5s;
+    border-radius: 4px;
+  }
+  
+  .question-type {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    background: #e7f3ff;
+    color: #2980b9;
+  }
+  
+  .question-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .option {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border: 2px solid #ecf0f1;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .option:hover {
+    background: #fff3e6;
+    border-color: #ff6b35;
+    transform: translateX(4px);
+  }
+  
+  .option.correct {
+    background: #d4edda;
+    border-color: #27ae60;
+    color: #155724;
+  }
+  
+  .option.incorrect {
+    background: #f8d7da;
+    border-color: #e74c3c;
+    color: #721c24;
+  }
+  
+  .option.disabled {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  
+  .option-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    color: #ff6b35;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    border: 2px solid #ff6b35;
+  }
+  
+  .option.correct .option-letter {
+    background: #27ae60;
+    color: white;
+    border-color: #27ae60;
+  }
+  
+  .option.incorrect .option-letter {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+  }
+  
+  .feedback {
+    margin-top: 20px;
+    padding: 15px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+    animation: slideIn 0.3s;
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .feedback.show { display: block; }
+  
+  .feedback.correct {
+    background: #d4edda;
+    border-left: 4px solid #27ae60;
+    color: #155724;
+  }
+  
+  .feedback.incorrect {
+    background: #f8d7da;
+    border-left: 4px solid #e74c3c;
+    color: #721c24;
+  }
+  
+  .feedback b { display: block; margin-bottom: 5px; }
+  
+  .feedback .correct-answer {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  
+  .quiz-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+    justify-content: flex-end;
+  }
+  
+  .btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .btn-primary {
+    background: #ff6b35;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    background: #e55a2b;
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* ===== ЭКРАН РЕЗУЛЬТАТОВ ===== */
+  .results {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  
+  .results-icon {
+    font-size: 90px;
+    margin-bottom: 15px;
+  }
+  
+  .results h1 {
+    font-size: 32px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .results .subtitle {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+  }
+  
+  .grade-badge {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 28px;
+    font-weight: 800;
+    border-radius: 15px;
+    margin: 15px 0;
+    color: white;
+    letter-spacing: 1px;
+  }
+  
+  .grade-5 { background: linear-gradient(135deg, #27ae60, #229954); }
+  .grade-4 { background: linear-gradient(135deg, #3498db, #2874a6); }
+  .grade-3 { background: linear-gradient(135deg, #f39c12, #d68910); }
+  .grade-2 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+  }
+  
+  .stat-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 18px;
+    border: 2px solid #ecf0f1;
+  }
+  
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #ff6b35;
+    display: block;
+  }
+  
+  .stat-label {
+    font-size: 12px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  
+  .review-section {
+    margin-top: 30px;
+    text-align: left;
+  }
+  
+  .review-section h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .review-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+  }
+  
+  .review-item.correct { border-left-color: #27ae60; background: #f0faf3; }
+  .review-item.incorrect { border-left-color: #e74c3c; background: #fdf2f3; }
+  
+  .review-item .q-num {
+    display: inline-block;
+    background: white;
+    color: #2c3e50;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-weight: 700;
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  
+  .review-item .q-text {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: inline;
+  }
+  
+  .review-item .user-answer {
+    font-size: 13px;
+    color: #555;
+    padding: 6px 10px;
+    background: white;
+    border-radius: 6px;
+    margin: 5px 0;
+  }
+  
+  .review-item .user-answer b {
+    color: #ff6b35;
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  
+  .review-item .correct-answer-block {
+    font-size: 13px;
+    padding: 6px 10px;
+    background: rgba(39, 174, 96, 0.1);
+    border-radius: 6px;
+    margin-top: 6px;
+    color: #155724;
+  }
+  
+  .review-item .correct-answer-block b {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+    color: #27ae60;
+  }
+  
+  .results-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 600px) {
+    .quiz-card, .results, .welcome { padding: 25px 20px; }
+    .question-text { font-size: 17px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .welcome h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- ===== ЭКРАН ПРИВЕТСТВИЯ ===== -->
+  <div class="screen active" id="welcomeScreen">
+    <div class="welcome">
+      <div class="icon">📝</div>
+      <h1>Интерактивный тест</h1>
+      <h2>Алгоритмы, блок-схемы и ТРИК Студио</h2>
+      
+      <div class="welcome-info">
+        <h3>📋 О тесте</h3>
+        <ul>
+          <li>10 вопросов с выбором ответа</li>
+          <li>Темы: алгоритмы, блок-схемы, ТРИК Студио, квадрокоптер</li>
+          <li>Мгновенная обратная связь после каждого вопроса</li>
+          <li>Итоговая оценка и подробный разбор ответов</li>
+          <li>Время прохождения: ~7 минут</li>
+        </ul>
+      </div>
+      
+      <button class="btn-start" onclick="startQuiz()">🚀 Начать тест</button>
+    </div>
+  </div>
+  
+  <!-- ===== ЭКРАН ТЕСТА ===== -->
+  <div class="screen" id="quizScreen">
+    <div class="quiz-card">
+      <div class="quiz-header">
+        <div class="quiz-progress">Вопрос <b id="currentQ">1</b> из <b>10</b></div>
+        <div class="quiz-score">✅ Правильных: <span id="correctCount">0</span></div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+      </div>
+      
+      <div id="questionContainer"></div>
+      
+      <div class="feedback" id="feedback"></div>
+      
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>
+          Далее →
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ===== ЭКРАН РЕЗУЛЬТАТОВ ===== -->
+  <div class="screen" id="resultsScreen">
+    <div class="results">
+      <div class="results-icon" id="resultsIcon">🏆</div>
+      <h1 id="resultsTitle">Тест завершён!</h1>
+      <div class="subtitle" id="resultsSubtitle">Ты ответил на все вопросы</div>
+      
+      <div class="grade-badge" id="gradeBadge">5</div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="statCorrect">0</span>
+          <div class="stat-label">Правильных</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statPercent">0%</span>
+          <div class="stat-label">Результат</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statWrong">0</span>
+          <div class="stat-label">Ошибок</div>
+        </div>
+      </div>
+      
+      <div class="review-section">
+        <h3>📊 Разбор ответов</h3>
+        <div id="reviewList"></div>
+      </div>
+      
+      <div class="results-actions">
+        <button class="btn btn-primary" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+// ==================== ВОПРОСЫ ====================
+const questions = [
+  {
+    question: 'Что такое алгоритм?',
+    options: [
+      'Последовательность шагов для достижения цели',
+      'Случайный набор действий',
+      'Только компьютерная программа'
+    ],
+    correct: 0,
+    explanation: 'Алгоритм — это точная последовательность шагов, ведущих к решению задачи. Он может быть реализован не только на компьютере, но и в повседневной жизни (рецепт, инструкция).'
+  },
+  {
+    question: 'Какой геометрической фигурой в блок-схеме обозначается начало и конец алгоритма?',
+    options: [
+      'Прямоугольник',
+      'Овал (скруглённый прямоугольник)',
+      'Ромб'
+    ],
+    correct: 1,
+    explanation: 'Овал (или скруглённый прямоугольник) используется для обозначения начала («СТАРТ») и конца («КОНЕЦ») алгоритма. Прямоугольник — это действие, ромб — условие.'
+  },
+  {
+    question: 'Какой фигурой в блок-схеме обозначается действие (команда)?',
+    options: [
+      'Прямоугольник',
+      'Овал',
+      'Ромб'
+    ],
+    correct: 0,
+    explanation: 'Прямоугольник в блок-схеме обозначает действие или команду — например, «Вперёд на 100 см» или «Взлёт на 80 см». Это основной элемент, из которых состоит большинство алгоритмов.'
+  },
+  {
+    question: 'Какой фигурой в блок-схеме обозначается условие (вопрос «Да/Нет»)?',
+    options: [
+      'Прямоугольник',
+      'Овал',
+      'Ромб'
+    ],
+    correct: 2,
+    explanation: 'Ромб используется для обозначения условия — логического вопроса, у которого есть два варианта ответа: «Да» или «Нет». В зависимости от ответа алгоритм идёт по разным веткам.'
+  },
+  {
+    question: 'Что такое линейный алгоритм?',
+    options: [
+      'Алгоритм с циклами и условиями',
+      'Алгоритм, в котором команды выполняются строго по порядку, без повторений',
+      'Алгоритм, который выполняется в случайном порядке'
+    ],
+    correct: 1,
+    explanation: 'Линейный алгоритм — это алгоритм, в котором все команды выполняются последовательно, одна за другой, без циклов, ветвлений и повторений. Пример: рецепт бутерброда.'
+  },
+  {
+    question: 'Что такое цикл в программировании?',
+    options: [
+      'Однократное выполнение команды',
+      'Повторение一组 действий несколько раз',
+      'Остановка программы'
+    ],
+    correct: 1,
+    explanation: 'Цикл — это конструкция, которая позволяет повторять一组 команд заданное количество раз. В ТРИК Студио для этого используется блок «Повторить N раз».'
+  },
+  {
+    question: 'Какой блок в ТРИК Студио используется для повторения действий?',
+    options: [
+      '🛫 Взлёт',
+      '🔁 Повторить N раз',
+      '⏱ Ожидание'
+    ],
+    correct: 1,
+    explanation: 'Блок «🔁 Повторить N раз» — это фиолетовый блок категории «Управление». Он содержит вложенную область, в которую помещаются команды для повторения.'
+  },
+  {
+    question: 'На какой угол нужно поворачивать квадрокоптер после каждого отрезка, чтобы он летел по квадрату?',
+    options: [
+      '45°',
+      '90°',
+      '180°'
+    ],
+    correct: 1,
+    explanation: 'Квадрат имеет 4 стороны и 4 угла по 90°. Чтобы обойти квадрат, нужно 4 раза пролететь вперёд и после каждого отрезка повернуть направо на 90°.'
+  },
+  {
+    question: 'Сколько раз выполнится тело цикла «Повторить 4 раза»?',
+    options: [
+      '2 раза',
+      '4 раза',
+      '8 раз'
+    ],
+    correct: 1,
+    explanation: 'Число в блоке «Повторить» указывает, сколько раз выполнятся все команды внутри цикла. Если указано «4 раза», то тело цикла выполнится ровно 4 раза.'
+  },
+  {
+    question: 'Какая команда нужна для взлёта квадрокоптера в ТРИК Студио?',
+    options: [
+      '🛫 Взлёт на [N] см',
+      '→ Вперёд на [N] см',
+      '🔁 Повторить N раз'
+    ],
+    correct: 0,
+    explanation: 'Блок «🛫 Взлёт на [N] см» — это зелёный блок категории «Высота». Он поднимает квадрокоптер на заданную высоту в сантиметрах.'
+  }
+];
+
+// ==================== СОСТОЯНИЕ ====================
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
+let userAnswers = [];
+
+// ==================== ЗАПУСК ====================
+function startQuiz() {
+  document.getElementById('welcomeScreen').classList.remove('active');
+  document.getElementById('quizScreen').classList.add('active');
+  currentQuestionIndex = 0;
+  correctAnswers = 0;
+  userAnswers = [];
+  showQuestion();
+}
+
+function restartQuiz() {
+  document.getElementById('resultsScreen').classList.remove('active');
+  document.getElementById('welcomeScreen').classList.add('active');
+}
+
+// ==================== ПОКАЗ ВОПРОСА ====================
+function showQuestion() {
+  const q = questions[currentQuestionIndex];
+  const container = document.getElementById('questionContainer');
+  
+  document.getElementById('currentQ').textContent = currentQuestionIndex + 1;
+  document.getElementById('correctCount').textContent = correctAnswers;
+  document.getElementById('progressFill').style.width = ((currentQuestionIndex + 1) / questions.length * 100) + '%';
+  
+  const feedback = document.getElementById('feedback');
+  feedback.classList.remove('show', 'correct', 'incorrect');
+  
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.disabled = true;
+  nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'Завершить тест ✓' : 'Далее →';
+  
+  let html = '';
+  html += `<div class="question-type">🔘 Вопрос с выбором ответа</div>`;
+  html += `<div class="question-text">${q.question}</div>`;
+  html += `<div class="options">`;
+  const letters = ['А', 'Б', 'В', 'Г'];
+  q.options.forEach((opt, idx) => {
+    html += `<div class="option" onclick="selectOption(${idx})" data-idx="${idx}">
+      <div class="option-letter">${letters[idx]}</div>
+      <div>${opt}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  
+  container.innerHTML = html;
+}
+
+// ==================== ВЫБОР ОТВЕТА ====================
+function selectOption(idx) {
+  const q = questions[currentQuestionIndex];
+  const options = document.querySelectorAll('.option');
+  
+  // Блокируем повторный выбор
+  options.forEach(opt => {
+    opt.classList.add('disabled');
+    opt.onclick = null;
+  });
+  
+  const isCorrect = idx === q.correct;
+  
+  options[idx].classList.add(isCorrect ? 'correct' : 'incorrect');
+  if (!isCorrect) {
+    options[q.correct].classList.add('correct');
+  }
+  
+  userAnswers[currentQuestionIndex] = {
+    answerIndex: idx,
+    answerText: q.options[idx],
+    isCorrect: isCorrect
+  };
+  
+  if (isCorrect) correctAnswers++;
+  
+  showFeedback(isCorrect, q.explanation, isCorrect ? null : q.options[q.correct]);
+  
+  document.getElementById('nextBtn').disabled = false;
+}
+
+// ==================== ОБРАТНАЯ СВЯЗЬ ====================
+function showFeedback(isCorrect, explanation, correctAnswer) {
+  const feedback = document.getElementById('feedback');
+  feedback.classList.add('show');
+  
+  if (isCorrect) {
+    feedback.classList.add('correct');
+    feedback.innerHTML = `<b>✅ Правильно!</b>${explanation}`;
+  } else {
+    feedback.classList.add('incorrect');
+    feedback.innerHTML = `<b>❌ Неверно.</b>Правильный ответ: <b>${correctAnswer}</b><div class="correct-answer"><b>📚 Пояснение:</b> ${explanation}</div>`;
+  }
+}
+
+// ==================== СЛЕДУЮЩИЙ ВОПРОС ====================
+function nextQuestion() {
+  currentQuestionIndex++;
+  
+  if (currentQuestionIndex >= questions.length) {
+    showResults();
+  } else {
+    showQuestion();
+  }
+}
+
+// ==================== РЕЗУЛЬТАТЫ ====================
+function showResults() {
+  document.getElementById('quizScreen').classList.remove('active');
+  document.getElementById('resultsScreen').classList.add('active');
+  
+  const percent = Math.round((correctAnswers / questions.length) * 100);
+  const wrongCount = questions.length - correctAnswers;
+  
+  document.getElementById('statCorrect').textContent = correctAnswers;
+  document.getElementById('statPercent').textContent = percent + '%';
+  document.getElementById('statWrong').textContent = wrongCount;
+  
+  // Оценка
+  let grade, gradeClass, icon, title, subtitle;
+  if (percent >= 90) {
+    grade = '5'; gradeClass = 'grade-5';
+    icon = '🏆'; title = 'Превосходно!';
+    subtitle = 'Ты отлично знаешь материал!';
+  } else if (percent >= 75) {
+    grade = '4'; gradeClass = 'grade-4';
+    icon = '👍'; title = 'Хороший результат!';
+    subtitle = 'Есть небольшие пробелы, но в целом всё хорошо.';
+  } else if (percent >= 50) {
+    grade = '3'; gradeClass = 'grade-3';
+    icon = '📚'; title = 'Удовлетворительно';
+    subtitle = 'Рекомендуем повторить материал.';
+  } else {
+    grade = '2'; gradeClass = 'grade-2';
+    icon = '💪'; title = 'Нужно повторить';
+    subtitle = 'Не расстраивайся! Изучи материал и попробуй снова.';
+  }
+  
+  document.getElementById('gradeBadge').textContent = grade;
+  document.getElementById('gradeBadge').className = `grade-badge ${gradeClass}`;
+  document.getElementById('resultsIcon').textContent = icon;
+  document.getElementById('resultsTitle').textContent = title;
+  document.getElementById('resultsSubtitle').textContent = subtitle;
+  
+  // Разбор ответов
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  
+  questions.forEach((q, idx) => {
+    const userAns = userAnswers[idx];
+    const statusClass = userAns.isCorrect ? 'correct' : 'incorrect';
+    
+    let userAnswerHtml = `<div class="user-answer"><b>Твой ответ:</b>${q.options[userAns.answerIndex]}</div>`;
+    let correctAnswerHtml = '';
+    
+    if (!userAns.isCorrect) {
+      correctAnswerHtml = `<div class="correct-answer-block"><b>Правильный ответ:</b>${q.options[q.correct]}</div>`;
+    }
+    
+    const item = document.createElement('div');
+    item.className = `review-item ${statusClass}`;
+    item.innerHTML = `
+      <div>
+        <span class="q-num">${idx + 1}</span>
+        <span class="q-text">${q.question}</span>
+      </div>
+      ${userAnswerHtml}
+      ${correctAnswerHtml}
+    `;
+    reviewList.appendChild(item);
+  });
+}
+</script>
+
+</body>
+</html>

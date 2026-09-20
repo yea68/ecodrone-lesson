@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>🚁 ЭкоДрон - Симулятор поиска мусора</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0a1929;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #1a3a5c;
+  }
+  
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+  
+  .hud {
+    position: absolute;
+    pointer-events: none;
+    font-family: 'Courier New', monospace;
+  }
+  
+  .panel {
+    background: rgba(10, 25, 41, 0.85);
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  
+  #topPanel {
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    max-width: calc(100% - 40px);
+  }
+  
+  .stat {
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+    color: #00d4ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  
+  .stat-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .bar {
+    width: 150px;
+    height: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  
+  .bar-fill {
+    height: 100%;
+    transition: width 0.3s, background 0.3s;
+    border-radius: 5px;
+  }
+  
+  #batteryFill { background: linear-gradient(90deg, #00ff88, #00d4ff); }
+  #batteryFill.low { background: linear-gradient(90deg, #ff4444, #ff8800); }
+  
+  #minimap {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 200px;
+    height: 200px;
+    background: rgba(10, 25, 41, 0.85);
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  
+  #minimapCanvas {
+    width: 100%;
+    height: 100%;
+  }
+  
+  #compass {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    background: rgba(10, 25, 41, 0.85);
+    border: 2px solid #00d4ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  
+  #compassArrow {
+    width: 4px;
+    height: 40px;
+    background: linear-gradient(to bottom, #ff4444 50%, #fff 50%);
+    border-radius: 2px;
+    transform-origin: center;
+    transition: transform 0.2s;
+  }
+  
+  #altitude {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 300px;
+    background: rgba(10, 25, 41, 0.85);
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  
+  .alt-marker {
+    font-size: 10px;
+    color: #00d4ff;
+  }
+  
+  #altIndicator {
+    position: absolute;
+    left: 5px;
+    width: 30px;
+    height: 4px;
+    background: #00ff88;
+    border-radius: 2px;
+    transition: bottom 0.2s;
+    box-shadow: 0 0 10px #00ff88;
+  }
+  
+  #controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 12px;
+  }
+  
+  #controls .key {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid #00d4ff;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin: 0 2px;
+    font-weight: bold;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 25, 41, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  
+  .overlay.hidden { display: none; }
+  
+  .overlay h1 {
+    font-size: 56px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #00d4ff, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+  }
+  
+  .overlay h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #00d4ff;
+  }
+  
+  .overlay p {
+    font-size: 16px;
+    margin-bottom: 8px;
+    max-width: 500px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  
+  .overlay button {
+    margin-top: 25px;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #00d4ff, #00ff88);
+    color: #0a1929;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .overlay button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+  }
+  
+  .controls-info {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid #00d4ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .controls-info div {
+    margin: 8px 0;
+    font-size: 14px;
+  }
+  
+  .controls-info .key {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.3);
+    border: 1px solid #00d4ff;
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-right: 10px;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+  }
+  
+  #notification {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    background: rgba(0, 255, 136, 0.2);
+    border: 2px solid #00ff88;
+    border-radius: 8px;
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 50;
+  }
+  
+  #notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(10px);
+  }
+  
+  #notification.warning {
+    background: rgba(255, 68, 68, 0.2);
+    border-color: #ff4444;
+    color: #ff4444;
+  }
+  
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+    min-width: 400px;
+  }
+  
+  .result-stat {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid #00d4ff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .result-stat .label {
+    font-size: 12px;
+    color: #00d4ff;
+    text-transform: uppercase;
+  }
+  
+  .result-stat .value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 5px;
+  }
+</style>
+</head>
+<body>
+<div id="gameContainer">
+  <canvas id="game"></canvas>
+  
+  <div class="hud" id="topPanel">
+    <div class="panel stat">
+      <div class="stat-label">🗑️ Найдено</div>
+      <div class="stat-value"><span id="foundCount">0</span> / <span id="totalCount">0</span></div>
+    </div>
+    <div class="panel stat">
+      <div class="stat-label">⭐ Очки</div>
+      <div class="stat-value" id="score">0</div>
+    </div>
+    <div class="panel stat">
+      <div class="stat-label">🔋 Батарея</div>
+      <div class="stat-value"><span id="battery">100</span>%</div>
+      <div class="bar"><div class="bar-fill" id="batteryFill" style="width:100%"></div></div>
+    </div>
+    <div class="panel stat">
+      <div class="stat-label">⏱️ Время</div>
+      <div class="stat-value" id="time">0:00</div>
+    </div>
+  </div>
+  
+  <div class="hud" id="compass">
+    <div id="compassArrow"></div>
+  </div>
+  
+  <div class="hud" id="altitude">
+    <div class="alt-marker">H</div>
+    <div id="altIndicator" style="bottom: 50%"></div>
+    <div class="alt-marker">L</div>
+  </div>
+  
+  <div class="hud" id="minimap">
+    <canvas id="minimapCanvas" width="200" height="200"></canvas>
+  </div>
+  
+  <div class="hud panel" id="controls">
+    <div><span class="key">W A S D</span> или <span class="key">↑ ↓ ← →</span> Движение</div>
+    <div><span class="key">Q</span> Подняться &nbsp; <span class="key">E</span> Опуститься</div>
+    <div><span class="key">R</span> Возврат на базу</div>
+  </div>
+  
+  <div id="notification"></div>
+  
+  <div class="overlay" id="startScreen">
+    <h1>🚁 ЭкоДрон</h1>
+    <h2>Симулятор поиска мусора</h2>
+    <p>Управляйте эко-дронами и очищайте территорию от мусора!</p>
+    <p>Пролетайте над мусором на низкой высоте, чтобы сканировать его.</p>
+    
+    <div class="controls-info">
+      <div><span class="key">WASD</span> Перемещение дрона</div>
+      <div><span class="key">Q / E</span> Подняться / Опуститься</div>
+      <div><span class="key">R</span> Авто-возврат на базу</div>
+      <div>💡 На большой высоте лучше обзор, но мусор собирается только на низкой!</div>
+      <div>🔋 Следите за батареей — возвращайтесь на базу для подзарядки</div>
+    </div>
+    
+    <button onclick="startGame()">🚀 Начать миссию</button>
+  </div>
+  
+  <div class="overlay hidden" id="endScreen">
+    <h1 id="endTitle">Миссия завершена!</h1>
+    <div class="result-stats">
+      <div class="result-stat">
+        <div class="label">Найдено мусора</div>
+        <div class="value" id="endFound">0</div>
+      </div>
+      <div class="result-stat">
+        <div class="label">Всего очков</div>
+        <div class="value" id="endScore">0</div>
+      </div>
+      <div class="result-stat">
+        <div class="label">Время полёта</div>
+        <div class="value" id="endTime">0:00</div>
+      </div>
+      <div class="result-stat">
+        <div class="label">Эффективность</div>
+        <div class="value" id="endEfficiency">0%</div>
+      </div>
+    </div>
+    <button onclick="location.reload()">🔄 Новая миссия</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const minimapCanvas = document.getElementById('minimapCanvas');
+const mctx = minimapCanvas.getContext('2d');
+
+let W, H;
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Мир
+const WORLD = { w: 3000, h: 3000 };
+const BASE = { x: WORLD.w / 2, y: WORLD.h / 2, r: 60 };
+
+// Дрон
+const drone = {
+  x: BASE.x,
+  y: BASE.y,
+  vx: 0,
+  vy: 0,
+  altitude: 50, // 0-100
+  minAlt: 10,
+  maxAlt: 100,
+  angle: 0,
+  propAngle: 0,
+  scanRadius: 0,
+  scanning: false
+};
+
+// Мусор
+const TRASH_TYPES = [
+  { emoji: '🥤', name: 'Бутылка', points: 10, color: '#4a9eff' },
+  { emoji: '🥫', name: 'Банка', points: 15, color: '#ff6b6b' },
+  { emoji: '📦', name: 'Коробка', points: 20, color: '#c89666' },
+  { emoji: '🛍️', name: 'Пакет', points: 12, color: '#ffcc00' },
+  { emoji: '📰', name: 'Бумага', points: 8, color: '#dddddd' },
+  { emoji: '🍕', name: 'Пицца', points: 18, color: '#ff9500' },
+  { emoji: '🍎', name: 'Огрызок', points: 5, color: '#ff4444' },
+  { emoji: '👟', name: 'Ботинок', points: 25, color: '#8844ff' }
+];
+
+let trash = [];
+let decorations = []; // деревья, здания
+let particles = [];
+let game = {
+  running: false,
+  score: 0,
+  found: 0,
+  total: 0,
+  time: 0,
+  battery: 100,
+  lastTime: 0,
+  keys: {},
+  returning: false
+};
+
+// Генерация мира
+function generateWorld() {
+  trash = [];
+  decorations = [];
+  
+  // Деревья
+  for (let i = 0; i < 80; i++) {
+    decorations.push({
+      type: 'tree',
+      x: Math.random() * WORLD.w,
+      y: Math.random() * WORLD.h,
+      size: 20 + Math.random() * 25,
+      shade: Math.random() * 0.3
+    });
+  }
+  
+  // Здания
+  for (let i = 0; i < 15; i++) {
+    decorations.push({
+      type: 'building',
+      x: Math.random() * WORLD.w,
+      y: Math.random() * WORLD.h,
+      w: 60 + Math.random() * 80,
+      h: 60 + Math.random() * 80,
+      color: `hsl(${Math.random() * 40 + 15}, 30%, ${30 + Math.random() * 20}%)`
+    });
+  }
+  
+  // Водоём
+  decorations.push({
+    type: 'pond',
+    x: WORLD.w * 0.3,
+    y: WORLD.h * 0.3,
+    r: 150
+  });
+  
+  // Дороги
+  decorations.push({
+    type: 'road',
+    x1: 0, y1: WORLD.h / 2,
+    x2: WORLD.w, y2: WORLD.h / 2,
+    w: 80
+  });
+  decorations.push({
+    type: 'road',
+    x1: WORLD.w / 2, y1: 0,
+    x2: WORLD.w / 2, y2: WORLD.h,
+    w: 80
+  });
+  
+  // Мусор
+  const trashCount = 50;
+  for (let i = 0; i < trashCount; i++) {
+    const type = TRASH_TYPES[Math.floor(Math.random() * TRASH_TYPES.length)];
+    trash.push({
+      x: Math.random() * WORLD.w,
+      y: Math.random() * WORLD.h,
+      type: type,
+      collected: false,
+      scanProgress: 0,
+      bob: Math.random() * Math.PI * 2
+    });
+  }
+  game.total = trashCount;
+  document.getElementById('totalCount').textContent = trashCount;
+}
+
+// Управление
+document.addEventListener('keydown', e => {
+  game.keys[e.key.toLowerCase()] = true;
+  if (e.key.toLowerCase() === 'r') game.returning = true;
+});
+document.addEventListener('keyup', e => {
+  game.keys[e.key.toLowerCase()] = false;
+});
+
+function showNotification(text, warning = false) {
+  const n = document.getElementById('notification');
+  n.textContent = text;
+  n.className = warning ? 'show warning' : 'show';
+  clearTimeout(n._t);
+  n._t = setTimeout(() => n.className = '', 2000);
+}
+
+function startGame() {
+  document.getElementById('startScreen').classList.add('hidden');
+  generateWorld();
+  game.running = true;
+  game.lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function endGame(title) {
+  game.running = false;
+  document.getElementById('endTitle').textContent = title;
+  document.getElementById('endFound').textContent = `${game.found} / ${game.total}`;
+  document.getElementById('endScore').textContent = game.score;
+  const mins = Math.floor(game.time / 60);
+  const secs = Math.floor(game.time % 60);
+  document.getElementById('endTime').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  document.getElementById('endEfficiency').textContent = 
+    Math.round((game.found / game.total) * 100) + '%';
+  document.getElementById('endScreen').classList.remove('hidden');
+}
+
+function update(dt) {
+  if (!game.running) return;
+  
+  game.time += dt;
+  
+  // Управление
+  const speed = 200;
+  let ax = 0, ay = 0;
+  if (game.keys['w'] || game.keys['arrowup']) ay -= 1;
+  if (game.keys['s'] || game.keys['arrowdown']) ay += 1;
+  if (game.keys['a'] || game.keys['arrowleft']) ax -= 1;
+  if (game.keys['d'] || game.keys['arrowright']) ax += 1;
+  
+  // Возврат на базу
+  if (game.returning) {
+    const dx = BASE.x - drone.x;
+    const dy = BASE.y - drone.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist > 20) {
+      ax = dx / dist;
+      ay = dy / dist;
+    } else {
+      game.returning = false;
+      drone.x = BASE.x;
+      drone.y = BASE.y;
+      drone.vx = 0;
+      drone.vy = 0;
+      showNotification('🔋 Подзарядка...');
+    }
+  }
+  
+  // Подзарядка на базе
+  const distToBase = Math.sqrt((drone.x - BASE.x)**2 + (drone.y - BASE.y)**2);
+  if (distToBase < BASE.r) {
+    game.battery = Math.min(100, game.battery + dt * 20);
+    if (game.battery >= 100 && !game.returning) {
+      showNotification('✅ Батарея заряжена!');
+    }
+  }
+  
+  // Высота
+  if (game.keys['q']) drone.altitude = Math.min(drone.maxAlt, drone.altitude + dt * 30);
+  if (game.keys['e']) drone.altitude = Math.max(drone.minAlt, drone.altitude - dt * 30);
+  
+  // Движение
+  if (ax !== 0 || ay !== 0) {
+    const len = Math.sqrt(ax*ax + ay*ay);
+    ax /= len; ay /= len;
+    drone.angle = Math.atan2(ay, ax);
+  }
+  
+  drone.vx += ax * speed * dt * 3;
+  drone.vy += ay * speed * dt * 3;
+  drone.vx *= 0.92;
+  drone.vy *= 0.92;
+  
+  drone.x += drone.vx * dt;
+  drone.y += drone.vy * dt;
+  
+  // Границы
+  drone.x = Math.max(20, Math.min(WORLD.w - 20, drone.x));
+  drone.y = Math.max(20, Math.min(WORLD.h - 20, drone.y));
+  
+  // Пропеллеры
+  drone.propAngle += dt * 30;
+  
+  // Расход батареи
+  const moving = Math.abs(drone.vx) + Math.abs(drone.vy) > 5;
+  const drain = (0.5 + drone.altitude * 0.02 + (moving ? 1.5 : 0)) * dt;
+  game.battery -= drain;
+  
+  if (game.battery <= 0) {
+    game.battery = 0;
+    endGame('🪫 Батарея разряжена!');
+    return;
+  }
+  
+  // Сканирование мусора
+  const scanRadius = 40 + (100 - drone.altitude) * 0.8;
+  drone.scanRadius = scanRadius;
+  drone.scanning = drone.altitude < 60 && (moving || distToBase > BASE.r);
+  
+  trash.forEach(t => {
+    if (t.collected) return;
+    t.bob += dt * 2;
+    const dx = t.x - drone.x;
+    const dy = t.y - drone.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    
+    if (dist < scanRadius && drone.altitude < 60) {
+      t.scanProgress += dt * 1.5;
+      if (t.scanProgress >= 1) {
+        t.collected = true;
+        game.found++;
+        game.score += t.type.points;
+        showNotification(`✅ ${t.type.name} +${t.type.points}`);
+        // Частицы
+        for (let i = 0; i < 10; i++) {
+          particles.push({
+            x: t.x, y: t.y,
+            vx: (Math.random() - 0.5) * 100,
+            vy: (Math.random() - 0.5) * 100,
+            life: 1,
+            color: t.type.color
+          });
+        }
+      }
+    } else {
+      t.scanProgress = Math.max(0, t.scanProgress - dt * 0.5);
+    }
+  });
+  
+  // Частицы
+  particles.forEach(p => {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt * 1.5;
+  });
+  particles = particles.filter(p => p.life > 0);
+  
+  // Победа
+  if (game.found >= game.total) {
+    endGame('🎉 Миссия выполнена!');
+    return;
+  }
+  
+  // Обновление HUD
+  document.getElementById('foundCount').textContent = game.found;
+  document.getElementById('score').textContent = game.score;
+  document.getElementById('battery').textContent = Math.round(game.battery);
+  const bf = document.getElementById('batteryFill');
+  bf.style.width = game.battery + '%';
+  bf.className = 'bar-fill' + (game.battery < 25 ? ' low' : '');
+  const mins = Math.floor(game.time / 60);
+  const secs = Math.floor(game.time % 60);
+  document.getElementById('time').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  
+  // Компас к базе
+  const angleToBase = Math.atan2(BASE.y - drone.y, BASE.x - drone.x);
+  document.getElementById('compassArrow').style.transform = `rotate(${angleToBase + Math.PI/2}rad)`;
+  
+  // Индикатор высоты
+  const altPct = (drone.altitude - drone.minAlt) / (drone.maxAlt - drone.minAlt);
+  document.getElementById('altIndicator').style.bottom = (10 + altPct * 80) + '%';
+  
+  // Предупреждения
+  if (game.battery < 20 && !game.returning && Math.floor(game.time * 2) % 2 === 0) {
+    showNotification('⚠️ Низкий заряд! Нажмите R для возврата', true);
+  }
+}
+
+function draw() {
+  // Камера
+  const camX = drone.x - W / 2;
+  const camY = drone.y - H / 2;
+  
+  // Фон - трава
+  ctx.fillStyle = '#3a7d44';
+  ctx.fillRect(0, 0, W, H);
+  
+  // Текстура травы
+  const gridSize = 100;
+  const startX = Math.floor(camX / gridSize) * gridSize;
+  const startY = Math.floor(camY / gridSize) * gridSize;
+  for (let x = startX; x < camX + W + gridSize; x += gridSize) {
+    for (let y = startY; y < camY + H + gridSize; y += gridSize) {
+      const screenX = x - camX;
+      const screenY = y - camY;
+      const hash = (x * 73856093) ^ (y * 19349663);
+      if ((hash & 3) === 0) {
+        ctx.fillStyle = 'rgba(50, 100, 50, 0.3)';
+        ctx.fillRect(screenX, screenY, gridSize, gridSize);
+      }
+    }
+  }
+  
+  ctx.save();
+  ctx.translate(-camX, -camY);
+  
+  // Границы мира
+  ctx.strokeStyle = '#ff4444';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([10, 10]);
+  ctx.strokeRect(0, 0, WORLD.w, WORLD.h);
+  ctx.setLineDash([]);
+  
+  // Дороги
+  decorations.forEach(d => {
+    if (d.type === 'road') {
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = d.w;
+      ctx.beginPath();
+      ctx.moveTo(d.x1, d.y1);
+      ctx.lineTo(d.x2, d.y2);
+      ctx.stroke();
+      // Разметка
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([20, 20]);
+      ctx.beginPath();
+      ctx.moveTo(d.x1, d.y1);
+      ctx.lineTo(d.x2, d.y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+  
+  // Пруд
+  decorations.forEach(d => {
+    if (d.type === 'pond') {
+      const grad = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+      grad.addColorStop(0, '#4a9eff');
+      grad.addColorStop(1, '#2a6ecf');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fill();
+      // Волны
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 5; i++) {
+        const r = d.r * (0.3 + i * 0.15);
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  });
+  
+  // Здания
+  decorations.forEach(d => {
+    if (d.type === 'building') {
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(d.x + 5, d.y + 5, d.w, d.h);
+      ctx.fillStyle = d.color;
+      ctx.fillRect(d.x, d.y, d.w, d.h);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(d.x, d.y, d.w, d.h);
+      // Окна
+      ctx.fillStyle = 'rgba(255, 220, 100, 0.6)';
+      for (let wx = 10; wx < d.w - 10; wx += 20) {
+        for (let wy = 10; wy < d.h - 10; wy += 20) {
+          ctx.fillRect(d.x + wx, d.y + wy, 10, 10);
+        }
+      }
+    }
+  });
+  
+  // Деревья
+  decorations.forEach(d => {
+    if (d.type === 'tree') {
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.beginPath();
+      ctx.arc(d.x + 3, d.y + 3, d.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `rgb(${40 + d.shade * 30}, ${100 + d.shade * 50}, ${40 + d.shade * 30})`;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = `rgb(${60 + d.shade * 30}, ${130 + d.shade * 50}, ${60 + d.shade * 30})`;
+      ctx.beginPath();
+      ctx.arc(d.x - d.size * 0.3, d.y - d.size * 0.3, d.size * 0.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+  
+  // База
+  const baseGrad = ctx.createRadialGradient(BASE.x, BASE.y, 0, BASE.x, BASE.y, BASE.r);
+  baseGrad.addColorStop(0, '#00d4ff');
+  baseGrad.addColorStop(0.7, '#0088cc');
+  baseGrad.addColorStop(1, 'rgba(0, 136, 204, 0)');
+  ctx.fillStyle = baseGrad;
+  ctx.beginPath();
+  ctx.arc(BASE.x, BASE.y, BASE.r, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.strokeStyle = '#00d4ff';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.arc(BASE.x, BASE.y, BASE.r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 20px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🏠 БАЗА', BASE.x, BASE.y);
+  
+  // Мусор
+  trash.forEach(t => {
+    if (t.collected) return;
+    
+    const bob = Math.sin(t.bob) * 2;
+    
+    // Индикатор сканирования
+    if (t.scanProgress > 0) {
+      ctx.strokeStyle = `rgba(0, 255, 136, ${0.5 + t.scanProgress * 0.5})`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y + bob, 20, -Math.PI/2, -Math.PI/2 + Math.PI * 2 * t.scanProgress);
+      ctx.stroke();
+    }
+    
+    // Тень
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(t.x, t.y + 15, 12, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Мусор
+    ctx.font = '24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(t.type.emoji, t.x, t.y + bob);
+  });
+  
+  // Частицы
+  particles.forEach(p => {
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.life;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  
+  // Зона сканирования дрона
+  if (drone.scanning) {
+    ctx.strokeStyle = `rgba(0, 212, 255, ${0.3 + Math.sin(game.time * 5) * 0.2})`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.arc(drone.x, drone.y, drone.scanRadius, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    ctx.fillStyle = `rgba(0, 212, 255, 0.05)`;
+    ctx.beginPath();
+    ctx.arc(drone.x, drone.y, drone.scanRadius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  // Тень дрона (зависит от высоты)
+  const shadowOffset = drone.altitude * 0.3;
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(drone.x + shadowOffset, drone.y + shadowOffset, 25, 10, 0, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Дрон
+  ctx.save();
+  ctx.translate(drone.x, drone.y);
+  ctx.rotate(drone.angle);
+  
+  // Корпус
+  ctx.fillStyle = '#2c3e50';
+  ctx.strokeStyle = '#00d4ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 15, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  
+  // Рукава
+  ctx.strokeStyle = '#34495e';
+  ctx.lineWidth = 4;
+  const arms = [[1,1],[-1,1],[1,-1],[-1,-1]];
+  arms.forEach(([dx, dy]) => {
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(dx * 25, dy * 25);
+    ctx.stroke();
+  });
+  
+  // Пропеллеры
+  arms.forEach(([dx, dy]) => {
+    ctx.save();
+    ctx.translate(dx * 25, dy * 25);
+    ctx.rotate(drone.propAngle * (dx > 0 ? 1 : -1));
+    ctx.fillStyle = 'rgba(100, 200, 255, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 3, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#00d4ff';
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  
+  // Индикатор направления
+  ctx.fillStyle = '#ff4444';
+  ctx.beginPath();
+  ctx.moveTo(15, 0);
+  ctx.lineTo(8, -5);
+  ctx.lineTo(8, 5);
+  ctx.closePath();
+  ctx.fill();
+  
+  ctx.restore();
+  
+  ctx.restore();
+  
+  // Виньетка
+  const vignette = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.3, W/2, H/2, Math.max(W,H)*0.7);
+  vignette.addColorStop(0, 'rgba(0,0,0,0)');
+  vignette.addColorStop(1, 'rgba(0,0,0,0.5)');
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, W, H);
+  
+  // Мини-карта
+  drawMinimap();
+}
+
+function drawMinimap() {
+  const scale = 200 / WORLD.w;
+  mctx.fillStyle = '#3a7d44';
+  mctx.fillRect(0, 0, 200, 200);
+  
+  // Дороги
+  decorations.forEach(d => {
+    if (d.type === 'road') {
+      mctx.strokeStyle = '#555';
+      mctx.lineWidth = d.w * scale;
+      mctx.beginPath();
+      mctx.moveTo(d.x1 * scale, d.y1 * scale);
+      mctx.lineTo(d.x2 * scale, d.y2 * scale);
+      mctx.stroke();
+    }
+    if (d.type === 'pond') {
+      mctx.fillStyle = '#4a9eff';
+      mctx.beginPath();
+      mctx.arc(d.x * scale, d.y * scale, d.r * scale, 0, Math.PI * 2);
+      mctx.fill();
+    }
+  });
+  
+  // База
+  mctx.fillStyle = '#00d4ff';
+  mctx.beginPath();
+  mctx.arc(BASE.x * scale, BASE.y * scale, 4, 0, Math.PI * 2);
+  mctx.fill();
+  
+  // Мусор
+  trash.forEach(t => {
+    if (t.collected) return;
+    mctx.fillStyle = t.type.color;
+    mctx.fillRect(t.x * scale - 1, t.y * scale - 1, 2, 2);
+  });
+  
+  // Дрон
+  mctx.fillStyle = '#ff4444';
+  mctx.beginPath();
+  mctx.arc(drone.x * scale, drone.y * scale, 3, 0, Math.PI * 2);
+  mctx.fill();
+  
+  // Зона видимости
+  mctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+  mctx.lineWidth = 1;
+  mctx.strokeRect(
+    (drone.x - W/2) * scale,
+    (drone.y - H/2) * scale,
+    W * scale,
+    H * scale
+  );
+}
+
+function loop(now) {
+  if (!game.running) return;
+  const dt = Math.min(0.05, (now - game.lastTime) / 1000);
+  game.lastTime = now;
+  
+  update(dt);
+  draw();
+  
+  requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
